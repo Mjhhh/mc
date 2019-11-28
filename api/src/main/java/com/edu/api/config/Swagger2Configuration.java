@@ -19,15 +19,15 @@ public class Swagger2Configuration {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.xuecheng"))
+                .apis(RequestHandlerSelectors.basePackage("com.edu"))
                 .paths(PathSelectors.any())
                 .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("学成网api文档")
-                .description("学成网api文档")
+                .title("api文档")
+                .description("api文档")
 //                .termsOfServiceUrl("/")
                 .version("1.0")
                 .build();

@@ -6,10 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -35,7 +32,7 @@ public class CmsPageRepositoryTest {
     public void testFindPage() {
         int page = 0;//从0开始
         int size = 10;//每页记录数
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page, size);
         Page<CmsPage> all = cmsPageRepository.findAll(pageable);
         System.out.println(all);
     }
@@ -44,9 +41,16 @@ public class CmsPageRepositoryTest {
     @Test
     public void testSave() {
         CmsPage cmsPage = new CmsPage();
-        cmsPage.setPageName("测试页面");
+        cmsPage.setPageName("4028e58161bd3b380161bd3bcd2f0000.html");
+        cmsPage.setPageAliase("test002");
+        cmsPage.setPageWebPath("/coursepre/");
+        cmsPage.setPagePhysicalPath("F:\\develop\\xc_portal_static\\course\\detail\\");
+        cmsPage.setPageType("1");
         cmsPage.setPageCreateTime(new Date());
-        cmsPage.setSiteId("s01");
+        cmsPage.setTemplateId("5a925be7b00ffc4b3c1578b5");
+        cmsPage.setHtmlFileId("5ae1973b0e6618644cd7a6fb");
+        cmsPage.setDataUrl("http://localhost:40200/portalview/course/get/4028e581617f945f01617f9dabc40000");
+        cmsPage.setSiteId("5a751fab6abb5044e0d19ea1");
         cmsPage.setTemplateId("t01");
 
         List<CmsPageParam> cmsPageParams = new ArrayList<>();
@@ -82,5 +86,40 @@ public class CmsPageRepositoryTest {
     public void testFindByPageName() {
         CmsPage byPageName = cmsPageRepository.findByPageName("10101.html");
         System.out.println(byPageName);
+    }
+
+    //自定义条件查询测试
+    @Test
+    public void testFindSelfDefind() {
+        //分页
+        int page = 0;
+        int size = 10;
+        Pageable pageable = PageRequest.of(page, size);
+        //模糊查询
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching();
+        exampleMatcher = exampleMatcher.withMatcher("pageAliase", ExampleMatcher.GenericPropertyMatchers.contains());
+
+        //设置条件
+        CmsPage cmsPage = new CmsPage();
+        cmsPage.setPageAliase("详情");
+        Example<CmsPage> example = Example.of(cmsPage, exampleMatcher);
+
+        Page<CmsPage> all = cmsPageRepository.findAll(example, pageable);
+//        List<CmsPage> all = cmsPageRepository.findAll(example);
+//        List<CmsPage> content = all.getContent();
+        System.out.println(all);
+    }
+
+    @Test
+    public void testFindSelfDefindTwo() {
+        CmsPage cmsPage = new CmsPage();
+        cmsPage.setSiteId("5a751fab6abb5044e0d19ea1");
+        cmsPage.setPageWebPath("/course/");
+        cmsPage.setPageName("4028858162e0bc0a0162e0bfdf1a0000.html");
+
+        Example<CmsPage> example = Example.of(cmsPage);
+
+        List<CmsPage> all = cmsPageRepository.findAll(example);
+        System.out.println(all);
     }
 }

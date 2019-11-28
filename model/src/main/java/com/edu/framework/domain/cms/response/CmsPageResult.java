@@ -6,7 +6,7 @@ import com.edu.framework.domain.cms.CmsPage;
 import lombok.Data;
 
 /**
- * Created by mrt on 2018/3/31.
+ * cms请求响应类
  */
 @Data
 public class CmsPageResult extends ResponseResult {
