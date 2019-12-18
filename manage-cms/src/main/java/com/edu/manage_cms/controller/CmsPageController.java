@@ -8,6 +8,7 @@ import com.edu.framework.domain.cms.response.CmsPageResult;
 import com.edu.framework.model.response.CommonCode;
 import com.edu.framework.model.response.QueryResponseResult;
 import com.edu.framework.model.response.QueryResult;
+import com.edu.framework.model.response.ResponseResult;
 import com.edu.manage_cms.service.PageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,5 +33,23 @@ public class CmsPageController implements CmsPageControllerApi {
     @PostMapping("/add")
     public CmsPageResult add(@RequestBody CmsPage cmsPage) {
         return pageService.add(cmsPage);
+    }
+
+    @Override
+    @GetMapping("/get/{id}")
+    public CmsPage findById(@PathVariable("id") String id) {
+        return pageService.getById(id);
+    }
+
+    @Override
+    @PutMapping("/edit/{id}")//put在http方法中表示更新
+    public CmsPageResult edit(@PathVariable("id") String id,@RequestBody CmsPage cmsPage) {
+        return pageService.update(id, cmsPage);
+    }
+
+    @Override
+    @DeleteMapping("/del/{id}")
+    public ResponseResult delete(@PathVariable("id") String id) {
+        return pageService.delete(id);
     }
 }

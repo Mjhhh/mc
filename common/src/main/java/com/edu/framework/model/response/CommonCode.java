@@ -9,11 +9,11 @@ import lombok.ToString;
 @ToString
 public enum CommonCode implements ResultCode {
 
-    SUCCESS(true, 10000, "操作成功！"),
-    FAIL(false, 11111, "操作失败！"),
-    UNAUTHENTICATED(false, 10001, "此操作需要登陆系统！"),
-    UNAUTHORISE(false, 10002, "权限不足，无权操作！"),
-    SERVER_ERROR(false, 99999, "抱歉，系统繁忙，请稍后重试！");
+    SUCCESS(true, 200, "操作成功！"),
+    FAIL(false, 1100, "操作失败！"),
+    UNAUTHENTICATED(false, 1001, "此操作需要登陆系统！"),
+    UNAUTHORISE(false, 1002, "权限不足，无权操作！"),
+    SERVER_ERROR(false, 9999, "抱歉，系统繁忙，请稍后重试！");
     //操作是否成功
     boolean success;
     //操作代码

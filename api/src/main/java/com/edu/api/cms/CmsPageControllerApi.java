@@ -4,6 +4,7 @@ import com.edu.framework.domain.cms.CmsPage;
 import com.edu.framework.domain.cms.response.CmsPageResult;
 import com.edu.framework.model.response.QueryResponseResult;
 import com.edu.framework.domain.cms.request.QueryPageRequest;
+import com.edu.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -21,4 +22,13 @@ public interface CmsPageControllerApi {
 
     @ApiOperation("添加页面")
     CmsPageResult add(CmsPage cmsPage);
+
+    @ApiOperation("通过ID查询页面")
+    CmsPage findById(String id);
+
+    @ApiOperation("修改页面")
+    CmsPageResult edit(String id, CmsPage cmsPage);
+
+    @ApiOperation("刪除页面")
+    ResponseResult delete(String id);
 }
