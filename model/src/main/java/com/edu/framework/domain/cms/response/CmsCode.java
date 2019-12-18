@@ -3,9 +3,6 @@ package com.edu.framework.domain.cms.response;
 import com.edu.framework.model.response.ResultCode;
 import lombok.ToString;
 
-/**
- * Created by mrt on 2018/3/5.
- */
 @ToString
 public enum CmsCode implements ResultCode {
     CMS_ADDPAGE_EXISTSNAME(false,24001,"页面名称已存在！"),
@@ -14,7 +11,11 @@ public enum CmsCode implements ResultCode {
     CMS_GENERATEHTML_TEMPLATEISNULL(false,24004,"页面模板为空！"),
     CMS_GENERATEHTML_HTMLISNULL(false,24005,"生成的静态html为空！"),
     CMS_GENERATEHTML_SAVEHTMLERROR(false,24005,"保存静态html出错！"),
-    CMS_COURSE_PERVIEWISNULL(false,24007,"预览页面为空！");
+    CMS_COURSE_PERVIEWISNULL(false,24007,"预览页面为空！"),
+    CMS_PAGE_PARAMS_ISNULL(false,24008,"传入的页面信息或者参数缺失！"),
+    CMS_PAGE_IS_NOT_EXISTS(false,24009,"页面不存在！"),
+    CMS_SAVE_PAGE_FAIL(false,24010,"保存页面失败！");
+
     //操作代码
     boolean success;
     //操作代码
