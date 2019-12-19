@@ -13,7 +13,9 @@ public enum CommonCode implements ResultCode {
     FAIL(false, 1100, "操作失败！"),
     UNAUTHENTICATED(false, 1001, "此操作需要登陆系统！"),
     UNAUTHORISE(false, 1002, "权限不足，无权操作！"),
-    SERVER_ERROR(false, 9999, "抱歉，系统繁忙，请稍后重试！");
+    SERVER_ERROR(false, 9999, "抱歉，系统繁忙，请稍后重试！"),
+    INVALID_PARAM(false,10003,"非法参数！");
+
     //操作是否成功
     boolean success;
     //操作代码

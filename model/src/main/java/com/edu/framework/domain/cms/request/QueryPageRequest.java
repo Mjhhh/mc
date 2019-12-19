@@ -23,4 +23,7 @@ public class QueryPageRequest {
     //模版id
     @ApiModelProperty("模版id")
     private String templateId;
+    //页面类型
+    @ApiModelProperty("页面类型")
+    private String pageType;
 }

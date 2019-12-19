@@ -42,15 +42,15 @@ public class PageService {
         //条件匹配器
         //页面名称模糊查询，需要自定义字符串的匹配器实现模糊查询
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
-                .withMatcher("pageAliase", ExampleMatcher.GenericPropertyMatchers.contains());
+                .withMatcher("pageAliase", ExampleMatcher.GenericPropertyMatchers.contains())
+                .withMatcher("pageName", ExampleMatcher.GenericPropertyMatchers.contains());
+
         //条件值
         CmsPage cmsPage = new CmsPage();
-        if (StringUtils.isNotEmpty(queryPageRequest.getSiteId())) {
-            cmsPage.setSiteId(queryPageRequest.getSiteId());
-        }
-        if (StringUtils.isNotEmpty(queryPageRequest.getPageAliase())) {
-            cmsPage.setPageAliase(queryPageRequest.getPageAliase());
-        }
+        cmsPage.setSiteId(StringUtils.isNotEmpty(queryPageRequest.getSiteId()) ? queryPageRequest.getSiteId() : null);
+        cmsPage.setPageAliase(StringUtils.isNotEmpty(queryPageRequest.getPageAliase()) ? queryPageRequest.getPageAliase() : null);
+        cmsPage.setPageName(StringUtils.isNotEmpty(queryPageRequest.getPageName()) ? queryPageRequest.getPageName() : null);
+        cmsPage.setPageType(StringUtils.isNotEmpty(queryPageRequest.getPageType()) ? queryPageRequest.getPageType() : null);
 
         //创建条件实例
         Example<CmsPage> example = Example.of(cmsPage, exampleMatcher);
@@ -116,7 +116,8 @@ public class PageService {
 
     /**
      * 更新页面信息
-     * @param id 页面id
+     *
+     * @param id      页面id
      * @param cmsPage 更新之后的页面
      * @return 返回操作信息
      */
@@ -149,6 +150,7 @@ public class PageService {
 
     /**
      * 删除页面
+     *
      * @param id 页面id
      * @return 返回操作信息
      */
