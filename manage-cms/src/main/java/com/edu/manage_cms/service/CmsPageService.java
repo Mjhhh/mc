@@ -20,8 +20,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * @author mjh
+ */
 @Service
-public class PageService {
+public class CmsPageService {
 
     @Autowired
     CmsPageRepository cmsPageRepository;
@@ -164,4 +167,6 @@ public class PageService {
         }
         return new ResponseResult(CommonCode.FAIL);
     }
+
+
 }

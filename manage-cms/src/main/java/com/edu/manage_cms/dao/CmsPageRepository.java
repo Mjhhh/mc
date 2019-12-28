@@ -4,6 +4,9 @@ package com.edu.manage_cms.dao;
 import com.edu.framework.domain.cms.CmsPage;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+/**
+ * @author mjh
+ */
 public interface CmsPageRepository extends MongoRepository<CmsPage,String> {
 
     //根据页面名查询
