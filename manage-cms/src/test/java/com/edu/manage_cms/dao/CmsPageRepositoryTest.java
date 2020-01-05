@@ -2,13 +2,19 @@ package com.edu.manage_cms.dao;
 
 import com.edu.framework.domain.cms.CmsPage;
 import com.edu.framework.domain.cms.CmsPageParam;
+import com.edu.manage_cms.service.CmsPageService;
+import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +26,12 @@ public class CmsPageRepositoryTest {
 
     @Autowired
     CmsPageRepository cmsPageRepository;
+
+    @Autowired
+    CmsPageService cmsPageService;
+
+    @Autowired
+    GridFsTemplate gridFsTemplate;
 
     @Test
     public void testFindAll() {
@@ -121,5 +133,24 @@ public class CmsPageRepositoryTest {
 
         List<CmsPage> all = cmsPageRepository.findAll(example);
         System.out.println(all);
+    }
+
+    @Test
+    public void testGetHtml() {
+        String pageHtml = cmsPageService.getPageHtml("5dfa454e59530926a4a49585");
+        System.out.println(pageHtml);
+    }
+
+    @Test
+    public void testGridFs() throws FileNotFoundException {
+        //要存储的文件
+        File file = new File("d:/index_banner.html");
+        //定义输入流
+        FileInputStream inputStram = new FileInputStream(file);
+        //向GridFS存储文件
+        ObjectId objectId = gridFsTemplate.store(inputStram, "轮播图测试文件05", "");
+        //得到文件ID
+        String fileId = objectId.toString();
+        System.out.println(file);
     }
 }

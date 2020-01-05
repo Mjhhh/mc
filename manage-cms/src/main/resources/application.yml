@@ -8,3 +8,8 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017
       database: mc_cms
+  freemarker:
+    #关闭模板缓存，方便测试
+    cache: false
+    settings:
+      template_update_delay: 0

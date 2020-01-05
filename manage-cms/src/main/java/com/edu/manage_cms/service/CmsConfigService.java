@@ -25,8 +25,7 @@ public class CmsConfigService {
         }
         Optional<CmsConfig> optional = cmsConfigRepository.findById(id);
         if (optional.isPresent()) {
-            CmsConfig cmsConfig = optional.get();
-            return cmsConfig;
+            return optional.get();
         }
         return null;
     }
