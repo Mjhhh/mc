@@ -144,13 +144,13 @@ public class CmsPageRepositoryTest {
     @Test
     public void testGridFs() throws FileNotFoundException {
         //要存储的文件
-        File file = new File("d:/index_banner.html");
+        File file = new File("D:/index_banner.html");
         //定义输入流
         FileInputStream inputStram = new FileInputStream(file);
         //向GridFS存储文件
-        ObjectId objectId = gridFsTemplate.store(inputStram, "轮播图测试文件05", "");
+        ObjectId objectId = gridFsTemplate.store(inputStram, "轮播图测试文件06", "");
         //得到文件ID
         String fileId = objectId.toString();
-        System.out.println(file);
+        System.out.println();
     }
 }

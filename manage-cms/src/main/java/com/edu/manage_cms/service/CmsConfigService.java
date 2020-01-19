@@ -24,9 +24,6 @@ public class CmsConfigService {
             ExceptionCast.cast(CmsCode.CMS_PAGE_PARAMS_ISNULL);
         }
         Optional<CmsConfig> optional = cmsConfigRepository.findById(id);
-        if (optional.isPresent()) {
-            return optional.get();
-        }
-        return null;
+        return optional.orElse(null);
     }
 }
