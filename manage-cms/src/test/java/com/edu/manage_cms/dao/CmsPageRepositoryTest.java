@@ -148,9 +148,8 @@ public class CmsPageRepositoryTest {
         //定义输入流
         FileInputStream inputStram = new FileInputStream(file);
         //向GridFS存储文件
-        ObjectId objectId = gridFsTemplate.store(inputStram, "轮播图测试文件06", "");
+        ObjectId objectId = gridFsTemplate.store(inputStram, "轮播图测试文件01.html", "");
         //得到文件ID
-        String fileId = objectId.toString();
-        System.out.println();
+        System.out.println(objectId.toString());
     }
 }
