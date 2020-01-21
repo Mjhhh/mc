@@ -26,6 +26,7 @@ public enum CourseCode implements ResultCode {
     //操作代码
     @ApiModelProperty(value = "操作代码", example = "22001", required = true)
     int code;
+
     //提示信息
     @ApiModelProperty(value = "操作提示", example = "操作过于频繁！", required = true)
     String message;
