@@ -4,13 +4,13 @@
 
     <resultMap type="com.edu.framework.domain.course.ext.TeachplanNode" id="teachplanMap">
         <id property="id" column="one_id"/>
-        <result property="pname" column="one_name"/>
+        <result property="pname" column="one_pname"/>
         <collection property="children" ofType="com.edu.framework.domain.course.ext.TeachplanNode">
             <id property="id" column="two_id"/>
-            <result property="pname" column="two_name"/>
+            <result property="pname" column="two_pname"/>
             <collection property="children" ofType="com.edu.framework.domain.course.ext.TeachplanNode">
                 <id property="id" column="three_id"/>
-                <result property="pname" column="three_name"/>
+                <result property="pname" column="three_pname"/>
             </collection>
         </collection>
     </resultMap>

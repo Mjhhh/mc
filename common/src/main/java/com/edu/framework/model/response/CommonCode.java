@@ -14,7 +14,8 @@ public enum CommonCode implements ResultCode {
     UNAUTHENTICATED(false, 1001, "此操作需要登陆系统！"),
     UNAUTHORISE(false, 1002, "权限不足，无权操作！"),
     SERVER_ERROR(false, 9999, "抱歉，系统繁忙，请稍后重试！"),
-    INVALID_PARAM(false,10003,"非法参数！");
+    INVALID_PARAM(false,10003,"非法参数！"),
+    MISS_PARAM(false,10004,"参数缺失");
 
     //操作是否成功
     boolean success;
@@ -23,7 +24,7 @@ public enum CommonCode implements ResultCode {
     //提示信息
     String message;
 
-    private CommonCode(boolean success, int code, String message) {
+    CommonCode(boolean success, int code, String message) {
         this.success = success;
         this.code = code;
         this.message = message;
