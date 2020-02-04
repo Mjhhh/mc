@@ -3,18 +3,26 @@ package com.edu.manage_course.service;
 import com.edu.framework.domain.course.CourseBase;
 import com.edu.framework.domain.course.Teachplan;
 import com.edu.framework.domain.course.ext.TeachplanNode;
+import com.edu.framework.domain.course.request.CourseListRequest;
+import com.edu.framework.domain.course.response.CourseCode;
 import com.edu.framework.domain.course.response.CourseCommonResult;
 import com.edu.framework.exception.ExceptionCast;
 import com.edu.framework.model.response.CommonCode;
+import com.edu.framework.model.response.QueryResponseResult;
+import com.edu.framework.model.response.QueryResult;
 import com.edu.framework.model.response.ResponseResult;
 import com.edu.manage_course.dao.CourseBaseRepository;
+import com.edu.manage_course.dao.CourseMapper;
 import com.edu.manage_course.dao.TeachplanMapper;
 import com.edu.manage_course.dao.TeachplanRepository;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +30,11 @@ import java.util.Optional;
 @Service
 public class CourseService {
 
-    @Autowired
+    @Resource
     TeachplanMapper teachplanMapper;
+
+    @Autowired
+    CourseMapper courseMapper;
 
     @Autowired
     CourseBaseRepository courseBaseRepository;
@@ -114,5 +125,20 @@ public class CourseService {
         teachplan.setCourseid(teachplanParent.getCourseid());
         teachplanRepository.save(teachplan);
         return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    public QueryResponseResult findCourseList(int page, int size, CourseListRequest courseListRequest) {
+        //进行分页
+        Page<Object> startPage = PageHelper.startPage(page, size);
+        String companyId = courseListRequest.getCompanyId();
+        //如果公司ID为空抛出异常
+        if (StringUtils.isEmpty(companyId)) {
+            ExceptionCast.cast(CourseCode.COURSE_COMPANY_IS_NULL);
+        }
+        List<CourseBase> courseList = courseMapper.findByCompanyId(courseListRequest.getCompanyId());
+        QueryResult<CourseBase> data = new QueryResult<>();
+        data.setList(courseList);
+        data.setTotal(startPage.getTotal());
+        return new QueryResponseResult(CommonCode.SUCCESS, data);
     }
 }
