@@ -3,6 +3,10 @@ package com.edu.framework.domain.cms.response;
 import com.edu.framework.model.response.ResultCode;
 import lombok.ToString;
 
+/**
+ * @author Admin
+ */
+
 @ToString
 public enum CmsCode implements ResultCode {
     CMS_ADDPAGE_EXISTSNAME(false,24001,"页面名称已存在！"),
@@ -16,11 +20,17 @@ public enum CmsCode implements ResultCode {
     CMS_PAGE_IS_NOT_EXISTS(false,24009,"页面不存在！"),
     CMS_SAVE_PAGE_FAIL(false,24010,"保存页面失败！");
 
-    //操作代码
+    /**
+     * 是否成功
+     */
     boolean success;
-    //操作代码
+    /**
+     * 操作代码
+     */
     int code;
-    //提示信息
+    /**
+     * 提示信息
+     */
     String message;
     CmsCode(boolean success, int code, String message){
         this.success = success;

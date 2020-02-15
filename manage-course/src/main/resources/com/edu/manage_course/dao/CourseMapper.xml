@@ -10,5 +10,17 @@
             company_id = #{companyId}
     </select>
 
+    <select id="findCourseListPage" resultType="com.edu.framework.domain.course.ext.CourseInfo">
+        SELECT
+            course_base.*,
+            ( SELECT pic FROM course_pic WHERE courseid = course_base.id ) pic
+        FROM
+            course_base
+        <if test="companyId != null and companyId != '' ">
+        WHERE
+            company_id = #{companyId}
+        </if>
+    </select>
+
 
 </mapper>

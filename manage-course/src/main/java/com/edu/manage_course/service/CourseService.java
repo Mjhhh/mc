@@ -1,29 +1,25 @@
 package com.edu.manage_course.service;
 
 import com.edu.framework.domain.course.CourseBase;
+import com.edu.framework.domain.course.CourseMarket;
+import com.edu.framework.domain.course.CoursePic;
 import com.edu.framework.domain.course.Teachplan;
+import com.edu.framework.domain.course.ext.CourseInfo;
 import com.edu.framework.domain.course.ext.TeachplanNode;
 import com.edu.framework.domain.course.request.CourseListRequest;
 import com.edu.framework.domain.course.response.CourseCode;
-import com.edu.framework.domain.course.response.CourseCommonResult;
 import com.edu.framework.exception.ExceptionCast;
-import com.edu.framework.model.response.CommonCode;
-import com.edu.framework.model.response.QueryResponseResult;
-import com.edu.framework.model.response.QueryResult;
-import com.edu.framework.model.response.ResponseResult;
-import com.edu.manage_course.dao.CourseBaseRepository;
-import com.edu.manage_course.dao.CourseMapper;
-import com.edu.manage_course.dao.TeachplanMapper;
-import com.edu.manage_course.dao.TeachplanRepository;
+import com.edu.framework.model.response.*;
+import com.edu.manage_course.dao.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +29,7 @@ public class CourseService {
     @Resource
     TeachplanMapper teachplanMapper;
 
-    @Autowired
+    @Resource
     CourseMapper courseMapper;
 
     @Autowired
@@ -42,49 +38,26 @@ public class CourseService {
     @Autowired
     TeachplanRepository teachplanRepository;
 
+    @Autowired
+    CourseMarketRepository courseMarketRepository;
+
+    @Autowired
+    CoursePicRepository coursePicRepository;
+
     /**
      * 查询课程计划
      *
      * @param courseId 课程id
      * @return 课程计划列表
      */
-    public CourseCommonResult findTeachplanList(String courseId) {
+    public CommonResponseResult findTeachplanList(String courseId) {
         TeachplanNode teachplanNode = teachplanMapper.selectList(courseId);
-        return new CourseCommonResult(CommonCode.SUCCESS, teachplanNode);
-    }
-
-    /**
-     * 获取课程根结点，如果没有则添加根结点
-     *
-     * @param courseId 课程id
-     * @return 课程根结点
-     */
-    private String getTeachplanRoot(String courseId) {
-        //校验课程id
-        Optional<CourseBase> optional = courseBaseRepository.findById(courseId);
-        if (!optional.isPresent()) {
-            return null;
-        }
-        CourseBase courseBase = optional.get();
-        //去除课程计划根结点
-        List<Teachplan> teachplanList = teachplanRepository.findByCourseidAndParentid(courseId, "0");
-        if (teachplanList == null || teachplanList.isEmpty()) {
-            //新增一个根结点
-            Teachplan root = new Teachplan();
-            root.setCourseid(courseId);
-            root.setPname(courseBase.getName());
-            root.setParentid("0");
-            root.setGrade(Teachplan.GRADE_LEVEL_ONE);
-            root.setStatus(Teachplan.STATUS_NOT_RELEASE);
-            teachplanRepository.save(root);
-            return root.getId();
-        }
-        Teachplan teachplan = teachplanList.get(0);
-        return teachplan.getId();
+        return new CommonResponseResult(CommonCode.SUCCESS, teachplanNode);
     }
 
     /**
      * 添加课程计划
+     *
      * @param teachplan 课程计划实体
      * @return 提示信息
      */
@@ -129,16 +102,232 @@ public class CourseService {
 
     public QueryResponseResult findCourseList(int page, int size, CourseListRequest courseListRequest) {
         //进行分页
-        Page<Object> startPage = PageHelper.startPage(page, size);
-        String companyId = courseListRequest.getCompanyId();
-        //如果公司ID为空抛出异常
-        if (StringUtils.isEmpty(companyId)) {
-            ExceptionCast.cast(CourseCode.COURSE_COMPANY_IS_NULL);
+        if (courseListRequest == null) {
+            courseListRequest = new CourseListRequest();
         }
-        List<CourseBase> courseList = courseMapper.findByCompanyId(courseListRequest.getCompanyId());
-        QueryResult<CourseBase> data = new QueryResult<>();
-        data.setList(courseList);
-        data.setTotal(startPage.getTotal());
+        if (page <= 0) {
+            page = 0;
+        }
+        if (size <= 0) {
+            size = 10;
+        }
+        //设置分页
+        PageHelper.startPage(page, size);
+        //分页查询
+        Page<CourseInfo> courseListPage = courseMapper.findCourseListPage(courseListRequest);
+        //查询列表
+        List<CourseInfo> result = courseListPage.getResult();
+        //总记录数
+        long total = courseListPage.getTotal();
+        //查询结果集
+        QueryResult<CourseInfo> data = new QueryResult<>();
+        data.setList(result);
+        data.setTotal(total);
         return new QueryResponseResult(CommonCode.SUCCESS, data);
+    }
+
+    /**
+     * 添加课程
+     *
+     * @param courseBase 课程信息
+     * @return 提示信息
+     */
+    @Transactional
+    public ResponseResult addCourseBase(CourseBase courseBase) {
+        //课程默认设置为未发布
+        courseBase.setStatus("202001");
+        courseBaseRepository.save(courseBase);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 获取课程基本信息
+     *
+     * @param courseId 课程ID
+     * @return 课程基本信息
+     */
+    public CommonResponseResult getCourseBaseById(String courseId) {
+        //查询课程信息
+        CourseBase courseBase = this.getCourseBase(courseId);
+        if (courseBase == null) {
+            ExceptionCast.cast(CourseCode.COURSE_PUBLISH_IS_NULL);
+        }
+        return new CommonResponseResult(CommonCode.SUCCESS, courseBase);
+    }
+
+    /**
+     * 更新课程基础信息
+     *
+     * @param id         课程ID
+     * @param courseBase 更新的参数
+     * @return 提示信息
+     */
+    @Transactional
+    public ResponseResult updateCourseBase(String id, CourseBase courseBase) {
+        CourseBase course = this.getCourseBase(id);
+        if (course == null) {
+            ExceptionCast.cast(CourseCode.COURSE_PUBLISH_IS_NULL);
+        }
+        //修改课程
+        course.setName(courseBase.getName());
+        course.setMt(courseBase.getMt());
+        course.setSt(courseBase.getSt());
+        course.setGrade(courseBase.getGrade());
+        course.setStudymodel(courseBase.getStudymodel());
+        course.setUsers(courseBase.getUsers());
+        course.setDescription(courseBase.getDescription());
+        courseBaseRepository.save(course);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 获取课程营销信息
+     *
+     * @param courseId 课程ID
+     * @return 课程营销信息
+     */
+    public CommonResponseResult getCourseMarketById(String courseId) {
+        CourseMarket courseMarket = this.getCourseMarket(courseId);
+        return new CommonResponseResult(CommonCode.SUCCESS, courseMarket);
+    }
+
+    /**
+     * 更新课程营销信息
+     * @param id 课程ID
+     * @param courseMarket 修改的课程营销参数
+     * @return 操作结果
+     */
+    @Transactional
+    public ResponseResult updateCourseMarket(String id, CourseMarket courseMarket) {
+        CourseMarket market = this.getCourseMarket(id);
+        if (market != null) {
+            market.setCharge(courseMarket.getCharge());
+            market.setStartTime(courseMarket.getStartTime());
+            market.setEndTime(courseMarket.getEndTime());
+            market.setPrice(courseMarket.getPrice());
+            market.setQq(courseMarket.getQq());
+            market.setValid(courseMarket.getValid());
+        } else {
+            //添加课程营销信息
+            market = new CourseMarket();
+            BeanUtils.copyProperties(courseMarket, market);
+            //设置课程id
+            market.setId(id);
+        }
+        courseMarketRepository.save(market);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 获取课程根结点，如果没有则添加根结点
+     *
+     * @param courseId 课程id
+     * @return 课程根结点
+     */
+    private String getTeachplanRoot(String courseId) {
+        //校验课程id
+        Optional<CourseBase> optional = courseBaseRepository.findById(courseId);
+        if (!optional.isPresent()) {
+            return null;
+        }
+        CourseBase courseBase = optional.get();
+        //去除课程计划根结点
+        List<Teachplan> teachplanList = teachplanRepository.findByCourseidAndParentid(courseId, "0");
+        if (teachplanList == null || teachplanList.isEmpty()) {
+            //新增一个根结点
+            Teachplan root = new Teachplan();
+            root.setCourseid(courseId);
+            root.setPname(courseBase.getName());
+            root.setParentid("0");
+            root.setGrade(Teachplan.GRADE_LEVEL_ONE);
+            root.setStatus(Teachplan.STATUS_NOT_RELEASE);
+            teachplanRepository.save(root);
+            return root.getId();
+        }
+        Teachplan teachplan = teachplanList.get(0);
+        return teachplan.getId();
+    }
+
+    /**
+     * 查询课程信息
+     *
+     * @param courseId 课程ID
+     * @return 课程信息
+     */
+    private CourseBase getCourseBase(String courseId) {
+        if (StringUtils.isEmpty(courseId)) {
+            ExceptionCast.cast(CourseCode.COURSE_PUBLISH_COURSEIDISNULL);
+        }
+        //查询课程信息
+        Optional<CourseBase> optional = courseBaseRepository.findById(courseId);
+        return optional.orElse(null);
+    }
+
+    /**
+     * 课程营销信息
+     *
+     * @param courseId 课程ID
+     * @return 课程营销信息
+     */
+    private CourseMarket getCourseMarket(String courseId) {
+        if (StringUtils.isEmpty(courseId)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        Optional<CourseMarket> optional = courseMarketRepository.findById(courseId);
+        return optional.orElse(null);
+    }
+
+    /**
+     * 保存课程图片
+     * @param courseId 课程编号
+     * @param pic 图片地址
+     * @return 操作信息
+     */
+    @Transactional
+    public ResponseResult saveCoursePic(String courseId, String pic) {
+        if (StringUtils.isBlank(courseId) || StringUtils.isBlank(pic)) {
+            ExceptionCast.cast(CourseCode.COURSE_PUBLISH_COURSEIDISNULL);
+        }
+        //查询是否已经存在课程图片
+        Optional<CoursePic> optional = coursePicRepository.findById(courseId);
+        CoursePic coursePic = null;
+        if (optional.isPresent()) {
+            coursePic = optional.get();
+        }
+        //如果没有课程图片则创建对象
+        if (coursePic == null) {
+            coursePic = new CoursePic();
+        }
+        coursePic.setCourseid(courseId);
+        coursePic.setPic(pic);
+
+        //保存课程图片
+        coursePicRepository.save(coursePic);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 查询课程图片
+     * @param courseId 课程编号
+     * @return 课程图片信息
+     */
+    public CommonResponseResult findCoursepic(String courseId) {
+        Optional<CoursePic> optional = coursePicRepository.findById(courseId);
+        return new CommonResponseResult(CommonCode.SUCCESS, optional.orElse(null));
+    }
+
+    /**
+     * 删除课程图片
+     * @param courseId 课程编号
+     * @return 操作信息
+     */
+    @Transactional
+    public ResponseResult deleteCoursePic(String courseId) {
+        //执行删除，返回1表示删除成功，返回0表示删除失败
+        long result = coursePicRepository.deleteByCourseid(courseId);
+        if(result>0){
+            return new ResponseResult(CommonCode.SUCCESS);
+        }
+        return new ResponseResult(CommonCode.FAIL);
     }
 }

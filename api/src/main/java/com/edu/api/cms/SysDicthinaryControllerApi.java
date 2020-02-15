@@ -1,4 +1,4 @@
-package com.edu.api.course;
+package com.edu.api.cms;
 
 import com.edu.framework.domain.system.SysDictionary;
 import io.swagger.annotations.Api;

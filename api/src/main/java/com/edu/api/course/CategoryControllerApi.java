@@ -11,5 +11,5 @@ import io.swagger.annotations.ApiOperation;
 public interface CategoryControllerApi {
 
     @ApiOperation("查询分类")
-    CategoryNode findList();
+    CategoryNode list();
 }

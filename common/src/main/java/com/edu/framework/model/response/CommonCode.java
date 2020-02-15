@@ -4,6 +4,7 @@ import lombok.ToString;
 
 /**
  * 数据返回的枚举类
+ * @author Admin
  */
 
 @ToString
@@ -17,11 +18,17 @@ public enum CommonCode implements ResultCode {
     INVALID_PARAM(false,10003,"非法参数！"),
     MISS_PARAM(false,10004,"参数缺失");
 
-    //操作是否成功
+    /**
+     * 操作是否成功
+     */
     boolean success;
-    //操作代码
+    /**
+     * 操作代码
+     */
     int code;
-    //提示信息
+    /**
+     * 提示信息
+     */
     String message;
 
     CommonCode(boolean success, int code, String message) {

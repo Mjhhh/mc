@@ -11,6 +11,8 @@
         <module>manage-cms</module>
         <module>manage-cms-client</module>
         <module>manage-course</module>
+        <module>base-filesystem</module>
+        <module>govern-center</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -52,7 +54,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
+                <artifactId>spring‐cloud‐dependencies</artifactId>
                 <version>Finchley.SR1</version>
                 <type>pom</type>
                 <scope>import</scope>
