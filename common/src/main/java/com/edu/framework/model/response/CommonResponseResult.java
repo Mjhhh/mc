@@ -1,6 +1,7 @@
 package com.edu.framework.model.response;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -9,6 +10,7 @@ import lombok.ToString;
  */
 @Data
 @ToString
+@NoArgsConstructor
 public class CommonResponseResult extends ResponseResult {
 
     Object data;

@@ -32,7 +32,6 @@ public class CmsPageService {
     CmsPageRepository cmsPageRepository;
     @Autowired
     CmsSiteRepository cmsSiteRepository;
-
     @Autowired
     GridFsTemplate gridFsTemplate;
 

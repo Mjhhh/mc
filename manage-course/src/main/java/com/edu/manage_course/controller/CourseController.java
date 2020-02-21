@@ -4,6 +4,7 @@ import com.edu.api.course.CourseControllerApi;
 import com.edu.framework.domain.course.CourseBase;
 import com.edu.framework.domain.course.CourseMarket;
 import com.edu.framework.domain.course.Teachplan;
+import com.edu.framework.domain.course.ext.CourseView;
 import com.edu.framework.domain.course.request.CourseListRequest;
 import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.QueryResponseResult;
@@ -85,5 +86,17 @@ public class CourseController implements CourseControllerApi {
     @DeleteMapping("/coursepic/delete")
     public ResponseResult deleteCoursePic(@RequestParam String courseId) {
         return courseService.deleteCoursePic(courseId);
+    }
+
+    @Override
+    @GetMapping("/courseview/{courseId}")
+    public CourseView courseview(@PathVariable String courseId) {
+        return courseService.getCoruseView(courseId);
+    }
+
+    @Override
+    @GetMapping("/preview/{courseId}")
+    public CommonResponseResult preview(@PathVariable String courseId) {
+        return courseService.preview(courseId);
     }
 }

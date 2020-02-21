@@ -3,6 +3,7 @@ package com.edu.api.course;
 import com.edu.framework.domain.course.CourseBase;
 import com.edu.framework.domain.course.CourseMarket;
 import com.edu.framework.domain.course.Teachplan;
+import com.edu.framework.domain.course.ext.CourseView;
 import com.edu.framework.domain.course.request.CourseListRequest;
 import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.QueryResponseResult;
@@ -65,4 +66,12 @@ public interface CourseControllerApi {
     @ApiOperation("删除课程图片")
     @ApiImplicitParam(value = "课程编号", name = "courseId")
     ResponseResult deleteCoursePic(String courseId);
+
+    @ApiOperation("课程视图查询")
+    @ApiImplicitParam(value = "课程编号", name = "courseId", paramType = "path", dataType = "String")
+    CourseView courseview(String courseId);
+
+    @ApiOperation("预览课程")
+    @ApiImplicitParam(value = "课程编号", name = "courseId", paramType = "path", dataType = "String")
+    CommonResponseResult preview(String courseId);
 }
