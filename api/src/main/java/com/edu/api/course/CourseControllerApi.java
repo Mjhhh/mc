@@ -3,8 +3,10 @@ package com.edu.api.course;
 import com.edu.framework.domain.course.CourseBase;
 import com.edu.framework.domain.course.CourseMarket;
 import com.edu.framework.domain.course.Teachplan;
+import com.edu.framework.domain.course.TeachplanMedia;
 import com.edu.framework.domain.course.ext.CourseView;
 import com.edu.framework.domain.course.request.CourseListRequest;
+import com.edu.framework.domain.course.response.CourseResult;
 import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.QueryResponseResult;
 import com.edu.framework.model.response.ResponseResult;
@@ -73,5 +75,12 @@ public interface CourseControllerApi {
 
     @ApiOperation("预览课程")
     @ApiImplicitParam(value = "课程编号", name = "courseId", paramType = "path", dataType = "String")
-    CommonResponseResult preview(String courseId);
+    CourseResult preview(String courseId);
+
+    @ApiOperation("发布课程")
+    @ApiImplicitParam(value = "课程编号", name = "courseId", paramType = "path", dataType = "String")
+    CourseResult publish(String courseId);
+
+    @ApiOperation("保存媒资信息")
+    ResponseResult savemedia(TeachplanMedia teachplanMedia);
 }

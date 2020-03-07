@@ -1,5 +1,6 @@
 package com.edu.framework.domain.search;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 
@@ -11,23 +12,19 @@ import java.io.Serializable;
 @Data
 @ToString
 public class CourseSearchParam implements Serializable {
-    //关键字
-    String keyword;
-    //一级分类
-    String mt;
-    //二级分类
-    String st;
-
-    //难度等级
-    String grade;
-
-    //价格区间
-    Float price_min;
-    Float price_max;
-
-    //排序字段
-    String sort;
-    //过虑字段
-    String filter;
-
+    @ApiModelProperty("关键字")
+    private String keyword;
+    @ApiModelProperty("一级分类")
+    private String mt;
+    @ApiModelProperty("二级分类")
+    private String st;
+    @ApiModelProperty("难度等级")
+    private String grade;
+    @ApiModelProperty("价格区间")
+    private Float priceMin;
+    private Float priceMax;
+    @ApiModelProperty("排序字段")
+    private String sort;
+    @ApiModelProperty("过虑字段")
+    private String filter;
 }

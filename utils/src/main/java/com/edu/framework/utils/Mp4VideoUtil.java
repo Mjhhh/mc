@@ -7,10 +7,13 @@ import java.util.List;
 
 public class Mp4VideoUtil extends VideoUtil {
 
-    String ffmpeg_path = "D:\\Program Files\\ffmpeg-20180227-fa0c9d6-win64-static\\bin\\ffmpeg.exe";//ffmpeg的安装位置
-    String video_path = "D:\\BaiduNetdiskDownload\\test1.avi";
-    String mp4_name = "test1.mp4";
-    String mp4folder_path = "D:/BaiduNetdiskDownload/Movies/test1/";
+    /**
+     * ffmpeg的安装位置
+     */
+    String ffmpeg_path = "D:\\Program Files\\ffmpeg\\bin\\ffmpeg.exe";
+    String video_path = "D:\\Sources\\video\\";
+    String mp4_name = "lucene.avi";
+    String mp4folder_path = "D:/Sources/video/ffmpeg_test/";
     public Mp4VideoUtil(String ffmpeg_path, String video_path, String mp4_name, String mp4folder_path){
         super(ffmpeg_path);
         this.ffmpeg_path = ffmpeg_path;
@@ -18,10 +21,14 @@ public class Mp4VideoUtil extends VideoUtil {
         this.mp4_name = mp4_name;
         this.mp4folder_path = mp4folder_path;
     }
-    //清除已生成的mp4
-    private void clear_mp4(String mp4_path){
+
+    /**
+     * 清除已生成的mp4
+     * @param mp4Path
+     */
+    private void clearMp4(String mp4Path){
         //删除原来已经生成的m3u8及ts文件
-        File mp4File = new File(mp4_path);
+        File mp4File = new File(mp4Path);
         if(mp4File.exists() && mp4File.isFile()){
             mp4File.delete();
         }
@@ -32,19 +39,18 @@ public class Mp4VideoUtil extends VideoUtil {
      */
     public String generateMp4(){
         //清除已生成的mp4
-        clear_mp4(mp4folder_path+mp4_name);
+        clearMp4(mp4folder_path+mp4_name);
         /*
-        ffmpeg.exe -i  lucene.avi -c:v libx264 -s 1280x720 -pix_fmt yuv420p -b:a 63k -b:v 753k -r 18 .\lucene.mp4
+        ffmpeg.exe -i lucene.avi -c:v libx264 -s 1280x720 -pix_fmt yuv420p -b:a 63k -b:v 753k -r 18 .\lucene.mp4
          */
         List<String> commend = new ArrayList<String>();
-        //commend.add("D:\\Program Files\\ffmpeg-20180227-fa0c9d6-win64-static\\bin\\ffmpeg.exe");
         commend.add(ffmpeg_path);
         commend.add("-i");
-//        commend.add("D:\\BaiduNetdiskDownload\\test1.avi");
         commend.add(video_path);
         commend.add("-c:v");
         commend.add("libx264");
-        commend.add("-y");//覆盖输出文件
+        //覆盖输出文件
+        commend.add("-y");
         commend.add("-s");
         commend.add("1280x720");
         commend.add("-pix_fmt");
@@ -64,14 +70,11 @@ public class Mp4VideoUtil extends VideoUtil {
             builder.redirectErrorStream(true);
             Process p = builder.start();
             outstring = waitFor(p);
-
         } catch (Exception ex) {
-
             ex.printStackTrace();
-
         }
-        Boolean check_video_time = this.check_video_time(video_path, mp4folder_path + mp4_name);
-        if(!check_video_time){
+        Boolean checkVideoTime = this.check_video_time(video_path, mp4folder_path + mp4_name);
+        if(!checkVideoTime){
             return outstring;
         }else{
             return "success";
@@ -79,10 +82,11 @@ public class Mp4VideoUtil extends VideoUtil {
     }
 
     public static void main(String[] args) throws IOException {
-        String ffmpeg_path = "D:\\Program Files\\ffmpeg-20180227-fa0c9d6-win64-static\\bin\\ffmpeg.exe";//ffmpeg的安装位置
-        String video_path = "E:\\ffmpeg_test\\1.avi";
-        String mp4_name = "809694a6a974c35e3a36f36850837d7c.mp4";
-        String mp4_path = "F:/develop/upload/8/0/809694a6a974c35e3a36f36850837d7c/";
+        //ffmpeg的安装位置
+        String ffmpeg_path = "D:\\Program Files\\ffmpeg\\bin\\ffmpeg.exe";
+        String video_path = "D:\\Sources\\video\\lucene.avi";
+        String mp4_name = "lucene.mp4";
+        String mp4_path = "D:/Sources/video/ffmpeg_test/";
         Mp4VideoUtil videoUtil = new Mp4VideoUtil(ffmpeg_path,video_path,mp4_name,mp4_path);
         String s = videoUtil.generateMp4();
         System.out.println(s);

@@ -2,6 +2,7 @@ package com.edu.api.cms;
 
 import com.edu.framework.domain.cms.CmsPage;
 import com.edu.framework.domain.cms.response.CmsPageResult;
+import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.QueryResponseResult;
 import com.edu.framework.domain.cms.request.QueryPageRequest;
 import com.edu.framework.model.response.ResponseResult;
@@ -41,4 +42,6 @@ public interface CmsPageControllerApi {
     @ApiOperation("保存页面")
     CmsPageResult save(CmsPage cmsPage);
 
+    @ApiOperation("一键发布页面")
+    CommonResponseResult postPageQuick(CmsPage cmsPage);
 }

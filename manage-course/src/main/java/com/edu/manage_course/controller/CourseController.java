@@ -4,8 +4,10 @@ import com.edu.api.course.CourseControllerApi;
 import com.edu.framework.domain.course.CourseBase;
 import com.edu.framework.domain.course.CourseMarket;
 import com.edu.framework.domain.course.Teachplan;
+import com.edu.framework.domain.course.TeachplanMedia;
 import com.edu.framework.domain.course.ext.CourseView;
 import com.edu.framework.domain.course.request.CourseListRequest;
+import com.edu.framework.domain.course.response.CourseResult;
 import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.QueryResponseResult;
 import com.edu.framework.model.response.ResponseResult;
@@ -95,8 +97,21 @@ public class CourseController implements CourseControllerApi {
     }
 
     @Override
-    @GetMapping("/preview/{courseId}")
-    public CommonResponseResult preview(@PathVariable String courseId) {
+    @PostMapping("/preview/{courseId}")
+    public CourseResult preview(@PathVariable String courseId) {
         return courseService.preview(courseId);
     }
+
+    @Override
+    @PostMapping("/publish/{courseId}")
+    public CourseResult publish(@PathVariable String courseId) {
+        return courseService.publish(courseId);
+    }
+
+    @Override
+    @PostMapping("/savemedia")
+    public ResponseResult savemedia(@RequestBody TeachplanMedia teachplanMedia) {
+        return courseService.savemedia(teachplanMedia);
+    }
+
 }

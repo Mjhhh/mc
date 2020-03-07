@@ -10,6 +10,7 @@ import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSDownloadStream;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,13 @@ public class CmsPageService {
     CmsSiteRepository cmsSiteRepository;
     @Autowired
     GridFsTemplate gridFsTemplate;
-
     @Resource
     GridFSBucket gridFSBucket;
 
+    /**
+     * 保存静态资源到服务器路径
+     * @param pageId 页面ID
+     */
     public void savePageToServerPath(String pageId) {
         CmsPage cmsPage = findCmsPageById(pageId);
         if (cmsPage == null) {
@@ -90,10 +94,16 @@ public class CmsPageService {
     /**
      * 获取站点信息
      * @param siteId 站点id
-     * @return
+     * @return 站点信息
      */
-    public CmsSite getCmsSiteById(String siteId) {
+    private CmsSite getCmsSiteById(String siteId) {
+        if (StringUtils.isBlank(siteId)) {
+            ExceptionCast.cast(CmsCode.CMS_SITEID_IS_NOTEXISTS);
+        }
         Optional<CmsSite> optional = cmsSiteRepository.findById(siteId);
+        if (!optional.isPresent()) {
+            ExceptionCast.cast(CmsCode.CMS_SITE_IS_NOTEXISTS);
+        }
         return optional.orElse(null);
     }
 }

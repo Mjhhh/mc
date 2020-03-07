@@ -5,6 +5,7 @@ import com.edu.api.cms.CmsPageControllerApi;
 import com.edu.framework.domain.cms.CmsPage;
 import com.edu.framework.domain.cms.request.QueryPageRequest;
 import com.edu.framework.domain.cms.response.CmsPageResult;
+import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.QueryResponseResult;
 import com.edu.framework.model.response.ResponseResult;
 import com.edu.manage_cms.service.CmsPageService;
@@ -62,6 +63,12 @@ public class CmsPageController implements CmsPageControllerApi {
     @PostMapping("/save")
     public CmsPageResult save(@RequestBody CmsPage cmsPage) {
         return cmsPageService.save(cmsPage);
+    }
+
+    @Override
+    @PostMapping("/postPageQuick")
+    public CommonResponseResult postPageQuick(@RequestBody CmsPage cmsPage) {
+        return cmsPageService.postPageQuick(cmsPage);
     }
 
 

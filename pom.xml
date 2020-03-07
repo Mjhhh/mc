@@ -13,6 +13,9 @@
         <module>manage-course</module>
         <module>base-filesystem</module>
         <module>govern-center</module>
+        <module>service-search</module>
+        <module>manage-media</module>
+        <module>manage-media-processor</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

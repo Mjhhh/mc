@@ -12,9 +12,10 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class CommonResponseResult extends ResponseResult {
-
+    /**
+     * 可以存在任何数据的容器
+     */
     Object data;
-
     public CommonResponseResult(ResultCode resultCode, Object data) {
         super(resultCode);
         this.data = data;

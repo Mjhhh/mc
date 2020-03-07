@@ -18,7 +18,10 @@ public enum CmsCode implements ResultCode {
     CMS_COURSE_PERVIEWISNULL(false,24007,"预览页面为空！"),
     CMS_PAGE_PARAMS_ISNULL(false,24008,"传入的页面信息或者参数缺失！"),
     CMS_PAGE_IS_NOT_EXISTS(false,24009,"页面不存在！"),
-    CMS_SAVE_PAGE_FAIL(false,24010,"保存页面失败！");
+    CMS_PAGE_POST_FAIL(false,240010,"发布页面失败！"),
+    CMS_SAVE_PAGE_FAIL(false,24011,"保存页面失败！"),
+    CMS_SITEID_IS_NOTEXISTS(false,24012,"站点ID不存在！"),
+    CMS_SITE_IS_NOTEXISTS(false,24013,"站点不存在！");
 
     /**
      * 是否成功
