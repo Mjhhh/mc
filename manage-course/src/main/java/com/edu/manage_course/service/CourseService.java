@@ -11,22 +11,29 @@ import com.edu.framework.domain.course.ext.TeachplanNode;
 import com.edu.framework.domain.course.request.CourseListRequest;
 import com.edu.framework.domain.course.response.CourseCode;
 import com.edu.framework.domain.course.response.CourseResult;
+import com.edu.framework.domain.course.response.TeachplanMediaPub;
 import com.edu.framework.exception.ExceptionCast;
 import com.edu.framework.model.response.*;
+import com.edu.framework.utils.McOauth2Util;
 import com.edu.manage_course.client.CmsPageClient;
 import com.edu.manage_course.dao.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.netflix.discovery.converters.Auto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
 import javax.persistence.Id;
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +80,9 @@ public class CourseService {
 
     @Autowired
     TeachplanMediaRepository teachplanMediaRepository;
+
+    @Autowired
+    TeachplanMediaPubRepository teachplanMediaPubRepository;
 
     /**
      * 获取课程根结点，如果没有则添加根结点
@@ -168,6 +178,7 @@ public class CourseService {
 
     /**
      * 设置CmsPage默认数据
+     *
      * @param courseId
      * @return
      */
@@ -194,8 +205,9 @@ public class CourseService {
 
     /**
      * 更新课程发布状态
+     *
      * @param courseId 课程编号
-     * @param status 课程状态码
+     * @param status   课程状态码
      * @return 课程信息
      */
     private CourseBase saveCourseBaseStatus(String courseId, String status) {
@@ -203,6 +215,83 @@ public class CourseService {
         //更新发布状态
         courseBase.setStatus(status);
         return courseBaseRepository.save(courseBase);
+    }
+
+    /**
+     * 保存课程计划媒资信息到待索引表
+     *
+     * @param courseId
+     */
+    private void saveTeachplanMediaPub(String courseId) {
+        //查询课程媒资信息
+        List<TeachplanMedia> teachplanMediaList = teachplanMediaRepository.findByCourseId(courseId);
+        //删除课程计划媒资信息待索引表
+        teachplanMediaPubRepository.deleteByCourseId(courseId);
+        List<TeachplanMediaPub> teachplanMediaPubList = new ArrayList<>();
+        for (TeachplanMedia teachplanMedia : teachplanMediaList) {
+            TeachplanMediaPub teachplanMediaPub = new TeachplanMediaPub();
+            BeanUtils.copyProperties(teachplanMedia, teachplanMediaPub);
+            teachplanMediaPubList.add(teachplanMediaPub);
+        }
+        teachplanMediaPubRepository.saveAll(teachplanMediaPubList);
+    }
+
+    /**
+     * 保存课程信息聚合
+     *
+     * @param courseId  课程编号
+     * @param coursePub 课程信息聚合
+     * @return 课程信息聚合
+     */
+    private CoursePub saveCoursePub(String courseId, CoursePub coursePub) {
+        if (StringUtils.isBlank(courseId)) {
+            ExceptionCast.cast(CourseCode.COURSE_PUBLISH_COURSEIDISNULL);
+        }
+        CoursePub coursePubNew = this.getCoursePub(courseId);
+        BeanUtils.copyProperties(coursePub, coursePubNew);
+        //设置主键
+        coursePubNew.setId(courseId);
+        //更新时间戳
+        coursePub.setTimestamp(new Date());
+        //发布时间
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+        coursePub.setPubTime(simpleDateFormat.format(new Date()));
+        coursePubRepository.save(coursePub);
+        return coursePub;
+    }
+
+    /**
+     * 创建coursePub对象
+     *
+     * @param courseId 课程编号
+     * @return CoursePub
+     */
+    private CoursePub createCoursePub(String courseId) {
+        CoursePub coursePub = new CoursePub();
+        //基础信息
+        CourseBase courseBase = this.getCourseBase(courseId);
+        BeanUtils.copyProperties(courseBase, coursePub);
+        //图片信息
+        CoursePic coursePic = this.getCoursePic(courseId);
+        BeanUtils.copyProperties(coursePic, coursePub);
+        //课程营销信息
+        CourseMarket courseMarket = this.getCourseMarket(courseId);
+        BeanUtils.copyProperties(courseMarket, coursePub);
+        //课程计划
+        TeachplanNode teachplanNode = teachplanMapper.selectList(courseId);
+        //将课程计划转成JSON
+        String teachplanNodeString = JSON.toJSONString(teachplanNode);
+        coursePub.setId(courseId);
+        coursePub.setTeachplan(teachplanNodeString);
+        return coursePub;
+    }
+
+    /**
+     * 获取HttpServletRequest
+     * @return
+     */
+    private HttpServletRequest getRequest() {
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     }
 
     /**
@@ -262,6 +351,11 @@ public class CourseService {
     }
 
     public QueryResponseResult findCourseList(int page, int size, CourseListRequest courseListRequest) {
+        HttpServletRequest request = this.getRequest();
+        //调用工具类取出用户信息
+        McOauth2Util mcOauth2Util = new McOauth2Util();
+        McOauth2Util.UserJwt userJwt = mcOauth2Util.getUserJwtFromHeader(request);
+        courseListRequest.setCompanyId(userJwt.getCompanyId());
         //进行分页
         if (courseListRequest == null) {
             courseListRequest = new CourseListRequest();
@@ -427,7 +521,6 @@ public class CourseService {
      * @param courseId 课程编号
      * @return 操作信息
      */
-    @Transactional
     public ResponseResult deleteCoursePic(String courseId) {
         //执行删除，返回1表示删除成功，返回0表示删除失败
         long result = coursePicRepository.deleteByCourseid(courseId);
@@ -473,16 +566,17 @@ public class CourseService {
         CmsPage cmsPage = this.setCmsPageAttribute(courseId);
         //远程请求cms保存页面信息
         CmsPageResult cmsPageResult = cmsPageClient.save(cmsPage);
-        if(!cmsPageResult.isSuccess()){
-            return new CourseResult(CommonCode.FAIL,null);
+        if (!cmsPageResult.isSuccess()) {
+            return new CourseResult(CommonCode.FAIL, null);
         }
         //页面id
         String pageId = cmsPageResult.getCmsPage().getPageId();
         //页面url
-        String pageUrl = previewUrl+pageId;
-        return new CourseResult(CommonCode.SUCCESS,pageUrl);
+        String pageUrl = previewUrl + pageId;
+        return new CourseResult(CommonCode.SUCCESS, pageUrl);
     }
 
+    @Transactional
     public CourseResult publish(String courseId) {
         //设置课程默认参数
         CmsPage cmsPage = this.setCmsPageAttribute(courseId);
@@ -502,63 +596,14 @@ public class CourseService {
             //创建课程索引信息失败
             ExceptionCast.cast(CourseCode.COURSE_PUB_IS_NULL);
         }
-        //课程缓存
-
+        //保存课程计划媒资信息到待索引表
+        this.saveTeachplanMediaPub(courseId);
         //页面url
         String pageUrl = (String) commonResponseResult.getData();
         return new CourseResult(CommonCode.SUCCESS, pageUrl);
     }
 
-    /**
-     * 保存课程信息聚合
-     *
-     * @param courseId 课程编号
-     * @param coursePub 课程信息聚合
-     * @return 课程信息聚合
-     */
-    private CoursePub saveCoursePub(String courseId, CoursePub coursePub) {
-        if (StringUtils.isBlank(courseId)) {
-            ExceptionCast.cast(CourseCode.COURSE_PUBLISH_COURSEIDISNULL);
-        }
-        CoursePub coursePubNew = this.getCoursePub(courseId);
-        BeanUtils.copyProperties(coursePub, coursePubNew);
-        //设置主键
-        coursePubNew.setId(courseId);
-        //更新时间戳
-        coursePub.setTimestamp(new Date());
-        //发布时间
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
-        coursePub.setPubTime(simpleDateFormat.format(new Date()));
-        coursePubRepository.save(coursePub);
-        return coursePub;
-    }
-
-    /**
-     * 创建coursePub对象
-     * @param courseId 课程编号
-     * @return CoursePub
-     */
-    private CoursePub createCoursePub(String courseId) {
-        CoursePub coursePub = new CoursePub();
-        //基础信息
-        CourseBase courseBase = this.getCourseBase(courseId);
-        BeanUtils.copyProperties(courseBase, coursePub);
-        //图片信息
-        CoursePic coursePic = this.getCoursePic(courseId);
-        BeanUtils.copyProperties(coursePic, coursePub);
-        //课程营销信息
-        CourseMarket courseMarket = this.getCourseMarket(courseId);
-        BeanUtils.copyProperties(courseMarket, coursePub);
-        //课程计划
-        TeachplanNode teachplanNode = teachplanMapper.selectList(courseId);
-        //将课程计划转成JSON
-        String teachplanNodeString = JSON.toJSONString(teachplanNode);
-        coursePub.setId(courseId);
-        coursePub.setTeachplan(teachplanNodeString);
-        return coursePub;
-    }
-
-
+    @Transactional
     public ResponseResult savemedia(TeachplanMedia teachplanMedia) {
         if (teachplanMedia == null) {
             ExceptionCast.cast(CommonCode.INVALID_PARAM);

@@ -62,7 +62,7 @@ public interface CourseControllerApi {
     ResponseResult addCoursePic(String courseId, String pic);
 
     @ApiOperation("获取课程基础信息")
-    @ApiImplicitParam(value = "课程编号", name = "courseId")
+    @ApiImplicitParam(value = "课程编号", name = "courseId", paramType = "path", dataType = "String")
     CommonResponseResult findCoursePic(String courseId);
 
     @ApiOperation("删除课程图片")

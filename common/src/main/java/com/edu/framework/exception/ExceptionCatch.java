@@ -26,8 +26,7 @@ public class ExceptionCatch {
     /**
      * 使用builder来构建一个异常类型和错误代码的异常
      */
-    protected static ImmutableMap.Builder<Class<? extends Throwable>,ResultCode> builder =
-            ImmutableMap.builder();
+    protected static ImmutableMap.Builder<Class<? extends Throwable>,ResultCode> builder = ImmutableMap.builder();
 
     /**
      * 捕获CustomException异常
@@ -38,6 +37,7 @@ public class ExceptionCatch {
     @ResponseBody
     public ResponseResult customException(CustomException e) {
         LOGGER.error("catch exception : {}\r\nexception: ",e.getMessage());
+        e.printStackTrace();
         ResultCode resultCode = e.getResultCode();
         return new ResponseResult(resultCode);
     }
@@ -51,6 +51,7 @@ public class ExceptionCatch {
     @ExceptionHandler(Exception.class)
     public ResponseResult exception(Exception e) {
         LOGGER.error("catch exception : {}\r\nexception: ",e.getMessage(), e);
+        e.printStackTrace();
         if(EXCEPTIONS == null) {
             EXCEPTIONS = builder.build();
         }

@@ -12,7 +12,8 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages={"com.edu.api"})//扫描接口
 @ComponentScan(basePackages={"com.edu.manage_media_process"})//扫描本项目下的所有类
 @ComponentScan(basePackages={"com.edu.framework"})//扫描common下的所有类
-public class ManageMediaProcessorApplication {
+public class
+ManageMediaProcessorApplication {
     public static void main(String[] args) {
         SpringApplication.run(ManageMediaProcessorApplication.class, args);
     }

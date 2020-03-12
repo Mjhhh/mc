@@ -1,17 +1,19 @@
 package com.edu.framework.domain.ucenter.ext;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-/**
- * Created by mrt on 2018/5/21.
- */
+
 @Data
 @ToString
 @NoArgsConstructor
 public class AuthToken {
-    String access_token;//访问token
-    String refresh_token;//刷新token
-    String jwt_token;//jwt令牌
+    @ApiModelProperty("访问token")
+    String jtl;
+    @ApiModelProperty("刷新token")
+    String refresh_token;
+    @ApiModelProperty("jwt令牌")
+    String access_token;
 }

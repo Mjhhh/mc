@@ -13,6 +13,7 @@ import com.edu.framework.model.response.QueryResponseResult;
 import com.edu.framework.model.response.ResponseResult;
 import com.edu.manage_course.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -61,6 +62,7 @@ public class CourseController implements CourseControllerApi {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('course_coursemarket_get')")
     @GetMapping("/coursemarket/get/{courseId}")
     public CommonResponseResult getCourseMarketById(@PathVariable String courseId) {
         return courseService.getCourseMarketById(courseId);
@@ -79,6 +81,7 @@ public class CourseController implements CourseControllerApi {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('course_coursepic_list')")
     @GetMapping("/coursepic/list/{courseId}")
     public CommonResponseResult findCoursePic(@PathVariable String courseId) {
         return courseService.findCoursepic(courseId);
