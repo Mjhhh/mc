@@ -14,9 +14,9 @@ import java.util.Date;
 @Data
 @ToString
 @Entity
-@Table(name = "xc_task_his")
+@Table(name = "mc_task_his")
 @GenericGenerator(name = "jpa-assigned", strategy = "assigned")
-public class XcTaskHis implements Serializable {
+public class McTaskHis implements Serializable {
 
     @Id
     @GeneratedValue(generator = "jpa-assigned")

@@ -20,6 +20,7 @@
         <module>service-ucenter-auth</module>
         <module>service-ucenter</module>
         <module>govern-gateway</module>
+        <module>manage-order</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

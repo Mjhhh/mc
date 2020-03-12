@@ -1,6 +1,6 @@
 package com.edu.framework.domain.order.response;
 
-import com.edu.framework.domain.order.XcOrdersPay;
+import com.edu.framework.domain.order.McOrdersPay;
 import com.edu.framework.model.response.ResponseResult;
 import com.edu.framework.model.response.ResultCode;
 import lombok.Data;
@@ -15,11 +15,11 @@ public class PayOrderResult extends ResponseResult {
     public PayOrderResult(ResultCode resultCode) {
         super(resultCode);
     }
-    public PayOrderResult(ResultCode resultCode, XcOrdersPay xcOrdersPay) {
+    public PayOrderResult(ResultCode resultCode, McOrdersPay mcOrdersPay) {
         super(resultCode);
-        this.xcOrdersPay = xcOrdersPay;
+        this.mcOrdersPay = mcOrdersPay;
     }
-    private XcOrdersPay xcOrdersPay;
+    private McOrdersPay mcOrdersPay;
     private String orderNumber;
 
     //当tradeState为NOTPAY（未支付）时显示支付二维码

@@ -14,9 +14,9 @@ import java.util.Date;
 @Data
 @ToString
 @Entity
-@Table(name="xc_orders")
+@Table(name="mc_orders")
 @GenericGenerator(name = "jpa-assigned", strategy = "assigned")
-public class XcOrders implements Serializable {
+public class McOrders implements Serializable {
     private static final long serialVersionUID = -916357210051689789L;
     @Id
     @GeneratedValue(generator = "jpa-assigned")

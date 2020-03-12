@@ -14,10 +14,10 @@ import java.util.Date;
 @Data
 @ToString
 @Entity
-@Table(name="xc_learning_course")
+@Table(name="mc_learning_list")
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
-public class XcLearningCourse implements Serializable {
-    private static final long serialVersionUID = -916357210051789799L;
+public class McLearningList implements Serializable {
+    private static final long serialVersionUID = -916357210051689799L;
     @Id
     @GeneratedValue(generator = "jpa-uuid")
     @Column(length = 32)
@@ -26,7 +26,6 @@ public class XcLearningCourse implements Serializable {
     private String courseId;
     @Column(name = "user_id")
     private String userId;
-    private String valid;
     @Column(name = "start_time")
     private Date startTime;
     @Column(name = "end_time")

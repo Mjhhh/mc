@@ -8,22 +8,18 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * Created by mrt on 2018/4/4.
- */
 @Data
 @ToString
 @Entity
-@Table(name = "xc_task")
+@Table(name = "mc_task")
 //@GenericGenerator(name = "jpa-assigned", strategy = "assigned")
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
-public class XcTask implements Serializable {
+public class McTask implements Serializable {
 
     @Id
     @GeneratedValue(generator = "jpa-uuid")
     @Column(length = 32)
     private String id;
-
     @Column(name = "create_time")
     private Date createTime;
     @Column(name = "update_time")
