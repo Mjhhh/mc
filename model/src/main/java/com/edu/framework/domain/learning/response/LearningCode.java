@@ -16,27 +16,25 @@ public enum LearningCode implements ResultCode {
     CHOOSECOURSE_USERISNULl(false, 23003, "用户id为空"),
     CHOOSECOURSE_TASKISNULL(false, 23004, "任务记录为空");
 
-    @ApiModelProperty(value = "操作是否成功", example = "true", required = true)
+    /**
+     * 操作是否成功
+     */
     boolean success;
 
-    @ApiModelProperty(value = "操作代码", example = "22001", required = true)
+    /**
+     * 操作代码
+     */
     int code;
 
-    @ApiModelProperty(value = "操作提示", example = "操作过于频繁！", required = true)
+    /**
+     * 提示信息
+     */
     String message;
+
     LearningCode(boolean success, int code, String message){
         this.success = success;
         this.code = code;
         this.message = message;
-    }
-    private static final ImmutableMap<Integer, LearningCode> CACHE;
-
-    static {
-        final ImmutableMap.Builder<Integer, LearningCode> builder = ImmutableMap.builder();
-        for (LearningCode commonCode : values()) {
-            builder.put(commonCode.code(), commonCode);
-        }
-        CACHE = builder.build();
     }
 
     @Override

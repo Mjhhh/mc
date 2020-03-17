@@ -58,8 +58,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         permissions.forEach(item -> userPermission.add(item.getCode()));
 
         String userPermissionString = StringUtils.join(userPermission.toArray(), ",");
-        UserJwt userDetails = new UserJwt(username,
-                password,
+        UserJwt userDetails = new UserJwt(username, password,
                 AuthorityUtils.commaSeparatedStringToAuthorityList(userPermissionString));
         userDetails.setId(userext.getId());
         //用户类型

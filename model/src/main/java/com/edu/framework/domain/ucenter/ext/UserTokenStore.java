@@ -9,7 +9,16 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class UserTokenStore extends AuthToken {
-    String userId;//用户id
-    String utype;//用户类型
-    String companyId;//用户所属企业信息
+    /**
+     * 用户id
+     */
+    String userId;
+    /**
+     * 用户类型
+     */
+    String utype;
+    /**
+     * 用户所属企业信息
+     */
+    String companyId;
 }

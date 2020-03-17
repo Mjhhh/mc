@@ -22,29 +22,25 @@ public enum MediaCode implements ResultCode {
     MERGE_FILE_CREATEFAIL(false,22008,"创建合并文件失败！"),
     MERGE_FILE_CHECKFAIL(false,22009,"合并文件校验失败！");
 
-    @ApiModelProperty(value = "媒资系统操作是否成功", example = "true", required = true)
+    /**
+     * 操作是否成功
+     */
     boolean success;
 
-    @ApiModelProperty(value = "媒资系统操作代码", example = "22001", required = true)
+    /**
+     * 操作代码
+     */
     int code;
 
-    @ApiModelProperty(value = "媒资系统操作提示", example = "文件在系统已存在！", required = true)
+    /**
+     * 提示信息
+     */
     String message;
 
     MediaCode(boolean success,int code, String message){
         this.success = success;
         this.code = code;
         this.message = message;
-    }
-
-    private static final ImmutableMap<Integer, MediaCode> CACHE;
-
-    static {
-        final ImmutableMap.Builder<Integer, MediaCode> builder = ImmutableMap.builder();
-        for (MediaCode commonCode : values()) {
-            builder.put(commonCode.code(), commonCode);
-        }
-        CACHE = builder.build();
     }
 
     @Override

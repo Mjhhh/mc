@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Admin
  */
 @RestController
-@RequestMapping("/sys//dictionary")
+@RequestMapping("/sys/dictionary")
 public class SysDictionaryController implements SysDicthinaryControllerApi {
 
     @Autowired

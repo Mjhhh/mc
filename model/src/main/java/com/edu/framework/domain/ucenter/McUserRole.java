@@ -21,7 +21,6 @@ public class McUserRole {
     @GeneratedValue(generator = "jpa-uuid")
     @Column(length = 32)
     private String id;
-
     @Column(name="user_id")
     private String userId;
     @Column(name="role_id")

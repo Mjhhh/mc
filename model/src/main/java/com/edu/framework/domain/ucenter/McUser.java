@@ -1,5 +1,7 @@
 package com.edu.framework.domain.ucenter;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
@@ -16,7 +18,6 @@ import java.util.Date;
 @Table(name="mc_user")
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class McUser {
-
     @Id
     @GeneratedValue(generator = "jpa-uuid")
     @Column(length = 32)
@@ -26,15 +27,19 @@ public class McUser {
     private String salt;
     private String name;
     private String utype;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private String birthday;
     private String userpic;
     private String sex;
     private String email;
     private String phone;
+    private String qq;
     private String status;
     @Column(name="create_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date createTime;
     @Column(name="update_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date updateTime;
 
 

@@ -2,6 +2,7 @@ package com.edu.ucenter.dao;
 
 import com.edu.framework.domain.ucenter.McMenu;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,4 +17,8 @@ public interface McMenuMapper {
      * @return
      */
     List<McMenu> selectPermissionByUserId(String userid);
+
+    List<McMenu> selectPermissionByStatus(String status);
+
+    List<McMenu> selectPermissionByStatusAndRoleId(@Param("status") String status,@Param("roleId") String roleId);
 }

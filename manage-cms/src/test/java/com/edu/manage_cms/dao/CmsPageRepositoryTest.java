@@ -117,8 +117,6 @@ public class CmsPageRepositoryTest {
         Example<CmsPage> example = Example.of(cmsPage, exampleMatcher);
 
         Page<CmsPage> all = cmsPageRepository.findAll(example, pageable);
-//        List<CmsPage> all = cmsPageRepository.findAll(example);
-//        List<CmsPage> content = all.getContent();
         System.out.println(all);
     }
 

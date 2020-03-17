@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by mrt on 2018/3/27.
+ * 订单编号生成工具
  */
 public class GenerateOrderNum {
     /**

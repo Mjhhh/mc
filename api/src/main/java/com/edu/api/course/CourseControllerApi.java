@@ -66,7 +66,6 @@ public interface CourseControllerApi {
     CommonResponseResult findCoursePic(String courseId);
 
     @ApiOperation("删除课程图片")
-    @ApiImplicitParam(value = "课程编号", name = "courseId")
     ResponseResult deleteCoursePic(String courseId);
 
     @ApiOperation("课程视图查询")

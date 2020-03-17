@@ -8,7 +8,6 @@ import com.edu.framework.domain.filesystem.response.UploadFileResult;
 import com.edu.framework.exception.ExceptionCast;
 import com.edu.framework.model.response.CommonCode;
 import org.apache.commons.lang3.StringUtils;
-import org.csource.common.MyException;
 import org.csource.fastdfs.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Service
@@ -117,8 +115,8 @@ public class FileSystemService {
             //文件扩展名
             String extName = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
             //文件id
-            String file1 = storageClient1.upload_file1(bytes, extName, null);
-            return file1;
+            String uploadFile = storageClient1.upload_file1(bytes, extName, null);
+            return uploadFile;
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -88,7 +88,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                         "/swagger-resources/**",
                         "/swagger-ui.html",
                         "/webjars/**",
-                        "/course/courseview/**"
+                        "/**"
                 ).permitAll()
                 .anyRequest().authenticated();
     }

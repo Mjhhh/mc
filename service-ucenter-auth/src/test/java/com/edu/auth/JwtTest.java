@@ -3,8 +3,10 @@ package com.edu.auth;
 import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.jwt.Jwt;
 import org.springframework.security.jwt.JwtHelper;
 import org.springframework.security.jwt.crypto.sign.RsaSigner;
@@ -20,6 +22,9 @@ import java.util.Map;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class JwtTest {
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     /**
      * 生成一个jwt令牌
@@ -71,5 +76,11 @@ public class JwtTest {
         //jwt令牌
         String encoded = jwt.getEncoded();
         System.out.println(encoded);
+    }
+
+    @Test
+    public void testPasswordEncode() {
+        String encode = bCryptPasswordEncoder.encode("11111");
+        System.out.println();
     }
 }

@@ -27,4 +27,51 @@
             role_id IN ( SELECT role_id FROM mc_user_role WHERE user_id = #{userid} )
             )
     </select>
+    <select id="selectPermissionByStatus" resultType="com.edu.framework.domain.ucenter.McMenu">
+        SELECT
+            id,
+            code,
+            p_id pId,
+            menu_name menuName,
+            url,
+            is_menu isMenu,
+            level,
+            sort,
+            status,
+            icon,
+            create_time createTime,
+            update_time updateTime
+        FROM
+            mc_menu
+        WHERE
+            status = '1'
+    </select>
+    <select id="selectPermissionByStatusAndRoleId" resultType="com.edu.framework.domain.ucenter.McMenu">
+        SELECT
+            id,
+            code,
+            p_id pId,
+            menu_name menuName,
+            url,
+            is_menu isMenu,
+            level,
+            sort,
+            STATUS,
+            icon,
+            create_time createTime,
+            update_time updateTime
+        FROM
+            mc_menu
+        WHERE
+            status = #{status}
+        AND id IN (
+            SELECT
+                menu_id
+            FROM
+                mc_permission
+            WHERE
+                role_id = #{roleId}
+        )
+    </select>
+
 </mapper>

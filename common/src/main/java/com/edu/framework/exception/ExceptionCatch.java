@@ -36,7 +36,7 @@ public class ExceptionCatch {
     @ExceptionHandler(CustomException.class)
     @ResponseBody
     public ResponseResult customException(CustomException e) {
-        LOGGER.error("catch exception : {}\r\nexception: ",e.getMessage());
+//        LOGGER.error("catch exception : {}\r\nexception: ",e.getMessage());
         e.printStackTrace();
         ResultCode resultCode = e.getResultCode();
         return new ResponseResult(resultCode);
@@ -50,7 +50,7 @@ public class ExceptionCatch {
     @ResponseBody
     @ExceptionHandler(Exception.class)
     public ResponseResult exception(Exception e) {
-        LOGGER.error("catch exception : {}\r\nexception: ",e.getMessage(), e);
+//        LOGGER.error("catch exception : {}\r\nexception: ",e.getMessage(), e);
         e.printStackTrace();
         if(EXCEPTIONS == null) {
             EXCEPTIONS = builder.build();

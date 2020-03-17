@@ -24,10 +24,8 @@ public class ManageCourseApplication {
     public static void main(String[] args){
         SpringApplication.run(ManageCourseApplication.class, args);
     }
-
     @Bean
     public FeignClientInterceptor feignClientInterceptor(){
         return new FeignClientInterceptor();
     }
-
 }

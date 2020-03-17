@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edu.ucenter.dao.McUserMapper">
+
+    <select id="findList" resultType="com.edu.framework.domain.ucenter.McUser">
+        SELECT
+            username,
+            name,
+            utype,
+            birthday,
+            sex,
+            email,
+            phone,
+            qq,
+            status,
+            create_time createTime,
+            update_time updateTime
+        FROM
+            mc_user
+        WHERE
+            1=1
+        <if test="name != null and name != ''">
+            AND name LIKE '%${name}%'
+        </if>
+        <if test="utype != null and utype != ''">
+            AND utype = #{utype}
+        </if>
+        <if test="status != null and status != ''">
+            AND status = #{status}
+        </if>
+    </select>
+</mapper>

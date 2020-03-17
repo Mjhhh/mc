@@ -16,16 +16,13 @@ import java.util.Date;
 @Table(name="mc_menu")
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class McMenu {
-
     @Id
     @GeneratedValue(generator = "jpa-uuid")
     @Column(length = 32)
     private String id;
-    private String code;
-    @Column(name="p_code")
-    private String pCode;
     @Column(name="p_id")
     private String pId;
+    private String code;
     @Column(name="menu_name")
     private String menuName;
     private String url;

@@ -1,14 +1,18 @@
 package com.edu.auth.service;
 
 import com.alibaba.fastjson.JSON;
+import com.edu.auth.client.UserClient;
 import com.edu.framework.client.ServiceList;
+import com.edu.framework.domain.ucenter.McUser;
 import com.edu.framework.domain.ucenter.ext.AuthToken;
 import com.edu.framework.domain.ucenter.request.LoginRequest;
 import com.edu.framework.domain.ucenter.response.AuthCode;
 import com.edu.framework.domain.ucenter.response.JwtResult;
 import com.edu.framework.domain.ucenter.response.LoginResult;
+import com.edu.framework.domain.ucenter.response.McUserResult;
 import com.edu.framework.exception.ExceptionCast;
 import com.edu.framework.model.response.CommonCode;
+import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.ResponseResult;
 import com.edu.framework.utils.CookieUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +28,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.DefaultResponseErrorHandler;
@@ -36,6 +42,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -50,6 +60,8 @@ public class AuthService {
     LoadBalancerClient loadBalancerClient;
     @Autowired
     StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    UserClient userClient;
 
     @Value("${auth.clientId}")
     private String clientId;
@@ -168,7 +180,7 @@ public class AuthService {
         //令牌名称
         String name = "user_token:" + jti;
         //保存到令牌到redis
-        stringRedisTemplate.boundValueOps(name).set(content, ttl, TimeUnit.SECONDS);
+        stringRedisTemplate.boundValueOps(name).set(content, ttl, TimeUnit.MINUTES);
         //获取过期时间
         Long expire = stringRedisTemplate.getExpire(name);
         return expire > 0;
@@ -257,6 +269,30 @@ public class AuthService {
     }
 
     /**
+     * 登录并授权
+     * @param username
+     * @param password
+     * @return
+     */
+    private AuthToken loginAuthorization(String username, String password) {
+        AuthToken authToken = this.applyToken(username, password);
+        if (authToken == null) {
+            ExceptionCast.cast(AuthCode.AUTH_LOGIN_APPLYTOKEN_FAIL);
+        }
+
+        //将token存储到redis
+        String jti = authToken.getJtl();
+        String content = JSON.toJSONString(authToken);
+        boolean saveTokenResult = saveToken(jti, content, tokenValiditySeconds);
+        if (!saveTokenResult) {
+            ExceptionCast.cast(AuthCode.AUTH_LOGIN_TOKEN_SAVEFAIL);
+        }
+        //将访问令牌存储到cookie
+        this.addCookie(jti);
+        return authToken;
+    }
+
+    /**
      * 登录认证并提供令牌
      *
      * @param loginRequest
@@ -271,20 +307,10 @@ public class AuthService {
         if (StringUtils.isEmpty(loginRequest.getPassword())) {
             ExceptionCast.cast(AuthCode.AUTH_PASSWORD_NONE);
         }
-        AuthToken authToken = this.applyToken(loginRequest.getUsername(), loginRequest.getPassword());
-        if (authToken == null) {
-            ExceptionCast.cast(AuthCode.AUTH_LOGIN_APPLYTOKEN_FAIL);
-        }
+        //检查账号是否被禁用
 
-        //将token存储到redis
-        String jti = authToken.getJtl();
-        String content = JSON.toJSONString(authToken);
-        boolean saveTokenResult = saveToken(jti, content, tokenValiditySeconds);
-        if (!saveTokenResult) {
-            ExceptionCast.cast(AuthCode.AUTH_LOGIN_TOKEN_SAVEFAIL);
-        }
-        //将访问令牌存储到cookie
-        this.addCookie(jti);
+        //进行登录操作
+        AuthToken authToken = this.loginAuthorization(loginRequest.getUsername(), loginRequest.getPassword());
         return new LoginResult(CommonCode.SUCCESS, authToken.getJtl());
     }
 
@@ -306,6 +332,7 @@ public class AuthService {
 
     /**
      * 用户退出登录
+     *
      * @return
      */
     public ResponseResult logout() {
@@ -316,5 +343,46 @@ public class AuthService {
         //清除cookie
         this.clearCookie(jti);
         return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 用户注册
+     *
+     * @param mcuser
+     * @return
+     */
+    @Transactional
+    public LoginResult registered(McUser mcuser){
+        if (mcuser == null) {
+            ExceptionCast.cast(AuthCode.AUTH_USER_IS_NULL);
+        }
+        if (StringUtils.isBlank(mcuser.getPassword())) {
+            ExceptionCast.cast(AuthCode.AUTH_CREDENTIAL_ERROR);
+        }
+        //初始密码
+        String initPassword = mcuser.getPassword();
+        //密码加密
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String encodePassword = bCryptPasswordEncoder.encode(initPassword);
+        mcuser.setPassword(encodePassword);
+        mcuser.setCreateTime(new Date());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String date = format.format(new Date(Long.parseLong(mcuser.getBirthday())));
+        mcuser.setBirthday(date);
+        //101001-学生
+        mcuser.setUtype("103001");
+        //103001-正常
+        mcuser.setStatus("101001");
+        McUserResult mcUserResult = userClient.registered(mcuser);
+        if (!mcUserResult.isSuccess()) {
+            ExceptionCast.cast(AuthCode.AUTH_REGISTERED_USER_FAILURE);
+        }
+        McUser one = mcUserResult.getMcUser();
+        if (one == null) {
+            ExceptionCast.cast(AuthCode.AUTH_REGISTERED_USER_FAILURE);
+        }
+        //进行登录操作
+        AuthToken authToken = this.loginAuthorization(one.getUsername(), initPassword);
+        return new LoginResult(CommonCode.SUCCESS, authToken.getJtl());
     }
 }

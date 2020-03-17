@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 @EnableDiscoveryClient//从Eureka Server获取服务
 @SpringBootApplication//扫描所在包及子包的bean，注入到ioc中
-@EntityScan("com.xuecheng.framework.domain.media")//扫描实体类
+@EntityScan("com.mock.framework.domain.media")//扫描实体类
 @ComponentScan(basePackages={"com.edu.api"})//扫描接口
 @ComponentScan(basePackages={"com.edu.framework"})//扫描framework中通用类
 @ComponentScan(basePackages={"com.edu.media"})//扫描本项目下的所有类

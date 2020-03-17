@@ -521,6 +521,7 @@ public class CourseService {
      * @param courseId 课程编号
      * @return 操作信息
      */
+    @Transactional
     public ResponseResult deleteCoursePic(String courseId) {
         //执行删除，返回1表示删除成功，返回0表示删除失败
         long result = coursePicRepository.deleteByCourseid(courseId);

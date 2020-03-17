@@ -81,7 +81,6 @@ public class CourseController implements CourseControllerApi {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('course_coursepic_list')")
     @GetMapping("/coursepic/list/{courseId}")
     public CommonResponseResult findCoursePic(@PathVariable String courseId) {
         return courseService.findCoursepic(courseId);

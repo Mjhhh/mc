@@ -7,5 +7,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @author mjh
  */
 public interface CmsConfigRepository extends MongoRepository<CmsConfig, String> {
-
+    CmsConfig findByName(String name);
 }

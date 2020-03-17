@@ -75,14 +75,11 @@ public class FIleUploadTest {
         File[] files = chunkFolder.listFiles();
         //转成集合，便于排序
         List<File> fileList = new ArrayList<>(Arrays.asList(files));
-        Collections.sort(fileList, new Comparator<File>() {
-            @Override
-            public int compare(File o1, File o2) {
-                if (Integer.parseInt(o1.getName()) < Integer.parseInt(o2.getName())) {
-                    return -1;
-                }
-                return 1;
+        Collections.sort(fileList, (o1, o2) -> {
+            if (Integer.parseInt(o1.getName()) < Integer.parseInt(o2.getName())) {
+                return -1;
             }
+            return 1;
         });
         //合并文件
         for (File chunkFile : fileList) {

@@ -1,4 +1,4 @@
-package com.edu.manage_cms.config;
+package com.edu.filesystem.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
