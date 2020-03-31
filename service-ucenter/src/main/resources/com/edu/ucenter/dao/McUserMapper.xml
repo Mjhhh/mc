@@ -2,8 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.edu.ucenter.dao.McUserMapper">
 
-    <select id="findList" resultType="com.edu.framework.domain.ucenter.McUser">
+    <select id="selectList" resultType="com.edu.framework.domain.ucenter.McUser">
         SELECT
+            id,
             username,
             name,
             utype,
@@ -28,5 +29,19 @@
         <if test="status != null and status != ''">
             AND status = #{status}
         </if>
+    </select>
+
+    <select id="selectListByIds" resultType="com.edu.framework.domain.ucenter.McUser">
+        SELECT
+            *
+        FROM
+            mc_user
+        WHERE
+            id
+        IN (
+        <foreach collection="list" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
     </select>
 </mapper>

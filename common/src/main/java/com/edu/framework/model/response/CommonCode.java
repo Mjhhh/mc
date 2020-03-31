@@ -16,7 +16,9 @@ public enum CommonCode implements ResultCode {
     UNAUTHORISE(false, 1002, "权限不足，无权操作！"),
     SERVER_ERROR(false, 9999, "抱歉，系统繁忙，请稍后重试！"),
     INVALID_PARAM(false,10003,"非法参数！"),
-    MISS_PARAM(false,10004,"参数缺失");
+    MISS_PARAM(false,10004,"参数缺失"),
+    MISS_COMPANY_ID(false,10005,"请先加入组织"),
+    OBJECT_IS_NOT_EXISTS(false,10006,"对象不存在");
 
     /**
      * 操作是否成功

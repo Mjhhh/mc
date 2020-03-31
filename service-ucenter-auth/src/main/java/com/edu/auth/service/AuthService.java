@@ -1,24 +1,31 @@
 package com.edu.auth.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.edu.auth.client.UserClient;
+import com.edu.auth.dao.McUserRepository;
+import com.edu.auth.util.SmsUtil;
+import com.edu.auth.util.ValidateUtil;
 import com.edu.framework.client.ServiceList;
 import com.edu.framework.domain.ucenter.McUser;
 import com.edu.framework.domain.ucenter.ext.AuthToken;
+import com.edu.framework.domain.ucenter.ext.McUserExt;
 import com.edu.framework.domain.ucenter.request.LoginRequest;
-import com.edu.framework.domain.ucenter.response.AuthCode;
-import com.edu.framework.domain.ucenter.response.JwtResult;
-import com.edu.framework.domain.ucenter.response.LoginResult;
-import com.edu.framework.domain.ucenter.response.McUserResult;
+import com.edu.framework.domain.ucenter.response.*;
 import com.edu.framework.exception.ExceptionCast;
 import com.edu.framework.model.response.CommonCode;
 import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.ResponseResult;
+import com.edu.framework.utils.BCryptUtil;
+import com.edu.framework.utils.CommonUtil;
 import com.edu.framework.utils.CookieUtil;
+import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.netflix.discovery.converters.Auto;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
@@ -39,8 +46,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -48,6 +59,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -62,6 +74,12 @@ public class AuthService {
     StringRedisTemplate stringRedisTemplate;
     @Autowired
     UserClient userClient;
+    @Autowired
+    SmsUtil smsUtil;
+    @Autowired
+    DefaultKaptcha captchaProducer;
+    @Autowired
+    McUserRepository mcUserRepository;
 
     @Value("${auth.clientId}")
     private String clientId;
@@ -145,7 +163,7 @@ public class AuthService {
             //获取spring security返回的错误信息
             String error_description = (String) response.get("error_description");
             if (StringUtils.isNotEmpty(error_description)) {
-                if (error_description.equals("坏的凭证")) {
+                if (StringUtils.equals(error_description,"坏的凭证")) {
                     ExceptionCast.cast(AuthCode.AUTH_CREDENTIAL_ERROR);
                 } else if (error_description.contains("UserDetailsService returned null")) {
                     ExceptionCast.cast(AuthCode.AUTH_ACCOUNT_NOTEXISTS);
@@ -270,6 +288,7 @@ public class AuthService {
 
     /**
      * 登录并授权
+     *
      * @param username
      * @param password
      * @return
@@ -279,7 +298,6 @@ public class AuthService {
         if (authToken == null) {
             ExceptionCast.cast(AuthCode.AUTH_LOGIN_APPLYTOKEN_FAIL);
         }
-
         //将token存储到redis
         String jti = authToken.getJtl();
         String content = JSON.toJSONString(authToken);
@@ -307,8 +325,20 @@ public class AuthService {
         if (StringUtils.isEmpty(loginRequest.getPassword())) {
             ExceptionCast.cast(AuthCode.AUTH_PASSWORD_NONE);
         }
+        if (StringUtils.isBlank(loginRequest.getVerifyEncode()) || StringUtils.isBlank(loginRequest.getVerifycode())) {
+            ExceptionCast.cast(AuthCode.AUTH_VERIFYCODE_NONE);
+        }
+        //校验验证码是否输入正确
+        String verifycode = loginRequest.getVerifycode();
+        String verifyEncode = loginRequest.getVerifyEncode();
+        if (!BCryptUtil.matches(verifycode, verifyEncode)) {
+            ExceptionCast.cast(AuthCode.AUTH_VERIFYCODE_ERROR);
+        }
         //检查账号是否被禁用
-
+        McUser mcUser = userClient.get(loginRequest.getUsername());
+        if (StringUtils.equals(mcUser.getStatus(), "0")) {
+            ExceptionCast.cast(AuthCode.AUTH_ACCOUNT_NOTEXISTS);
+        }
         //进行登录操作
         AuthToken authToken = this.loginAuthorization(loginRequest.getUsername(), loginRequest.getPassword());
         return new LoginResult(CommonCode.SUCCESS, authToken.getJtl());
@@ -348,32 +378,41 @@ public class AuthService {
     /**
      * 用户注册
      *
-     * @param mcuser
+     * @param mcUserExt
      * @return
      */
     @Transactional
-    public LoginResult registered(McUser mcuser){
-        if (mcuser == null) {
+    public LoginResult registered(McUserExt mcUserExt) {
+        String verifycode = mcUserExt.getVerifycode();
+        String redisCode = stringRedisTemplate.opsForValue().get(mcUserExt.getPhone());
+        if (!StringUtils.equals(verifycode, redisCode)) {
+            ExceptionCast.cast(UcenterCode.VERIFICATION_CODE_ERROR);
+        }
+
+        McUser mcUser = new McUser();
+        BeanUtils.copyProperties(mcUserExt, mcUser);
+        if (mcUser == null) {
             ExceptionCast.cast(AuthCode.AUTH_USER_IS_NULL);
         }
-        if (StringUtils.isBlank(mcuser.getPassword())) {
+        if (StringUtils.isBlank(mcUser.getPassword())) {
             ExceptionCast.cast(AuthCode.AUTH_CREDENTIAL_ERROR);
         }
         //初始密码
-        String initPassword = mcuser.getPassword();
+        String initPassword = mcUser.getPassword();
         //密码加密
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String encodePassword = bCryptPasswordEncoder.encode(initPassword);
-        mcuser.setPassword(encodePassword);
-        mcuser.setCreateTime(new Date());
+        mcUser.setPassword(encodePassword);
+        mcUser.setCreateTime(new Date());
+        mcUser.setSalt(initPassword);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String date = format.format(new Date(Long.parseLong(mcuser.getBirthday())));
-        mcuser.setBirthday(date);
+        String date = format.format(new Date(Long.parseLong(mcUser.getBirthday())));
+        mcUser.setBirthday(date);
         //101001-学生
-        mcuser.setUtype("103001");
-        //103001-正常
-        mcuser.setStatus("101001");
-        McUserResult mcUserResult = userClient.registered(mcuser);
+        mcUser.setUtype("101001");
+        //1-正常
+        mcUser.setStatus("1");
+        McUserResult mcUserResult = userClient.registered(mcUser);
         if (!mcUserResult.isSuccess()) {
             ExceptionCast.cast(AuthCode.AUTH_REGISTERED_USER_FAILURE);
         }
@@ -383,6 +422,67 @@ public class AuthService {
         }
         //进行登录操作
         AuthToken authToken = this.loginAuthorization(one.getUsername(), initPassword);
+        return new LoginResult(CommonCode.SUCCESS, authToken.getJtl());
+    }
+
+    /**
+     * 生成手机验证码
+     * @param phone
+     * @return
+     */
+    public ResponseResult generateMobilevalidateCode(String phone) {
+        if (StringUtils.isBlank(phone)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        Random random = new Random();
+        String code = String.valueOf(random.nextInt(9999));
+        if (smsUtil.smsLoginValidateCode(phone, code)) {
+            stringRedisTemplate.opsForValue().set(phone, code, 5, TimeUnit.MINUTES);
+            return ResponseResult.SUCCESS();
+        }
+        return new ResponseResult(UcenterCode.SEND_VERIFICATION_ERROR);
+    }
+
+
+    public CommonResponseResult accountValidateCode() throws IOException {
+        String capText = captchaProducer.createText();
+        String encodeCapText = BCryptUtil.encode(capText);
+        BufferedImage bi = captchaProducer.createImage(capText);
+        String fileRoot = "D:/JavaProject/projectForSchool/mcEduUI/mc-ui/img/tempfile/";
+        File folder = new File(fileRoot);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        String fileName = System.currentTimeMillis() + ".jpg";
+        String path = fileRoot + fileName;
+        File out = new File(path);
+        ImageIO.write(bi, "jpg", out);
+        JSONObject result = new JSONObject();
+        result.put("url", fileName);
+        result.put("encodeCapText", encodeCapText);
+        return new CommonResponseResult(CommonCode.SUCCESS, result);
+    }
+
+    public LoginResult mobileLogin(LoginRequest loginRequest) {
+        //校验账号是否输入
+        if (loginRequest == null || StringUtils.isEmpty(loginRequest.getPhone())) {
+            ExceptionCast.cast(AuthCode.AUTH_PHONE_NONE);
+        }
+        if (StringUtils.isBlank(loginRequest.getVerifycode())) {
+            ExceptionCast.cast(AuthCode.AUTH_VERIFYCODE_NONE);
+        }
+        String verifycode = loginRequest.getVerifycode();
+        String redisCode = stringRedisTemplate.opsForValue().get(loginRequest.getPhone());
+        if (!StringUtils.equals(verifycode, redisCode)) {
+            ExceptionCast.cast(UcenterCode.VERIFICATION_CODE_ERROR);
+        }
+        //检查账号是否被禁用
+        McUser mcUser = mcUserRepository.findByPhone(loginRequest.getPhone());
+        if (StringUtils.equals(mcUser.getStatus(), "0")) {
+            ExceptionCast.cast(AuthCode.AUTH_ACCOUNT_NOTEXISTS);
+        }
+        //进行登录操作
+        AuthToken authToken = this.loginAuthorization(mcUser.getUsername(), mcUser.getSalt());
         return new LoginResult(CommonCode.SUCCESS, authToken.getJtl());
     }
 }

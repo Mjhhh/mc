@@ -32,4 +32,17 @@ public interface CmsPageRepository extends MongoRepository<CmsPage,String> {
      * @return
      */
     CmsPage findByPageNameAndSiteIdAndPageWebPath(String pageName, String siteId, String pageWebPath);
+
+    /**
+     * 根据模板id查询页面
+     * @param templateId
+     * @return
+     */
+    CmsPage findByTemplateId(String templateId);
+
+    /**
+     * 根据模板id删除页面
+     * @param templateId
+     */
+    void deleteByTemplateId(String templateId);
 }

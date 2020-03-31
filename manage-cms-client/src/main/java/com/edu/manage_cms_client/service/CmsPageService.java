@@ -106,4 +106,24 @@ public class CmsPageService {
         }
         return optional.orElse(null);
     }
+
+    /**
+     * 将页面从服务器和数据库删除
+     * @param pageId
+     */
+    public void deletePageFormServerPath(String pageId) {
+        CmsPage cmsPage = findCmsPageById(pageId);
+        if (cmsPage == null) {
+            ExceptionCast.cast(CmsCode.CMS_PAGE_IS_NOT_EXISTS);
+        }
+        //页面所属站点
+        CmsSite cmsSite = this.getCmsSiteById(cmsPage.getSiteId());
+        //页面物理路径
+        String pagePath = cmsSite.getSitePhysicalPath() + cmsPage.getPagePhysicalPath() + cmsPage.getPageName();
+        File file = new File(pagePath);
+        if (file.exists()) {
+            file.delete();
+        }
+        cmsPageRepository.deleteById(pageId);
+    }
 }

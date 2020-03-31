@@ -20,6 +20,11 @@ spring:
 pagehelper:
   helper-dialect: mysql
 
+mybatis:
+  ##开启驼峰映射
+  configuration:
+    map-underscore-to-camel-case: true
+
 eureka:
   client:
     registerWithEureka: true #服务注册开关

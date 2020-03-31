@@ -7,6 +7,7 @@ import com.edu.framework.domain.media.response.MediaCode;
 import com.edu.framework.exception.ExceptionCast;
 import com.edu.framework.model.response.CommonCode;
 import com.edu.framework.model.response.ResponseResult;
+import com.edu.framework.utils.McOauth2Util;
 import com.edu.media.config.RabbitMQConfig;
 import com.edu.media.controller.MediaUploadController;
 import com.edu.media.dao.MediaFileRepository;
@@ -19,8 +20,11 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.util.*;
 
@@ -46,6 +50,14 @@ public class MediaUploadService {
      */
     @Value("${manage-media.mq.routingkey-media-video}")
     String ROUTINGKEY_MEDIA_VIDEO;
+
+    /**
+     * 获取HttpServletRequest
+     * @return
+     */
+    private HttpServletRequest getRequest() {
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    }
 
     /**
      * 根据文件md5得到文件的绝对路径
@@ -264,7 +276,10 @@ public class MediaUploadService {
      * @param fileExt  文件扩展名
      * @return 注册结果
      */
-    public ResponseResult register(String fileMd5, String fileName, Long fileSize, String mimetype, String fileExt) {
+    public ResponseResult register(String fileMd5, String fileName, Long fileSize, String mimetype, String fileExt, String companyId) {
+        if (StringUtils.isBlank(companyId)) {
+            ExceptionCast.cast(CommonCode.MISS_COMPANY_ID);
+        }
         //检查文件是否上传
         //1、得到文件的路径
         String filePath = getFilePath(fileMd5, fileExt);
@@ -278,10 +293,10 @@ public class MediaUploadService {
         }
         //如果文件不存在时，检查文件所在目录是否存在，如果不存在则创建
         boolean fileFold = createFileFold(fileMd5);
-        if (!fileFold) {
-            //上传文件目录创建失败
-            ExceptionCast.cast(MediaCode.UPLOAD_FILE_REGISTER_CREATEFOLDER_FAIL);
-        }
+//        if (!fileFold) {
+//            //上传文件目录创建失败
+//            ExceptionCast.cast(MediaCode.UPLOAD_FILE_REGISTER_CREATEFOLDER_FAIL);
+//        }
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
@@ -342,7 +357,7 @@ public class MediaUploadService {
      * @param fileExt
      * @return
      */
-    public ResponseResult mergechunks(String fileMd5, String fileName, Long fileSize, String mimetype, String fileExt) {
+    public ResponseResult mergechunks(String fileMd5, String fileName, Long fileSize, String mimetype, String fileExt, String companyId) {
         //合并块文件
         //获取块文件的路径
         String chunkFileFolderPath = this.getChunkFileFolderPath(fileMd5);
@@ -387,6 +402,7 @@ public class MediaUploadService {
         mediaFile.setUploadTime(new Date());
         mediaFile.setMimeType(mimetype);
         mediaFile.setFileType(fileExt);
+        mediaFile.setCompanyId(companyId);
         //状态为上传成功
         mediaFile.setFileStatus("301002");
         mediaFileRepository.save(mediaFile);

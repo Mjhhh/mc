@@ -8,6 +8,9 @@ import org.springframework.security.jwt.JwtHelper;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+/**
+ * 解析request header中参数Authorization的方法
+ */
 public class Oauth2Util {
 
     public static Map<String, String> getJwtClaimsFromHeader(HttpServletRequest request) {
@@ -25,7 +28,7 @@ public class Oauth2Util {
         try {
             //解析jwt
             Jwt decode = JwtHelper.decode(token);
-            //得到 jwt中的用户信息
+            //得到jwt中的用户信息
             String claims = decode.getClaims();
             //将jwt转为Map
             map = JSON.parseObject(claims, Map.class);

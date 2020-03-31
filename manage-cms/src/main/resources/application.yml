@@ -35,7 +35,12 @@ cms:
   config:
     #轮播图
     carousel: 5a791725dd573c3574ee333f
+    #新上好课
+    newcourse: 5a456c830d573d7674e05560
     #精品推荐
     recommend: 5a795d82dd573c3574ee3360
     #分类信息
     classification: 5a7bdd8bd019f1162c63ad32
+
+service:
+  imgUrl: http://mjh0523.xyz/

@@ -44,7 +44,7 @@
         FROM
             mc_menu
         WHERE
-            status = '1'
+            status = #{status}
     </select>
     <select id="selectPermissionByStatusAndRoleId" resultType="com.edu.framework.domain.ucenter.McMenu">
         SELECT

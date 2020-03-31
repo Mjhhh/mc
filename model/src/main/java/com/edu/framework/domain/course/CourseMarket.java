@@ -1,5 +1,6 @@
 package com.edu.framework.domain.course;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
@@ -39,15 +40,18 @@ public class CourseMarket implements Serializable {
     private Float price;
 
     @ApiModelProperty("原价")
-    private Float price_old;
+    private Float priceOld;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @ApiModelProperty("过期时间")
     private Date expires;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @Column(name = "start_time")
     @ApiModelProperty("课程有效期-开始时间")
     private Date startTime;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @Column(name = "end_time")
     @ApiModelProperty("课程有效期-结束时间")
     private Date endTime;

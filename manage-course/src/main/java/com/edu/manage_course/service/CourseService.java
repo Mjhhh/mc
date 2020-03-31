@@ -1,37 +1,45 @@
 package com.edu.manage_course.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.edu.framework.domain.cms.CmsPage;
 import com.edu.framework.domain.cms.response.CmsCode;
 import com.edu.framework.domain.cms.response.CmsPageResult;
 import com.edu.framework.domain.course.*;
+import com.edu.framework.domain.course.ext.CourseEvaluateExt;
 import com.edu.framework.domain.course.ext.CourseInfo;
 import com.edu.framework.domain.course.ext.CourseView;
 import com.edu.framework.domain.course.ext.TeachplanNode;
 import com.edu.framework.domain.course.request.CourseListRequest;
 import com.edu.framework.domain.course.response.CourseCode;
+import com.edu.framework.domain.course.response.CoursePreResult;
 import com.edu.framework.domain.course.response.CourseResult;
 import com.edu.framework.domain.course.response.TeachplanMediaPub;
+import com.edu.framework.domain.ucenter.McUser;
+import com.edu.framework.domain.ucenter.response.McCompanyResult;
 import com.edu.framework.exception.ExceptionCast;
 import com.edu.framework.model.response.*;
 import com.edu.framework.utils.McOauth2Util;
 import com.edu.manage_course.client.CmsPageClient;
+import com.edu.manage_course.client.FileSystemClient;
+import com.edu.manage_course.client.UserClient;
 import com.edu.manage_course.dao.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.netflix.discovery.converters.Auto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
-import javax.persistence.Id;
 import javax.servlet.http.HttpServletRequest;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,6 +92,46 @@ public class CourseService {
     @Autowired
     TeachplanMediaPubRepository teachplanMediaPubRepository;
 
+    @Autowired
+    FileSystemClient fileSystemClient;
+
+    @Autowired
+    CourseTeacherRepository courseTeacherRepository;
+
+    @Autowired
+    UserClient userClient;
+
+    @Resource
+    CourseBaseMapper courseBaseMapper;
+
+    @Resource
+    CoursePubMapper coursePubMapper;
+
+    @Autowired
+    CourseEvaluateRepository courseEvaluateRepository;
+
+    /**
+     * 获取课程视频映射记录
+     *
+     * @param id
+     * @return
+     */
+    private TeachplanMedia getTeachplanMedia(String id) {
+        if (StringUtils.isBlank(id)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        Optional<TeachplanMedia> optional = teachplanMediaRepository.findById(id);
+        return optional.orElse(null);
+    }
+
+    private CourseEvaluate getCourseEvaluate(String id) {
+        if (StringUtils.isBlank(id)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        Optional<CourseEvaluate> optional = courseEvaluateRepository.findById(id);
+        return optional.orElse(null);
+    }
+
     /**
      * 获取课程根结点，如果没有则添加根结点
      *
@@ -111,6 +159,37 @@ public class CourseService {
     }
 
     /**
+     * 获取课程讲师
+     *
+     * @param id
+     * @return
+     */
+    private CourseTeacher getCourseTeacher(String id) {
+        if (StringUtils.isBlank(id)) {
+            ExceptionCast.cast(CourseCode.COURSE_PARAMS_IS_NULL);
+        }
+        Optional<CourseTeacher> optional = courseTeacherRepository.findById(id);
+        return optional.orElse(null);
+    }
+
+    /**
+     * 获取公司ID
+     * @return
+     */
+    private String getCompanyId() {
+        HttpServletRequest request = this.getRequest();
+        McOauth2Util mcOauth2Util = new McOauth2Util();
+        McOauth2Util.UserJwt userJwt = mcOauth2Util.getUserJwtFromHeader(request);
+        if (userJwt == null) {
+            ExceptionCast.cast(CommonCode.UNAUTHENTICATED);
+        }
+        if (StringUtils.isBlank(userJwt.getCompanyId())) {
+            ExceptionCast.cast(CommonCode.MISS_COMPANY_ID);
+        }
+        return userJwt.getCompanyId();
+    }
+
+    /**
      * 查询课程信息
      *
      * @param courseId 课程ID
@@ -122,10 +201,21 @@ public class CourseService {
         }
         //查询课程信息
         Optional<CourseBase> optional = courseBaseRepository.findById(courseId);
-        if (!optional.isPresent()) {
-            ExceptionCast.cast(CourseCode.COURSE_PUBLISH_IS_NULL);
+        return optional.orElse(null);
+    }
+
+    /**
+     * 获取课程计划信息
+     *
+     * @param teachplanId
+     * @return
+     */
+    private Teachplan getTeachplan(String teachplanId) {
+        if (StringUtils.isBlank(teachplanId)) {
+            ExceptionCast.cast(CourseCode.COURSE_PARAMS_IS_NULL);
         }
-        return optional.get();
+        Optional<Teachplan> optional = teachplanRepository.findById(teachplanId);
+        return optional.orElse(null);
     }
 
     /**
@@ -139,10 +229,7 @@ public class CourseService {
             ExceptionCast.cast(CourseCode.COURSE_PUBLISH_COURSEIDISNULL);
         }
         Optional<CourseMarket> optional = courseMarketRepository.findById(courseId);
-        if (!optional.isPresent()) {
-            ExceptionCast.cast(CourseCode.COURSE_MARKET_IS_NULL);
-        }
-        return optional.get();
+        return optional.orElse(null);
     }
 
     /**
@@ -156,24 +243,21 @@ public class CourseService {
             ExceptionCast.cast(CourseCode.COURSE_PUBLISH_COURSEIDISNULL);
         }
         Optional<CoursePic> optional = coursePicRepository.findById(courseId);
-        if (!optional.isPresent()) {
-            ExceptionCast.cast(CourseCode.COURSE_PICTURE_IS_NULL);
-        }
-        return optional.get();
+        return optional.orElse(null);
     }
 
     /**
-     * 获取课程发布表
+     * 获取课程索引表
      *
      * @param courseId 课程编号
-     * @return 课程发布表
+     * @return 课程索引表
      */
     private CoursePub getCoursePub(String courseId) {
         if (StringUtils.isEmpty(courseId)) {
             ExceptionCast.cast(CourseCode.COURSE_PUBLISH_COURSEIDISNULL);
         }
         Optional<CoursePub> optional = coursePubRepository.findById(courseId);
-        return optional.orElse(new CoursePub());
+        return optional.orElse(null);
     }
 
     /**
@@ -200,6 +284,10 @@ public class CourseService {
         cmsPage.setPagePhysicalPath(publish_page_physicalpath);
         //数据url
         cmsPage.setDataUrl(publish_dataUrlPre + courseId);
+        //页面类型
+        cmsPage.setPageType("1");
+        //创建时间
+        cmsPage.setPageCreateTime(new Date());
         return cmsPage;
     }
 
@@ -248,6 +336,9 @@ public class CourseService {
             ExceptionCast.cast(CourseCode.COURSE_PUBLISH_COURSEIDISNULL);
         }
         CoursePub coursePubNew = this.getCoursePub(courseId);
+        if (coursePubNew == null) {
+            coursePubNew = new CoursePub();
+        }
         BeanUtils.copyProperties(coursePub, coursePubNew);
         //设置主键
         coursePubNew.setId(courseId);
@@ -270,12 +361,21 @@ public class CourseService {
         CoursePub coursePub = new CoursePub();
         //基础信息
         CourseBase courseBase = this.getCourseBase(courseId);
+        if (courseBase == null) {
+            courseBase = new CourseBase();
+        }
         BeanUtils.copyProperties(courseBase, coursePub);
         //图片信息
         CoursePic coursePic = this.getCoursePic(courseId);
+        if (coursePic == null) {
+            coursePic = new CoursePic();
+        }
         BeanUtils.copyProperties(coursePic, coursePub);
         //课程营销信息
         CourseMarket courseMarket = this.getCourseMarket(courseId);
+        if (courseMarket == null) {
+            courseMarket = new CourseMarket();
+        }
         BeanUtils.copyProperties(courseMarket, coursePub);
         //课程计划
         TeachplanNode teachplanNode = teachplanMapper.selectList(courseId);
@@ -288,6 +388,7 @@ public class CourseService {
 
     /**
      * 获取HttpServletRequest
+     *
      * @return
      */
     private HttpServletRequest getRequest() {
@@ -355,11 +456,12 @@ public class CourseService {
         //调用工具类取出用户信息
         McOauth2Util mcOauth2Util = new McOauth2Util();
         McOauth2Util.UserJwt userJwt = mcOauth2Util.getUserJwtFromHeader(request);
-        courseListRequest.setCompanyId(userJwt.getCompanyId());
         //进行分页
         if (courseListRequest == null) {
             courseListRequest = new CourseListRequest();
         }
+        //设置公司id
+        courseListRequest.setCompanyId(userJwt.getCompanyId());
         if (page <= 0) {
             page = 0;
         }
@@ -390,6 +492,8 @@ public class CourseService {
     @Transactional
     public ResponseResult addCourseBase(CourseBase courseBase) {
         //课程默认设置为未发布
+        String companyId = this.getCompanyId();
+        courseBase.setCompanyId(companyId);
         courseBase.setStatus("202001");
         courseBaseRepository.save(courseBase);
         return new ResponseResult(CommonCode.SUCCESS);
@@ -455,12 +559,18 @@ public class CourseService {
      */
     @Transactional
     public ResponseResult updateCourseMarket(String id, CourseMarket courseMarket) {
+        if (StringUtils.equals(courseMarket.getCharge(), "203002")
+                && (courseMarket.getPrice() == null
+                || courseMarket.getPriceOld() == null)) {
+            ExceptionCast.cast(CourseCode.COURSE_PRICE_IS_NULL);
+        }
         CourseMarket market = this.getCourseMarket(id);
         if (market != null) {
             market.setCharge(courseMarket.getCharge());
             market.setStartTime(courseMarket.getStartTime());
             market.setEndTime(courseMarket.getEndTime());
             market.setPrice(courseMarket.getPrice());
+            market.setPriceOld(courseMarket.getPriceOld());
             market.setQq(courseMarket.getQq());
             market.setValid(courseMarket.getValid());
         } else {
@@ -553,6 +663,16 @@ public class CourseService {
         if (teachplanNode != null) {
             courseView.setTeachplanNode(teachplanNode);
         }
+        //查询课程讲师信息
+        CourseTeacher courseTeacher = this.getCourseTeacher(courseId);
+        if (courseTeacher != null) {
+            courseView.setCourseTeacher(courseTeacher);
+        }
+        //查询课程组织信息
+        McCompanyResult mcCompanyResult = userClient.getCompany(courseBase.getCompanyId());
+        if (mcCompanyResult.isSuccess()) {
+            courseView.setMcCompany(mcCompanyResult.getData());
+        }
         return courseView;
     }
 
@@ -588,7 +708,6 @@ public class CourseService {
         }
         //更新课程状态-已发布
         CourseBase courseBase = this.saveCourseBaseStatus(courseId, "202002");
-        //创建课程索引
         //创建课程索引信息
         CoursePub coursePub = this.createCoursePub(courseId);
         //向数据库保存课程索引信息
@@ -636,5 +755,258 @@ public class CourseService {
         one.setMediaUrl(teachplanMedia.getMediaUrl());
         teachplanMediaRepository.save(one);
         return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 查询课程封面预览信息
+     *
+     * @param page
+     * @param size
+     * @return
+     */
+    public CoursePreResult findCoursePreviewList(int page, int size) {
+        page = page - 1;
+        if (page < 0) {
+            page = 0;
+        }
+        if (size <= 0) {
+            size = 10;
+        }
+        //设置分页
+        PageRequest pageRequest = PageRequest.of(page, size);
+        org.springframework.data.domain.Page<CourseBase> all = courseBaseRepository.findAll(pageRequest);
+        List<CourseBase> courseBaseList = all.getContent();
+        long total = all.getTotalElements();
+
+        List<CourseView> courseViewList = new ArrayList<>();
+        for (CourseBase courseBase : courseBaseList) {
+            CourseView courseView = new CourseView();
+            courseView.setCourseBase(courseBase);
+            CoursePic coursePic = this.getCoursePic(courseBase.getId());
+            courseView.setCoursePic(coursePic);
+            CourseMarket courseMarket = this.getCourseMarket(courseBase.getId());
+            courseView.setCourseMarket(courseMarket);
+
+            courseViewList.add(courseView);
+        }
+        return new CoursePreResult(CommonCode.SUCCESS, courseViewList, total);
+    }
+
+    /**
+     * 删除课程基础信息
+     *
+     * @param courseId
+     * @return
+     */
+    @Transactional
+    public ResponseResult delCourseBase(String courseId) {
+        CourseBase courseBase = this.getCourseBase(courseId);
+        if (courseBase == null) {
+            ExceptionCast.cast(CourseCode.COURSE_PUBLISH_IS_NULL);
+        }
+        //删除课程营销计划
+        CourseMarket courseMarket = this.getCourseMarket(courseId);
+        if (courseMarket != null) {
+            courseMarketRepository.deleteById(courseId);
+        }
+        //删除课程封面
+        CoursePic coursePic = this.getCoursePic(courseId);
+        if (coursePic != null) {
+            String fileId = coursePic.getPic();
+            fileSystemClient.delete(fileId);
+            coursePicRepository.deleteByCourseid(courseId);
+        }
+        CoursePub coursePub = this.getCoursePub(courseId);
+        if (coursePub != null) {
+            //删除课程聚合信息
+            coursePubRepository.deleteById(courseId);
+        }
+        List<Teachplan> teachplanList = teachplanRepository.findByCourseid(courseId);
+        if (!CollectionUtils.isEmpty(teachplanList)) {
+            //删除课程计划
+            teachplanRepository.deleteByCourseid(courseId);
+        }
+        List<TeachplanMedia> teachplanMediaList = teachplanMediaRepository.findByCourseId(courseId);
+        if (!CollectionUtils.isEmpty(teachplanMediaList)) {
+            //删除课程媒资信息
+            teachplanMediaRepository.deleteByCourseId(courseId);
+        }
+        List<TeachplanMediaPub> teachplanMediaPubList = teachplanMediaPubRepository.findByCourseId(courseId);
+        if (!CollectionUtils.isEmpty(teachplanMediaPubList)) {
+            //删除课程媒资聚合信息
+            teachplanMediaPubRepository.deleteByCourseId(courseId);
+        }
+        //删除课程基本信息
+        courseBaseRepository.deleteById(courseId);
+        //删除cms页面
+        cmsPageClient.deleteByCourseId(courseId);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 根据id获取课程计划
+     *
+     * @param teachplanId
+     * @return
+     */
+    public CommonResponseResult findTeachplanById(String teachplanId) {
+        Teachplan teachplan = this.getTeachplan(teachplanId);
+        return new CommonResponseResult(CommonCode.SUCCESS, teachplan);
+    }
+
+    /**
+     * 添加课程讲师
+     *
+     * @param courseTeacher
+     * @return
+     */
+    public ResponseResult addCourseTeacher(CourseTeacher courseTeacher) {
+        if (courseTeacher == null) {
+            ExceptionCast.cast(CourseCode.COURSE_PARAMS_IS_NULL);
+        }
+        if (StringUtils.isBlank(courseTeacher.getId())) {
+            ExceptionCast.cast(CourseCode.COURSE_PARAMS_IS_NULL);
+        }
+        courseTeacherRepository.save(courseTeacher);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 查询课程讲师
+     *
+     * @param courseId
+     * @return
+     */
+    public CommonResponseResult findcourseTeacher(String courseId) {
+        CourseTeacher courseTeacher = this.getCourseTeacher(courseId);
+        return new CommonResponseResult(CommonCode.SUCCESS, courseTeacher);
+    }
+
+    /**
+     * 删除课程视频映射记录
+     *
+     * @param mediaId
+     * @return
+     */
+    @Transactional
+    public ResponseResult delTeachplanMedia(String mediaId) {
+        TeachplanMedia teachplanMedia = teachplanMediaRepository.findByMediaId(mediaId);
+        if (teachplanMedia == null) {
+            ExceptionCast.cast(CommonCode.OBJECT_IS_NOT_EXISTS);
+        }
+        teachplanMediaRepository.delete(teachplanMedia);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 根据课程id查询课程
+     *
+     * @param ids
+     * @return
+     */
+    public CommonResponseResult findCourseListByIds(List<String> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        List<CoursePub> coursePubs = coursePubMapper.selectListByIds(ids);
+        return new CommonResponseResult(CommonCode.SUCCESS, coursePubs);
+    }
+
+    /**
+     * 添加课程评论
+     *
+     * @param courseEvaluate
+     * @return
+     */
+    public ResponseResult addCourseEvaluate(CourseEvaluate courseEvaluate) {
+        if (courseEvaluate == null
+                || StringUtils.isBlank(courseEvaluate.getContent())
+                || StringUtils.isBlank(courseEvaluate.getCourseId())
+                || courseEvaluate.getScore() == null
+                || StringUtils.isBlank(courseEvaluate.getUserId())) {
+            ExceptionCast.cast(CourseCode.COURSE_EVALUATE_IS_NULL);
+        }
+        courseEvaluate.setCreateTime(new Date());
+        courseEvaluateRepository.save(courseEvaluate);
+        return ResponseResult.SUCCESS();
+    }
+
+    /**
+     * @param courseId
+     * @return
+     */
+    public CommonResponseResult findCourseEvaluateList(String courseId) {
+        if (StringUtils.isBlank(courseId)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        List<CourseEvaluate> courseEvaluateList = courseEvaluateRepository.findByCourseId(courseId);
+        List<String> userIds = new ArrayList<>();
+        for (CourseEvaluate courseEvaluate : courseEvaluateList) {
+            String userId = courseEvaluate.getUserId();
+            userIds.add(userId);
+        }
+        List<McUser> mcUserList = userClient.findUserListByIds(userIds);
+        List<CourseEvaluateExt> courseEvaluateExts = new ArrayList<>();
+        double totalScore = 0;
+        for (CourseEvaluate courseEvaluate : courseEvaluateList) {
+            for (McUser mcUser : mcUserList) {
+                if (StringUtils.equals(courseEvaluate.getUserId(), mcUser.getId())) {
+                    CourseEvaluateExt courseEvaluateExt = new CourseEvaluateExt();
+                    BeanUtils.copyProperties(courseEvaluate, courseEvaluateExt);
+                    if (StringUtils.isNotBlank(mcUser.getName())) {
+                        courseEvaluateExt.setUsername(mcUser.getName());
+                    }
+                    if (StringUtils.isNotBlank(mcUser.getUserpic())) {
+                        courseEvaluateExt.setUserpic("http://mjh0523.xyz/" + mcUser.getUserpic());
+                    }
+                    courseEvaluateExts.add(courseEvaluateExt);
+                    totalScore += courseEvaluate.getScore();
+                    break;
+                }
+            }
+        }
+        int total = courseEvaluateExts.size();
+        DecimalFormat df = new DecimalFormat("0.0");
+        JSONObject result = new JSONObject();
+        result.put("total", total);
+        result.put("list", courseEvaluateExts);
+        result.put("totalScore", df.format(totalScore));
+        result.put("averageScore", df.format(totalScore / total));
+        return new CommonResponseResult(CommonCode.SUCCESS, result);
+    }
+
+    /**
+     * 删除课程评论
+     *
+     * @param id
+     * @return
+     */
+    public ResponseResult delCourseEvaluate(String id) {
+        CourseEvaluate courseEvaluate = this.getCourseEvaluate(id);
+        if (courseEvaluate == null) {
+            ExceptionCast.cast(CourseCode.COURSE_EVALUATE_IS_NULL);
+        }
+        //先判断权限
+        HttpServletRequest request = this.getRequest();
+        McOauth2Util mcOauth2Util = new McOauth2Util();
+        McOauth2Util.UserJwt userJwt = mcOauth2Util.getUserJwtFromHeader(request);
+        String companyId = userJwt.getCompanyId();
+        String courseId = courseEvaluate.getCourseId();
+        CourseBase courseBase = this.getCourseBase(courseId);
+        if (!StringUtils.equals(courseBase.getCompanyId(), companyId)) {
+            ExceptionCast.cast(CommonCode.UNAUTHORISE);
+        }
+        courseEvaluateRepository.delete(courseEvaluate);
+        return ResponseResult.SUCCESS();
+    }
+
+    /**
+     * 根据id查找课程索引
+     * @param ids
+     * @return
+     */
+    public List<CoursePub> findCoursePubByIds(List<String> ids) {
+        List<CoursePub> coursePubs = coursePubMapper.selectListByIds(ids);
+        return coursePubs;
     }
 }

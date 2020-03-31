@@ -3,12 +3,16 @@ package com.edu.filesystem;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @author Administrator
  * @version 1.0
  **/
+@EnableFeignClients
+@EnableDiscoveryClient
 @SpringBootApplication//扫描所在包及子包的bean，注入到ioc中
 @EntityScan("com.mock.framework.domain.filesystem")//扫描实体类
 @ComponentScan(basePackages={"com.edu.api"})//扫描接口

@@ -6,10 +6,14 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+/**
+ * 取出用户信息的工具
+ */
 public class McOauth2Util {
 
     public UserJwt getUserJwtFromHeader(HttpServletRequest request){
         Map<String, String> jwtClaims = Oauth2Util.getJwtClaimsFromHeader(request);
+        //检查用户id是否为空
         if(jwtClaims == null || StringUtils.isEmpty(jwtClaims.get("id"))){
             return null;
         }

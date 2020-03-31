@@ -21,10 +21,11 @@ public class McOrdersPay implements Serializable {
     @GeneratedValue(generator = "jpa-uuid")
     @Column(length = 32)
     private String id;
-    @Column(name = "order_number")
-    private String orderNumber;
-    @Column(name = "pay_number")
-    private String payNumber;
+    @Column(name = "order_id")
+    private String orderId;
+    @Column(name = "pay_id")
+    private String payId;
     private String status;
-
+    @Column(name = "pay_system")
+    private String paySystem;
 }

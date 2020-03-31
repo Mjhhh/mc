@@ -16,5 +16,12 @@ public interface McUserMapper {
      * 获取用户列表
      * @return
      */
-    List<McUser> findList(QueryMcUserRequest request);
+    List<McUser> selectList(QueryMcUserRequest request);
+
+    /**
+     * 根据ids查询用户列表
+     * @param ids
+     * @return
+     */
+    List<McUser> selectListByIds(List<String> ids);
 }

@@ -15,7 +15,6 @@ import java.io.Serializable;
 @ToString
 @Entity
 @Table(name="course_base")
-//@GenericGenerator(name = "jpa-assigned", strategy = "assigned")
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class CourseBase implements Serializable {
     private static final long serialVersionUID = -916357110051689486L;
@@ -43,10 +42,10 @@ public class CourseBase implements Serializable {
     @ApiModelProperty("")
     private String status;
     @Column(name="company_id")
-    @ApiModelProperty("")
+    @ApiModelProperty("公司id")
     private String companyId;
     @Column(name="user_id")
-    @ApiModelProperty("")
+    @ApiModelProperty("创建用户")
     private String userId;
 
 }

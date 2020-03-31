@@ -25,7 +25,6 @@ public class McUserRole {
     private String userId;
     @Column(name="role_id")
     private String roleId;
-    private String creator;
     @Column(name="create_time")
     private Date createTime;
 

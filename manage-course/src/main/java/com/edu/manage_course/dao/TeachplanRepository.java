@@ -13,4 +13,17 @@ public interface TeachplanRepository extends JpaRepository<Teachplan, String> {
      * @return 课程计划列表
      */
     List<Teachplan> findByCourseidAndParentid(String courseId, String parentId);
+
+    /**
+     * 根据课程id删除课程计划
+     * @param courseId
+     */
+    void deleteByCourseid(String courseId);
+
+    /**
+     * 根据课程id查找课程计划列表
+     * @param courseId
+     * @return
+     */
+    List<Teachplan> findByCourseid(String courseId);
 }

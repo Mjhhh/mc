@@ -47,4 +47,6 @@ public class MediaFile {
     private MediaFileProcess_m3u8 mediaFileProcess_m3u8;
     @ApiModelProperty("tag标签用于查询")
     private String tag;
+    @ApiModelProperty("组织id")
+    private String companyId;
 }

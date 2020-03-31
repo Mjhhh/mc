@@ -13,4 +13,7 @@ public interface MediaFileControllerApi {
 
     @ApiOperation("查询文件列表")
     CommonResponseResult findList(int page, int size, QueryMediaFileRequest mediaFileRequest);
+
+    @ApiOperation("删除文件")
+    ResponseResult deleteVideo(String fileId);
 }

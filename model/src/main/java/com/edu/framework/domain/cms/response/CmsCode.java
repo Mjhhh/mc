@@ -23,7 +23,10 @@ public enum CmsCode implements ResultCode {
     CMS_SITEID_IS_NOTEXISTS(false,24012,"站点ID不存在！"),
     CMS_SITE_IS_NOTEXISTS(false,24013,"站点不存在！"),
     CMS_CONFIG_IS_NOTEXISTS(false,24014,"页面配置不存在！"),
-    CMS_PIC_IS_NOTEXISTS(false,24015,"图片配置不存在！");
+    CMS_PIC_IS_NOTEXISTS(false,24015,"图片配置不存在！"),
+    CMS_CATEGORY_IS_OVERSTEP(false,24016,"分类配置必须是10个！"),
+    CMS_TEMPLATE_IS_NOTEXISTS(false,24017,"模板页面不存在！"),
+    CONFIG_COURSE_IS_ILLEGAL(false,24018,"传入课程参数非法！");
 
     /**
      * 是否成功

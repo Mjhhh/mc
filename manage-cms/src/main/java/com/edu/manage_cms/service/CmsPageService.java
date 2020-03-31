@@ -9,7 +9,7 @@ import com.edu.framework.domain.cms.response.CmsCode;
 import com.edu.framework.domain.cms.response.CmsPageResult;
 import com.edu.framework.exception.ExceptionCast;
 import com.edu.framework.model.response.*;
-import com.edu.manage_cms.config.RabbitmqConfig;
+import com.edu.manage_cms.config.RabbitMQConfig;
 import com.edu.manage_cms.dao.CmsPageRepository;
 import com.edu.manage_cms.dao.CmsSiteRepository;
 import com.edu.manage_cms.dao.CmsTemplateRepository;
@@ -42,6 +42,7 @@ import javax.annotation.Resource;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -71,6 +72,7 @@ public class CmsPageService {
 
     @Resource
     GridFSBucket gridFSBucket;
+
 
     /**
      * 保存静态页面内容
@@ -104,12 +106,30 @@ public class CmsPageService {
         CmsPage cmsPage = this.getById(pageId);
         Map<String, String> msgMap = new HashMap<>();
         msgMap.put("pageId", pageId);
+        msgMap.put("type", "post");
         //消息内容
         String msg = JSON.toJSONString(msgMap);
         //获取站点id作为routingKey
         String siteId = cmsPage.getSiteId();
         //发送消息
-        this.rabbitTemplate.convertAndSend(RabbitmqConfig.EX_ROUTING_CMS_POSTPAGE, siteId, msg);
+        this.rabbitTemplate.convertAndSend(RabbitMQConfig.EX_ROUTING_CMS_EDITPAGE, siteId, msg);
+    }
+
+    /**
+     * 发送页面删除消息给mq
+     * @param pageId 页面id
+     */
+    private void sendDeletePage(String pageId) {
+        CmsPage cmsPage = this.getById(pageId);
+        Map<String, String> msgMap = new HashMap<>();
+        msgMap.put("pageId", pageId);
+        msgMap.put("type", "delete");
+        //消息内容
+        String msg = JSON.toJSONString(msgMap);
+        //获取站点id作为routingKey
+        String siteId = cmsPage.getSiteId();
+        //发送消息
+        this.rabbitTemplate.convertAndSend(RabbitMQConfig.EX_ROUTING_CMS_EDITPAGE, siteId, msg);
     }
 
     /**
@@ -285,9 +305,6 @@ public class CmsPageService {
             ExceptionCast.cast(CmsCode.CMS_PAGE_PARAMS_ISNULL);
         }
         Optional<CmsPage> optional = cmsPageRepository.findById(pageId);
-        if (!optional.isPresent()) {
-            ExceptionCast.cast(CmsCode.CMS_PAGE_IS_NOT_EXISTS);
-        }
         return optional.orElse(null);
     }
 
@@ -304,6 +321,9 @@ public class CmsPageService {
             ExceptionCast.cast(CmsCode.CMS_PAGE_PARAMS_ISNULL);
         }
         CmsPage one = this.getById(pageId);
+        if (one == null) {
+            one = new CmsPage();
+        }
         one.setTemplateId(cmsPage.getTemplateId());
         //更新所属站点
         one.setSiteId(cmsPage.getSiteId());
@@ -317,11 +337,10 @@ public class CmsPageService {
         one.setPagePhysicalPath(cmsPage.getPagePhysicalPath());
         //更新dataUrl
         one.setDataUrl(cmsPage.getDataUrl());
+        //更新页面类型
+        one.setPageType(cmsPage.getPageType());
         //执行更新
         CmsPage save = cmsPageRepository.save(one);
-        if (save == null) {
-            ExceptionCast.cast(CmsCode.CMS_SAVE_PAGE_FAIL);
-        }
         return new CmsPageResult(CommonCode.SUCCESS, save);
     }
 
@@ -335,7 +354,8 @@ public class CmsPageService {
     public ResponseResult delete(String id) {
         Optional<CmsPage> cmsPage = cmsPageRepository.findById(id);
         if (cmsPage.isPresent()) {
-            cmsPageRepository.deleteById(id);
+            //发送删除消息
+            this.sendDeletePage(id);
             return new ResponseResult(CommonCode.SUCCESS);
         } else {
             ExceptionCast.cast(CmsCode.CMS_PAGE_IS_NOT_EXISTS);
@@ -397,8 +417,7 @@ public class CmsPageService {
     @Transactional
     public CmsPageResult save(CmsPage cmsPage) {
         //根据页面名称、站点id、页面webpath查询页面是否存在
-        CmsPage findPage = cmsPageRepository.findByPageNameAndSiteIdAndPageWebPath(
-                cmsPage.getPageName(), cmsPage.getSiteId(), cmsPage.getPageWebPath());
+        CmsPage findPage = cmsPageRepository.findByPageNameAndSiteIdAndPageWebPath(cmsPage.getPageName(), cmsPage.getSiteId(), cmsPage.getPageWebPath());
         if (findPage != null) {
             return this.update(findPage.getPageId(), cmsPage);
         } else {
@@ -444,5 +463,35 @@ public class CmsPageService {
         //页面的web访问地址
         String pageUrl = siteDomain+siteWebPath+pageWebPath+pageName;
         return new CommonResponseResult(CommonCode.SUCCESS,pageUrl);
+    }
+
+    /**
+     * 获取站点列表
+     * @return
+     */
+    public CommonResponseResult findSiteList() {
+        List<CmsSite> cmsSiteList = cmsSiteRepository.findAll();
+        return new CommonResponseResult(CommonCode.SUCCESS, cmsSiteList);
+    }
+
+    public CommonResponseResult findTemplate() {
+        List<CmsTemplate> templateList = cmsTemplateRepository.findAll();
+        return new CommonResponseResult(CommonCode.SUCCESS, templateList);
+    }
+
+    /**
+     * 根据课程id删除页面
+     *
+     * @param courseId 课程id
+     * @return 返回操作信息
+     */
+    @Transactional
+    public ResponseResult deleteByCourseId(String courseId) {
+        String pageName = courseId + ".html";
+        CmsPage cmsPage = cmsPageRepository.findByPageName(pageName);
+        if (cmsPage != null) {
+            this.sendDeletePage(cmsPage.getPageId());
+        }
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 }

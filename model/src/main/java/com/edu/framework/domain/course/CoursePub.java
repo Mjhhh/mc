@@ -1,8 +1,10 @@
 package com.edu.framework.domain.course;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
+import lombok.Value;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -51,14 +53,23 @@ public class CoursePub implements Serializable {
     @ApiModelProperty("咨询qq")
     private String qq;
     @ApiModelProperty("价格")
-    private Double price;
-    @ApiModelProperty("原价格")
-    private Double price_old;
+    private Float price;
+    @ApiModelProperty("原价")
+    private Float priceOld;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @ApiModelProperty("过期时间")
-    private String expires;
+    private Date expires;
     @ApiModelProperty("课程计划")
     private String teachplan;
     @Column(name="pub_time")
     @ApiModelProperty("课程发布时间")
     private String pubTime;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @Column(name = "start_time")
+    @ApiModelProperty("课程有效期-开始时间")
+    private Date startTime;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @Column(name = "end_time")
+    @ApiModelProperty("课程有效期-结束时间")
+    private Date endTime;
 }

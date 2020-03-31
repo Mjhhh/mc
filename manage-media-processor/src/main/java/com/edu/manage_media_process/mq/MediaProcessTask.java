@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +35,7 @@ public class MediaProcessTask {
     @Value("${manage-media.video-location}")
     String serverPath;
 
+
     @Autowired
     MediaFileRepository mediaFileRepository;
 
@@ -52,7 +54,7 @@ public class MediaProcessTask {
         MediaFile mediaFile = optional.get();
         //媒资文件类型
         String fileType = mediaFile.getFileType();
-        if (fileType == null || !StringUtils.equals(fileType, "avi")) {
+        if (fileType == null || (!StringUtils.equals(fileType, "avi") && !StringUtils.equals(fileType, "mp4"))) {
             //处理状态为无需处理
             mediaFile.setProcessStatus("303004");
             mediaFileRepository.save(mediaFile);
@@ -62,21 +64,37 @@ public class MediaProcessTask {
             mediaFile.setProcessStatus("303001");
             mediaFileRepository.save(mediaFile);
         }
-        //生成mp4
         String videoPath = serverPath + mediaFile.getFilePath() + mediaFile.getFileName();
         String mp4Name = mediaFile.getFileId() + ".mp4";
-        String mp4FolderPath = serverPath + mediaFile.getFilePath();
-        Mp4VideoUtil mp4VideoUtil = new Mp4VideoUtil(ffmpegPath, videoPath, mp4Name, mp4FolderPath);
-        String result = mp4VideoUtil.generateMp4();
-        if (result == null || !StringUtils.equals(result, "success")) {
-            //操作失败写入处理日志
-            //处理状态为处理失败
-            mediaFile.setProcessStatus("303003");
-            MediaFileProcess_m3u8 mediaFileProcess_m3u8 = new MediaFileProcess_m3u8();
-            mediaFileProcess_m3u8.setErrormsg(result);
-            mediaFile.setMediaFileProcess_m3u8(mediaFileProcess_m3u8);
-            mediaFileRepository.save(mediaFile);
-            return;
+        String result;
+        if (StringUtils.equals(fileType, "avi")) {
+            //生成mp4
+            String mp4FolderPath = serverPath + mediaFile.getFilePath();
+            Mp4VideoUtil mp4VideoUtil = new Mp4VideoUtil(ffmpegPath, videoPath, mp4Name, mp4FolderPath);
+            result = mp4VideoUtil.generateMp4();
+            if (result == null || !StringUtils.equals(result, "success")) {
+                //操作失败写入处理日志
+                //处理状态为处理失败
+                mediaFile.setProcessStatus("303003");
+                MediaFileProcess_m3u8 mediaFileProcess_m3u8 = new MediaFileProcess_m3u8();
+                mediaFileProcess_m3u8.setErrormsg(result);
+                mediaFile.setMediaFileProcess_m3u8(mediaFileProcess_m3u8);
+                mediaFileRepository.save(mediaFile);
+                return;
+            }
+        }
+        String fileMd5 = mediaFile.getFileId();
+        //删除分块文件
+        String fileFolderPath = serverPath + mediaFile.getFilePath() + "chunks";
+        File chunksPath = new File(fileFolderPath);
+        if (chunksPath.exists()) {
+            File[] files = chunksPath.listFiles();
+            if (files.length > 0) {
+                for (File file : files) {
+                    file.delete();
+                }
+            }
+            chunksPath.delete();
         }
         //生成m3u8
         //此地址为mp4的地址

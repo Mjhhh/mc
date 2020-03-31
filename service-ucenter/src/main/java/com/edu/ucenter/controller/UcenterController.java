@@ -1,12 +1,15 @@
 package com.edu.ucenter.controller;
 
 import com.edu.api.ucenter.UcenterControllerApi;
+import com.edu.framework.domain.ucenter.McCompany;
 import com.edu.framework.domain.ucenter.McMenu;
 import com.edu.framework.domain.ucenter.McRole;
 import com.edu.framework.domain.ucenter.McUser;
 import com.edu.framework.domain.ucenter.ext.McRoleExt;
 import com.edu.framework.domain.ucenter.ext.McUserExt;
+import com.edu.framework.domain.ucenter.ext.McUserExtRole;
 import com.edu.framework.domain.ucenter.request.QueryMcUserRequest;
+import com.edu.framework.domain.ucenter.response.McCompanyResult;
 import com.edu.framework.domain.ucenter.response.McUserResult;
 import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.ResponseResult;
@@ -37,8 +40,20 @@ public class UcenterController implements UcenterControllerApi {
 
     @Override
     @PutMapping("/user/edit")
-    public ResponseResult editUser(@RequestBody McUser mcUser) {
-        return ucenterService.editUser(mcUser);
+    public ResponseResult editUser(@RequestBody McUserExtRole mcUserExtRole) {
+        return ucenterService.editUser(mcUserExtRole);
+    }
+
+    @Override
+    @PutMapping("/user/editphone")
+    public ResponseResult userBindPhone(@RequestParam String phone,@RequestParam String code) {
+        return ucenterService.userBindPhone(phone, code);
+    }
+
+    @Override
+    @DeleteMapping("/user/del/{username}")
+    public ResponseResult deltUser(@PathVariable String username) {
+        return ucenterService.deltUser(username);
     }
 
     @Override
@@ -48,9 +63,33 @@ public class UcenterController implements UcenterControllerApi {
     }
 
     @Override
+    @GetMapping("/user/namelist")
+    public CommonResponseResult findUserIdAndUserNameList() {
+        return ucenterService.findUserIdAndUserNameList();
+    }
+
+    @Override
+    @GetMapping("/user/listbyids")
+    public List<McUser> findUserListByIds(@RequestParam List<String> ids) {
+        return ucenterService.findUserListByIds(ids);
+    }
+
+    @Override
     @GetMapping("/user/get/{username}")
     public McUser get(@PathVariable String username) {
         return ucenterService.get(username);
+    }
+
+    @Override
+    @GetMapping("/user/getuser/{userid}")
+    public McUser getById(@PathVariable String userid) {
+        return ucenterService.getById(userid);
+    }
+
+    @Override
+    @GetMapping("/user/getbyphone/{phone}")
+    public McUser getByPhone(@PathVariable String phone) {
+        return ucenterService.getByPhone(phone);
     }
 
     @Override
@@ -111,6 +150,60 @@ public class UcenterController implements UcenterControllerApi {
     @PostMapping("/permission/add")
     public ResponseResult addPerimission(@RequestBody McMenu mcMenu) {
         return ucenterService.addPerimission(mcMenu);
+    }
+
+    @Override
+    @PutMapping("/permission/edit")
+    public ResponseResult editPermission(@RequestBody McMenu mcMenu) {
+        return ucenterService.editPermission(mcMenu);
+    }
+
+    @Override
+    @DeleteMapping("/permission/del/{id}")
+    public ResponseResult delPermission(@PathVariable String id) {
+        return ucenterService.delPermission(id);
+    }
+
+    @Override
+    @GetMapping("/company/list/{page}/{size}")
+    public CommonResponseResult findCompanyList(@PathVariable int page,@PathVariable int size){
+        return ucenterService.findCompanyList(page, size);
+    }
+
+    @Override
+    @PostMapping("/company/add")
+    public ResponseResult addCompany(@RequestBody McCompany mcCompany) {
+        return ucenterService.addCompany(mcCompany);
+    }
+
+    @Override
+    @PutMapping("/company/edit")
+    public ResponseResult editCompany(@RequestBody McCompany mcCompany) {
+        return ucenterService.editCompany(mcCompany);
+    }
+
+    @Override
+    @GetMapping("/company/get")
+    public McCompanyResult getCompany(@RequestParam String companyId) {
+        return ucenterService.getCompany(companyId);
+    }
+
+    @Override
+    @GetMapping("/company/user/list/{page}/{size}")
+    public CommonResponseResult findCompanyUserList(@PathVariable int page,@PathVariable int size) {
+        return ucenterService.findCompanyUserList(page, size);
+    }
+
+    @Override
+    @PostMapping("/company/user/invite")
+    public ResponseResult inviteUser(@RequestParam String username,@RequestParam String name) {
+        return ucenterService.inviteUser(username, name);
+    }
+
+    @Override
+    @DeleteMapping("/company/user/delete")
+    public ResponseResult delCompanyUser(String username) {
+        return ucenterService.delCompanyUser(username);
     }
 
 

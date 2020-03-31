@@ -14,9 +14,11 @@ import lombok.ToString;
 public enum AuthCode implements ResultCode {
 
     AUTH_USERNAME_NONE(false,23001,"请输入账号！"),
+    AUTH_PHONE_NONE(false,230011,"请输入手机号码！"),
     AUTH_PASSWORD_NONE(false,23002,"请输入密码！"),
-    AUTH_VERIFYCODE_NONE(false,23003,"请输入验证码！"),
-    AUTH_ACCOUNT_NOTEXISTS(false,23004,"账号不存在！"),
+    AUTH_VERIFYCODE_NONE(false,230011,"验证码错误！"),
+    AUTH_VERIFYCODE_ERROR(false,23003,"请输入验证码！"),
+    AUTH_ACCOUNT_NOTEXISTS(false,23004,"账号不存在或者被禁用！"),
     AUTH_CREDENTIAL_ERROR(false,23005,"账号或密码错误！"),
     AUTH_LOGIN_ERROR(false,23006,"登陆过程出现异常请尝试重新操作！"),
     AUTH_LOGIN_AUTHSERVER_NOTFOUND(false,23007,"未找到授权登录服务器！"),

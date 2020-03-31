@@ -15,9 +15,13 @@ public enum OrderCode implements ResultCode {
     ORDER_ADD_ORDERNUMERROR(false,41002,"生成订单号错误！"),
     ORDER_ADD_GETCOURSEERROR(false,41003,"找不到课程信息！"),
     ORDER_FINISH_NOTFOUNDORDER(false,41004,"找不到订单信息！"),
-    Pay_NOTFOUNDORDER(false,41010,"找不到要支付的订单！"),
-    Pay_USERERROR(false,41011,"支付用户与订单用户不一致！"),
-    Pay_NOTFOUNDPAY(false,41012,"支付记录不存在！");
+    PAY_NOTFOUNDORDER(false,41010,"找不到要支付的订单！"),
+    PAY_USERERROR(false,41011,"支付用户与订单用户不一致！"),
+    PAY_NOTFOUNDPAY(false,41012,"支付记录不存在！"),
+    ORDER_ALREADY_EXISTS(false,41013,"订单已经存在！"),
+    PRICE_IS_NOT_ALLOW_NULL(false,41014,"价格不允许未空！"),
+    ORDER_IS_NOT_EXISTS(false,41015,"订单不存在！"),
+    ORDER_STATUS_ERROR(false,41016,"订单状态错误！");
 
     /**
      * 操作是否成功

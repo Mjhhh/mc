@@ -26,6 +26,8 @@ public class McLearningCourse implements Serializable {
     private String courseId;
     @Column(name = "user_id")
     private String userId;
+    private String charge;
+    private Float price;
     private String valid;
     @Column(name = "start_time")
     private Date startTime;

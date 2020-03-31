@@ -13,4 +13,8 @@ public interface TeachplanMediaRepository extends JpaRepository<TeachplanMedia, 
      * @return
      */
     List<TeachplanMedia> findByCourseId(String courseId);
+
+    void deleteByCourseId(String courseId);
+
+    TeachplanMedia findByMediaId(String mediaId);
 }

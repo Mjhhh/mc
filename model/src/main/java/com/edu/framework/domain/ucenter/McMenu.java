@@ -1,5 +1,6 @@
 package com.edu.framework.domain.ucenter;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
@@ -33,7 +34,9 @@ public class McMenu {
     private String status;
     private String icon;
     @Column(name="create_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date createTime;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @Column(name="update_time")
     private Date updateTime;
 

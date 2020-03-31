@@ -10,4 +10,20 @@ public interface McCompanyUserRepository extends JpaRepository<McCompanyUser, St
      * @return
      */
     McCompanyUser findByUserId(String userId);
+
+    /**
+     * 根据用户名和状态查询
+     * @param userId
+     * @param status
+     * @return
+     */
+    McCompanyUser findByUserIdAndStatus(String userId, String status);
+
+    /**
+     * 获取用户
+     * @param userId
+     * @param companyId
+     * @return
+     */
+    McCompanyUser findByUserIdAndCompanyId(String userId, String companyId);
 }

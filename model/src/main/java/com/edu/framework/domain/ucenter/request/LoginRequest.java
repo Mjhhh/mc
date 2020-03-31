@@ -10,9 +10,9 @@ import lombok.ToString;
 @Data
 @ToString
 public class LoginRequest extends RequestData {
-
     String username;
     String password;
     String verifycode;
-
+    String verifyEncode;
+    String phone;
 }

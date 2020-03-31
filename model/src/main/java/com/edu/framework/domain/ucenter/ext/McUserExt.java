@@ -20,4 +20,6 @@ public class McUserExt extends McUser {
 
     @ApiModelProperty("企业信息")
     private String companyId;
+
+    private String verifycode;
 }

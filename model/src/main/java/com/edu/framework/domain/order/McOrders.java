@@ -15,23 +15,28 @@ import java.util.Date;
 @ToString
 @Entity
 @Table(name="mc_orders")
-@GenericGenerator(name = "jpa-assigned", strategy = "assigned")
+@GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class McOrders implements Serializable {
     private static final long serialVersionUID = -916357210051689789L;
     @Id
-    @GeneratedValue(generator = "jpa-assigned")
-    @Column(name = "order_number",length = 32)
-    private String orderNumber;
+    @GeneratedValue(generator = "jpa-uuid")
+    @Column(name = "order_id",length = 32)
+    private String orderId;
     @Column(name = "initial_price")
     private Float initialPrice;
     private Float price;
+    @Column(name = "user_id")
+    private String userId;
+    @Column(name = "course_id")
+    private String courseId;
+    @Column(name = "course_name")
+    private String courseName;
+    private String valid;
     @Column(name = "start_time")
     private Date startTime;
     @Column(name = "end_time")
     private Date endTime;
     private String status;
-    @Column(name = "user_id")
-    private String userId;
     @Column(name = "details")
     private String details;
 

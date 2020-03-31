@@ -1,11 +1,9 @@
 package com.edu.api.course;
 
-import com.edu.framework.domain.course.CourseBase;
-import com.edu.framework.domain.course.CourseMarket;
-import com.edu.framework.domain.course.Teachplan;
-import com.edu.framework.domain.course.TeachplanMedia;
+import com.edu.framework.domain.course.*;
 import com.edu.framework.domain.course.ext.CourseView;
 import com.edu.framework.domain.course.request.CourseListRequest;
+import com.edu.framework.domain.course.response.CoursePreResult;
 import com.edu.framework.domain.course.response.CourseResult;
 import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.QueryResponseResult;
@@ -15,6 +13,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
+import java.util.List;
+
 /**
  * @author Admin
  */
@@ -22,64 +22,80 @@ import io.swagger.annotations.ApiOperation;
 public interface CourseControllerApi {
 
     @ApiOperation("课程计划查询")
-    @ApiImplicitParam(name = "courseId", value = "课程id", paramType = "path")
     CommonResponseResult findTeachplanList(String courseId);
 
     @ApiOperation("添加课程计划")
     ResponseResult addTeachplan(Teachplan teachplan);
 
     @ApiOperation("查询我的课程列表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(value = "页码", name = "page", paramType = "path", dataType = "int"),
-            @ApiImplicitParam(value = "条数", name = "size", paramType = "path", dataType = "int"),
-    })
     QueryResponseResult findCourseList(int page, int size, CourseListRequest courseListRequest);
+
+    @ApiOperation("根据课程id查找课程列表")
+    CommonResponseResult findCourseListByIds(List<String> ids);
+
+    @ApiOperation("查询课程封面预览信息")
+    CoursePreResult findCoursePreviewList(int page, int size);
 
     @ApiOperation("添加课程基础信息")
     ResponseResult addCourseBase(CourseBase courseBase);
 
+    @ApiOperation("删除课程基本信息")
+    ResponseResult delCourseBase(String courseId);
+
     @ApiOperation("获取课程基本信息")
-    @ApiImplicitParam(value = "课程ID", name = "courseId", paramType = "path", dataType = "String")
     CommonResponseResult getCourseBaseById(String courseId);
 
     @ApiOperation("更新课程基础信息")
-    @ApiImplicitParam(value = "课程ID", name = "id", paramType = "path", dataType = "String")
     ResponseResult updateCourseBase(String id, CourseBase courseBase);
 
     @ApiOperation("获取课程营销信息")
-    @ApiImplicitParam(value = "课程ID", name = "courseId", paramType = "path", dataType = "String")
     CommonResponseResult getCourseMarketById(String courseId);
 
     @ApiOperation("更新课程营销信息")
-    @ApiImplicitParam(value = "课程ID", name = "id", paramType = "path", dataType = "String")
     ResponseResult updateCourseMarket(String id, CourseMarket courseMarket);
 
     @ApiOperation("添加课程图片")
-    @ApiImplicitParams({
-            @ApiImplicitParam(value = "课程编号", name = "courseId"),
-            @ApiImplicitParam(value = "图片地址", name = "pic"),
-    })
     ResponseResult addCoursePic(String courseId, String pic);
 
-    @ApiOperation("获取课程基础信息")
-    @ApiImplicitParam(value = "课程编号", name = "courseId", paramType = "path", dataType = "String")
+    @ApiOperation("获取课程图片信息")
     CommonResponseResult findCoursePic(String courseId);
 
     @ApiOperation("删除课程图片")
     ResponseResult deleteCoursePic(String courseId);
 
-    @ApiOperation("课程视图查询")
-    @ApiImplicitParam(value = "课程编号", name = "courseId", paramType = "path", dataType = "String")
+    @ApiOperation("根据id查找课程索引")
+    List<CoursePub> findCoursePubByIds(List<String> ids);
+
+    @ApiOperation("课程模型数据查询")
     CourseView courseview(String courseId);
 
     @ApiOperation("预览课程")
-    @ApiImplicitParam(value = "课程编号", name = "courseId", paramType = "path", dataType = "String")
     CourseResult preview(String courseId);
 
     @ApiOperation("发布课程")
-    @ApiImplicitParam(value = "课程编号", name = "courseId", paramType = "path", dataType = "String")
     CourseResult publish(String courseId);
 
     @ApiOperation("保存媒资信息")
     ResponseResult savemedia(TeachplanMedia teachplanMedia);
+
+    @ApiOperation("根据id获取课程计划信息")
+    CommonResponseResult findTeachplanById(String teachplanId);
+
+    @ApiOperation("添加课程讲师")
+    ResponseResult addCourseTeacher(CourseTeacher courseTeacher);
+
+    @ApiOperation("查询课程讲师")
+    CommonResponseResult findCourseTeacher(String courseId);
+
+    @ApiOperation("删除课程视频映射记录")
+    ResponseResult delTeachplanMedia(String mediaId);
+
+    @ApiOperation("添加课程评论")
+    ResponseResult addCourseEvaluate(CourseEvaluate courseEvaluate);
+
+    @ApiOperation("获取课程评论列表")
+    CommonResponseResult findCourseEvaluateList(String courseId);
+
+    @ApiOperation("删除课程评论")
+    ResponseResult delCourseEvaluate(String id);
 }

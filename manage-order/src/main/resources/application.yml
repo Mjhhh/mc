@@ -2,7 +2,7 @@ server:
   port: 31500
 spring:
   application:
-    name: xc-service-manage-order
+    name: manage-order
   datasource:
     druid:
       url: jdbc:mysql://localhost:3306/mc_order?characterEncoding=utf-8
@@ -42,3 +42,53 @@ ribbon:
   OkToRetryOnAllOperations: false  #对所有操作请求都进行重试，如果是get则可以，如果是post，put等操作没有实现幂等的情况下是很危险的,所以设置为false
   ConnectTimeout: 5000  #请求连接的超时时间
   ReadTimeout: 6000 #请求处理的超时时间
+
+#内网穿透
+intranet:
+  penetrateUrl: http://t99z3n.natappfree.cc
+
+#支付宝支付参数
+alipay:
+  #应用ID,您的APPID，收款账号既是您的APPID对应支付宝账号,开发时使用沙箱提供的APPID，生产环境改成自己的APPID
+  app_id: 2016101800717757
+  #商户私钥，您的PKCS8格式RSA2私钥
+  app_private_key: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDKAD21kDa/t6Ngs9b5q3WAmPdlqsOn+FleWdHCPwuf/Wq55fceHCkGQRVe4IxiUOzWhnkA16d9lbqxkeWnjKH4uPigpa45plCz0RhuebVLAZSdw+MoSsAs7Rt5UHXqqd1juDZVQ8UQwBSl1CoMlUcEHTPlR9SLhiSqt4dv6dLSNpFe0CmLZbkqU/ZrIXRAfYbtcfVKQTY6+OUzlFQ2nDN1PMtQYXi/46plPJOg10Elo5uWFSufMupd5stVRRBr/fig6KDFUypOlyz5NtMWTiDUbIAQ81hkD+Kvj6ZMmwCGzJ4YKs6HyK22zZoGyiLTp+Mtv2I+WA2hhMBkVQy4Kc15AgMBAAECggEBAIHs/8QNezl6+2nSop46Czzopo/M80XRtmG6cfF3rZl9XS0u3fCO+lAcgotg8Mq39G3TVncVPpTHPqrCBa3sBa4+AyUJC/PmppfSEN3WCKay4I1NFomu8sayx24TM5T5Jv3h2YikK1enxGAZA+bOCTx7MAr0VaBcaq8nlsSD5+bur19hV1u4dIOaQfUz2qGJF20k8YJkpnM+Hn2Soin14EHk2GGBjXDvWaDygEdVLw23JSWs0OiJlC5Vb+ojcdXp3kiYA5j0LpC/MsEXsPTlAKYTC30mSmnz7w0o8aCPrkYXtVipVkKpE3RS6YQe0mLnqDvT6MEUSjeEdSE3vie9JQUCgYEA7itG8lpTqfFj72BfyWIXSNI/DFUk5zq9y11tltrn/N4Fkmk74i/caA63PsZ+w1Qx2yvvLzh5Lss35Dnv86FO/EoQwt9gRw3Dub4bw1+sGsEAvz7LQOrmLogCUiaxbhcz8WQWx/zfhvQFeJIKdyUZJsBx/e78DWERdalCbK2LorsCgYEA2R/FDjpn8zmZ2LtSQdaDGKCr6a8nRYJfzvaFMLtM9PKiOQpb8V1ndb0voFShj5OYM4s0Xp6el/qe7dBmc4zRil/amsdDPnc8h7nTGcqNj2N12XCtqprr1j4I5lAQYuQREkrQmjEz5gsXlIRfbtfS+QP2mPCOy3J7jz/mC9YaD1sCgYAKUEl0OUEiPNfNB+ld+Sd0+dXNHOrKMJsDcXpLbBNbuemX24LCWrw6rVh2GXZn0v+NtCtZaiKlShuTgIbJkBSxjCuJpM6whQISyw68uSnkxrLXlUqL9yAcp7sh/5bzY4HWVDVAV8z+NRb/j6NwYWTjbrYA/xZfJfLxm3DK8AD5/QKBgH/K2COosrgQZgGPNzny9NQQ9T4kTjv2IUfiBsCI7SGakWp7M2RbcmJ1CEwYo8Kqv0FPJHKwb23KH7KfHz3RWx9TjYnd0DE64tCLybj7Y9hKVPm2/TBV4IsHlhtgclSSIY4fpKmsXfx++ND8HGNT+iOAdqrLo3ARILJOjKrYyBvTAoGAO0OBvxDO/r8XVBNx+xMB/eJLdylVibyq0zmhBPWhMNf5WoAuukfWpIKcvWxDL2Au/+aoke9xoaCSoVvdL7ChjVed6Uan3Lj7Jny0iLb84vHnU3z5w5uThoHRV86WtdssqryDJY+KsfYLQtX7JTsjorNIkPtXGeriE45wDxyuJcc=
+  #支付宝公钥,查看地址：https://openhome.alipay.com/platform/keyManage.htm 对应APPID下的支付宝公钥。
+  #你自己的支付宝公钥，注意是支付宝公钥，不是应用公钥
+  alipay_public_key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnQy6FtHEP/mdr82v6HAMCcJu5ojT70LSlHYI5nHON/UYQAbWCEo7mVPSgWUmMoGD8zgQozgfPwpQYkQkhtwEtzcaRKmbK4NOOqIBDtNDToeyyvzGDa+dye2cYvWR7G1YDfGSLT93Uku3JLbJdb85yuWA+NCHuRJ5VZHmf+ZdIJG6g7sAydaUSoQFmtxsMeeJ/hcL9/5I2zI32esTa1rBnwuWV7JrG1n9xcxqsoRF16cT5Y7Z6Ed4HyG5KNE+Tvbnx00uWS4hbyVsIpiUOEUM5xx7X2E1iJ7xQOGJ3qy3SXYciTbBQ7OBcKq88e7yLcesglwyF43sozsaNM/rMbntwwIDAQAB
+  #服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+  notify_url: ${intranet.penetrateUrl}/order/alipay/notify/url
+  #页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问(其实就是支付成功后返回的页面)
+  return_url: http://8ybf52.natappfree.cc/course/notify/alipaynotify.html
+  #签名方式
+  sign_type: RSA2
+  #返回格式
+  format: JSON
+  #字符编码格式
+  charset: UTF-8
+  #支付宝网关，这是沙箱的网关
+  gatewayUrl: https://openapi.alipaydev.com/gateway.do
+  #支付宝网关
+  log_path:
+
+#微信支付
+wx:
+  #开发者ID
+  appID: wxab8acb865bb1637e
+  #开发者密码
+  appSecret: 86ae4a77893342f7568947e243c84d9aa
+  #商户号
+  mchID: 11473623
+  #API密钥,key设置路径：微信商户平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
+  key: 2ab9071b06b9f739b950ddb41db2690d
+  #通知链接
+  notify_url: ${intranet.penetrateUrl}/order/wxpay/notify/url
+  #连接超时时间
+  connectionTimeout: 10000
+  #请求超时时间
+  readTimeout: 10000
+
+mybatis:
+  ##开启驼峰映射
+  configuration:
+    map-underscore-to-camel-case: true

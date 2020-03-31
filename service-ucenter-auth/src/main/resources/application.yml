@@ -58,6 +58,12 @@ ribbon:
   ConnectTimeout: 5000  #请求连接的超时时间
   ReadTimeout: 6000 #请求处理的超时时间
 
+#短信配置
+sms:
+  accessKeyId: LTAIPj7LY6S5LvSg
+  accessKeySecret: SlZbmAByISpnWndtBdzlTPsyja5z2D
+
+
 
 
 

@@ -14,7 +14,10 @@ public enum LearningCode implements ResultCode {
     LEARNING_URL_ERROR(false, 23001, "获取视频播放地址失败"),
     LEARNING_GET_MEDIA_ERROR(false, 23002, "获取媒资失败"),
     CHOOSECOURSE_USERISNULl(false, 23003, "用户id为空"),
-    CHOOSECOURSE_TASKISNULL(false, 23004, "任务记录为空");
+    CHOOSECOURSE_TASKISNULL(false, 23004, "任务记录为空"),
+    COURSE_IS_NOT_EXISTS(false, 23005, "课程不存在"),
+    ORDER_IS_NOT_EXISTS(false, 23006, "订单不存在"),
+    ORDER_IS_NOT_PAY(false, 23007, "订单未支付");
 
     /**
      * 操作是否成功

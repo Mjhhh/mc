@@ -1,6 +1,7 @@
 package com.edu.api.filesystem;
 
 import com.edu.framework.domain.filesystem.response.UploadFileResult;
+import com.edu.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -20,4 +21,7 @@ public interface FileSystemControllerApi {
             @ApiImplicitParam(value = "文件元信息", name = "metadata", paramType = "query", dataType = "String"),
     })
     UploadFileResult upload(MultipartFile multipartFile, String filetag, String businesskey, String metadata);
+
+    @ApiOperation(value = "删除文件")
+    ResponseResult delete(String fileId);
 }

@@ -13,4 +13,11 @@ public interface McMenuRepository extends JpaRepository<McMenu, String> {
      * @return
      */
     List<McMenu> findByStatus(String status);
+
+    /**
+     * 根据父类获取权限
+     * @param pid
+     * @return
+     */
+    List<McMenu> findByPId(String pid);
 }

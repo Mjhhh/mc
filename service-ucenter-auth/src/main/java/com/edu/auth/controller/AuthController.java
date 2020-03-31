@@ -2,17 +2,23 @@ package com.edu.auth.controller;
 
 import com.edu.api.auth.AuthControllerApi;
 import com.edu.auth.service.AuthService;
+import com.edu.auth.util.ValidateUtil;
 import com.edu.framework.domain.ucenter.McUser;
+import com.edu.framework.domain.ucenter.ext.McUserExt;
 import com.edu.framework.domain.ucenter.request.LoginRequest;
 import com.edu.framework.domain.ucenter.response.JwtResult;
 import com.edu.framework.domain.ucenter.response.LoginResult;
+import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.ResponseResult;
+import com.edu.framework.utils.CommonUtil;
+import com.google.code.kaptcha.impl.DefaultKaptcha;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 
 @RestController
@@ -29,9 +35,15 @@ public class AuthController implements AuthControllerApi {
     }
 
     @Override
+    @PostMapping("/usermobilelogin")
+    public LoginResult mobileLogin(LoginRequest loginRequest) {
+        return authService.mobileLogin(loginRequest);
+    }
+
+    @Override
     @PostMapping("/registered")
-    public LoginResult registered(McUser mcuser){
-        return authService.registered(mcuser);
+    public LoginResult registered(McUserExt mcUserExt){
+        return authService.registered(mcUserExt);
     }
 
     @Override
@@ -45,4 +57,18 @@ public class AuthController implements AuthControllerApi {
     public JwtResult userjwt() {
         return authService.userjwt();
     }
+
+    @Override
+    @GetMapping("/mobileValidateCode")
+    public ResponseResult generateMobilevalidateCode(@RequestParam String phone) {
+        return authService.generateMobilevalidateCode(phone);
+    }
+
+    @Override
+    @GetMapping("/accountValidateCode")
+    public CommonResponseResult accountValidateCode() throws Exception {
+        return authService.accountValidateCode();
+    }
+
+
 }

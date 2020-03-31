@@ -7,10 +7,7 @@ import com.edu.framework.domain.ucenter.response.McUserResult;
 import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.ResponseResult;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = ServiceList.SERVICE_UCENTER)
 public interface UserClient {
@@ -20,4 +17,8 @@ public interface UserClient {
 
     @PostMapping("/ucenter/user/registered")
     McUserResult registered(@RequestBody McUser mcUser);
+
+    @GetMapping("/ucenter/user/get/{username}")
+    McUser get(@PathVariable String username);
+
 }

@@ -24,7 +24,11 @@ public enum CourseCode implements ResultCode {
     COURSE_PICTURE_IS_NULL(false,31202,"课程图片为空"),
     COURSE_MARKET_IS_NULL(false,31203,"课程营销计划为空"),
     COURSE_PUB_IS_NULL(false,31204,"课程发布表为空"),
-    COURSE_MEDIA_TEACHPLAN_GRADE_ERROR(false, 31205, "当前课程节点不允许操作");
+    COURSE_MEDIA_TEACHPLAN_GRADE_ERROR(false, 31205, "当前课程节点不允许操作"),
+    COURSE_CATEGORY_IS_NULL(false, 31206, "课程分类为空"),
+    COURSE_EVALUATE_IS_NULL(false, 31206, "课程评论为空"),
+    COURSE_PARAMS_IS_NULL(false, 31207, "重要参数为空"),
+    COURSE_PRICE_IS_NULL(false, 31208, "价格不能为空");
 
     /**
      * 操作是否成功

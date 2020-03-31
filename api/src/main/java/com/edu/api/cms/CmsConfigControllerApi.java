@@ -1,6 +1,7 @@
 package com.edu.api.cms;
 
 import com.edu.framework.domain.cms.CmsConfig;
+import com.edu.framework.domain.course.Category;
 import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -30,4 +31,27 @@ public interface CmsConfigControllerApi {
     @ApiOperation("删除轮播图片")
     ResponseResult deleteCarousel(String url);
 
+    @ApiOperation("获取课程分类列表")
+    CommonResponseResult findCategoryList();
+
+    @ApiOperation("添加cms分类配置信息")
+    ResponseResult addCmsConfigByCategory(List<String> ids);
+
+    @ApiOperation("获取cms分类配置信息")
+    CommonResponseResult findCategoryCmsConfig();
+
+    @ApiOperation("添加cms课程推荐配置信息")
+    ResponseResult addCmsCourseRecomment(List<String> ids);
+
+    @ApiOperation("添加cms新上好课配置信息")
+    ResponseResult addCmsNewCourse(List<String> ids);
+
+    @ApiOperation("添加课程分类信息")
+    ResponseResult addCourseCategory(Category category);
+
+    @ApiOperation("删除课程分类")
+    ResponseResult delCourseCategory(String id);
+
+    @ApiOperation("课程信息列表")
+    CommonResponseResult findCourseList(int page, int size);
 }

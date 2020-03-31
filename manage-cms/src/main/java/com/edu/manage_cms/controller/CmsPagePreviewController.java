@@ -25,10 +25,9 @@ public class CmsPagePreviewController extends BaseController {
     @Autowired
     CmsPageService cmsPageService;
 
-    @GetMapping("/cms/preview/{pageId}")
     @ApiOperation("页面预览")
-    @ApiImplicitParam(name = "pageId", value = "页面id", required = true, paramType = "path", dataType = "String")
-    public void preview(@PathVariable("pageId") String pageId) throws IOException {
+    @GetMapping("/cms/preview/{pageId}")
+    public void preview(@PathVariable String pageId) throws IOException {
         String pageHtml = cmsPageService.getPageHtml(pageId);
         if (StringUtils.isNotEmpty(pageHtml)) {
             ServletOutputStream outputStream = response.getOutputStream();

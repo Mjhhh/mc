@@ -10,20 +10,23 @@ import org.springframework.context.annotation.Configuration;
  * @author Administrator
  */
 @Configuration
-public class RabbitmqConfig {
+public class RabbitMQConfig {
     /**
      * 队列bean的名称
      */
-    public static final String QUEUE_CMS_POSTPAGE = "queue_cms_postpage";
+    public static final String QUEUE_CMS_EDITPAGE = "queue_cms_editpage";
+
     /**
      * 交换机的名称
      */
-    public static final String EX_ROUTING_CMS_POSTPAGE = "ex_routing_cms_postpage";
+    public static final String EX_ROUTING_CMS_EDITPAGE = "ex_routing_cms_editpage";
+
     /**
      * 队列的名称
      */
     @Value("${mq.queue}")
-    public String queue_cms_postpage;
+    public String queue_cms_editpage;
+
     /**
      * routingKey即站点Id
      */
@@ -35,18 +38,18 @@ public class RabbitmqConfig {
      *
      * @return the exchange
      */
-    @Bean(EX_ROUTING_CMS_POSTPAGE)
+    @Bean(EX_ROUTING_CMS_EDITPAGE)
     public Exchange EXCHANGE_TOPICS_INFORM() {
-        return ExchangeBuilder.directExchange(EX_ROUTING_CMS_POSTPAGE).durable(true).build();
+        return ExchangeBuilder.directExchange(EX_ROUTING_CMS_EDITPAGE).durable(true).build();
     }
 
     /**
      * 声明队列
      * @return
      */
-    @Bean(QUEUE_CMS_POSTPAGE)
+    @Bean(QUEUE_CMS_EDITPAGE)
     public Queue QUEUE_CMS_POSTPAGE() {
-        Queue queue = new Queue(queue_cms_postpage);
+        Queue queue = new Queue(queue_cms_editpage);
         return queue;
     }
 
@@ -58,8 +61,8 @@ public class RabbitmqConfig {
      * @return the binding
      */
     @Bean
-    public Binding BINDING_QUEUE_INFORM_SMS(@Qualifier(QUEUE_CMS_POSTPAGE) Queue queue,
-                                            @Qualifier(EX_ROUTING_CMS_POSTPAGE) Exchange exchange) {
+    public Binding BINDING_QUEUE_INFORM_SMS(@Qualifier(QUEUE_CMS_EDITPAGE) Queue queue,
+                                            @Qualifier(EX_ROUTING_CMS_EDITPAGE) Exchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(routingKey).noargs();
     }
 }

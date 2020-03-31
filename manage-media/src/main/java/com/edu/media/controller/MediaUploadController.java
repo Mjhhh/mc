@@ -24,8 +24,9 @@ public class MediaUploadController implements MediaUploadControllerApi {
                                    @RequestParam String fileName,
                                    @RequestParam Long fileSize,
                                    @RequestParam String mimetype,
-                                   @RequestParam String fileExt) {
-        return this.mediaUploadService.register(fileMd5, fileName, fileSize, mimetype, fileExt);
+                                   @RequestParam String fileExt,
+                                   @RequestParam String companyId) {
+        return this.mediaUploadService.register(fileMd5, fileName, fileSize, mimetype, fileExt, companyId);
     }
 
     @Override
@@ -50,7 +51,9 @@ public class MediaUploadController implements MediaUploadControllerApi {
                                       @RequestParam String fileName,
                                       @RequestParam Long fileSize,
                                       @RequestParam String mimetype,
-                                      @RequestParam String fileExt) {
-        return this.mediaUploadService.mergechunks(fileMd5, fileName, fileSize, mimetype, fileExt);
+                                      @RequestParam String fileExt,
+                                      @RequestParam String companyId) {
+        return this.mediaUploadService.mergechunks(fileMd5, fileName, fileSize, mimetype, fileExt, companyId);
     }
+
 }

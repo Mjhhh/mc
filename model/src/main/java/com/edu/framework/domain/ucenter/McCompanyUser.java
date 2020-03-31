@@ -25,6 +25,6 @@ public class McCompanyUser implements Serializable {
     private String companyId;
     @Column(name="user_id")
     private String userId;
-
+    private String status;
 
 }

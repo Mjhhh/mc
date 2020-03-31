@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edu.manage_course.dao.CourseBaseMapper">
+
+    <select id="selectListByIds" resultType="com.edu.framework.domain.course.CourseBase">
+        SELECT
+            *
+        FROM
+            course_base
+        WHERE
+            id
+        IN (
+        <foreach collection="list" separator="," item="id">
+            #{id}
+        </foreach>
+        )
+    </select>
+</mapper>

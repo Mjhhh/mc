@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edu.ucenter.dao.McRoleMapper">
+    <select id="selectRoleByUserId" resultType="com.edu.framework.domain.ucenter.McRole">
+        SELECT
+            *
+        FROM
+            mc_role
+        WHERE
+            id IN (
+            SELECT
+                role_id
+            FROM
+                mc_user_role
+        WHERE
+            user_id = #{userId})
+    </select>
+</mapper>

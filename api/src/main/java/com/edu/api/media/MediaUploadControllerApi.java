@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface MediaUploadControllerApi {
 
     @ApiOperation("文件上传注册")
-    ResponseResult register(String fileMd5, String fileName, Long fileSize, String mimetype, String fileExt);
+    ResponseResult register(String fileMd5, String fileName, Long fileSize, String mimetype, String fileExt, String companyId);
 
     @ApiOperation("分块检查")
     CheckChunkResult checkchunk(String fileMd5, Integer chunk, Integer chunkSize);
@@ -19,5 +19,5 @@ public interface MediaUploadControllerApi {
     ResponseResult uploadchunk(MultipartFile file, Integer chunk, String fileMd5);
 
     @ApiOperation("合并文件")
-    ResponseResult mergechunks(String fileMd5, String fileName, Long fileSize, String mimetype, String fileExt);
+    ResponseResult mergechunks(String fileMd5, String fileName, Long fileSize, String mimetype, String fileExt, String companyId);
 }

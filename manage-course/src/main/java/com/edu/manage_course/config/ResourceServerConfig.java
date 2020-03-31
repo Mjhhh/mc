@@ -21,10 +21,12 @@ import java.util.stream.Collectors;
  * @author Administrator
  * @version 1.0
  **/
+/**
+ * 激活方法上的PreAuthorize注解
+ */
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Configuration
 @EnableResourceServer
-//激活方法上的PreAuthorize注解
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     /**
@@ -44,7 +46,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     }
 
     /**
-     * 定义JJwtAccessTokenConverter，使用jwt令牌
+     * 定义JwtAccessTokenConverter，使用jwt令牌
      *
      * @return
      */

@@ -21,6 +21,7 @@
         <module>service-ucenter</module>
         <module>govern-gateway</module>
         <module>manage-order</module>
+        <module>service-message</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -47,13 +48,18 @@
         <commons-lang3.version>3.6</commons-lang3.version>
         <okhttp.version>3.9.1</okhttp.version>
         <feign-okhttp.version>8.18.0</feign-okhttp.version>
-        <lombok.version>1.16.16</lombok.version>
+        <lombok.version>1.18.10</lombok.version>
         <springfox-swagger.version>2.7.0</springfox-swagger.version>
         <fastjson.version>1.2.30</fastjson.version>
         <fastdfs-client-java.version>1.27.0.0</fastdfs-client-java.version>
         <mysql-connector-java.version>5.1.40</mysql-connector-java.version>
         <elasticsearch.version>6.2.1</elasticsearch.version>
         <guava.version>24.0-jre</guava.version>
+        <google.zxing.version>3.3.3</google.zxing.version>
+        <httpclient.version>4.5.7</httpclient.version>
+        <kaptcha.version>2.3.2</kaptcha.version>
+        <aliyun.version>4.0.3</aliyun.version>
+        <netty.version>4.1.25.Final</netty.version>
     </properties>
     <!--test-->
     <dependencyManagement>
@@ -162,6 +168,35 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+            <!-- google 生成二维码-->
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>javase</artifactId>
+                <version>${google.zxing.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
+            </dependency>
+            <!--验证码-->
+            <dependency>
+                <groupId>com.github.penggle</groupId>
+                <artifactId>kaptcha</artifactId>
+                <version>${kaptcha.version}</version>
+            </dependency>
+            <!--手机验证码-->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-core</artifactId>
+                <version>${aliyun.version}</version>
+            </dependency>
+            <!--netty-->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty.version}</version>
             </dependency>
 
         </dependencies>

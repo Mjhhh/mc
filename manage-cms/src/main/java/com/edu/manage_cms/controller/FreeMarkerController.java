@@ -24,11 +24,13 @@ public class FreeMarkerController extends BaseController {
     @RequestMapping("/freemarker/testtemplate")
     public String testTemplate(Map<String, Object> map){
         //设置模型数据
-        CourseView courseview = courseClient.courseview("4028e581617f945f01617f9dabc40000");
+        CourseView courseview = courseClient.courseview("297ec72c70fba29f0170fbbe79980002");
         map.put("courseBase", courseview.getCourseBase());
         map.put("courseMarket", courseview.getCourseMarket());
         map.put("coursePic", courseview.getCoursePic());
         map.put("teachplanNode", courseview.getTeachplanNode());
-        return "course";
+        map.put("courseTeacher", courseview.getCourseTeacher());
+        map.put("mcCompany", courseview.getMcCompany());
+        return "course_detail";
     }
 }

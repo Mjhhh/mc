@@ -54,6 +54,12 @@ public class CmsPageController implements CmsPageControllerApi {
     }
 
     @Override
+    @DeleteMapping("/delByCourseId/{courseId}")
+    public ResponseResult deleteByCourseId(@PathVariable String courseId) {
+        return cmsPageService.deleteByCourseId(courseId);
+    }
+
+    @Override
     @PostMapping("/postPage/{pageId}")
     public ResponseResult post(@PathVariable("pageId") String pageId) {
         return cmsPageService.postPage(pageId);
@@ -69,6 +75,18 @@ public class CmsPageController implements CmsPageControllerApi {
     @PostMapping("/postPageQuick")
     public CommonResponseResult postPageQuick(@RequestBody CmsPage cmsPage) {
         return cmsPageService.postPageQuick(cmsPage);
+    }
+
+    @Override
+    @GetMapping("/findSiteList")
+    public CommonResponseResult findSiteList() {
+        return cmsPageService.findSiteList();
+    }
+
+    @Override
+    @GetMapping("/findTemplate")
+    public CommonResponseResult findTemplate() {
+        return cmsPageService.findTemplate();
     }
 
 

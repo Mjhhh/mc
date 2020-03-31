@@ -10,6 +10,7 @@
             <id property="id" column="two_id"/>
             <result property="pname" column="two_pname"/>
             <result property="grade" column="two_grade"/>
+            <result property="description" column="two_description"/>
             <collection property="children" ofType="com.edu.framework.domain.course.ext.TeachplanNode">
                 <id property="id" column="three_id"/>
                 <result property="pname" column="three_pname"/>
@@ -28,6 +29,7 @@
             b.id two_id,
             b.pname two_pname,
             b.grade two_grade,
+            b.description two_description,
             c.id three_id,
             c.pname three_pname,
             c.grade three_grade,

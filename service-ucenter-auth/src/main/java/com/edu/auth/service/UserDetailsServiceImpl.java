@@ -1,7 +1,9 @@
 package com.edu.auth.service;
 
 import com.edu.auth.client.UserClient;
+import com.edu.auth.dao.McUserRepository;
 import com.edu.framework.domain.ucenter.McMenu;
+import com.edu.framework.domain.ucenter.McUser;
 import com.edu.framework.domain.ucenter.ext.McUserExt;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,15 +53,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             return null;
         }
         //取出正确密码（hash值）
-        String password = userext.getPassword();
+        String password = userext.getPassword();;
         //从数据库获取权限
         List<McMenu> permissions = userext.getPermissions();
         List<String> userPermission = new ArrayList<>();
         permissions.forEach(item -> userPermission.add(item.getCode()));
 
         String userPermissionString = StringUtils.join(userPermission.toArray(), ",");
-        UserJwt userDetails = new UserJwt(username, password,
-                AuthorityUtils.commaSeparatedStringToAuthorityList(userPermissionString));
+        UserJwt userDetails = new UserJwt(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList(userPermissionString));
         userDetails.setId(userext.getId());
         //用户类型
         userDetails.setUtype(userext.getUtype());

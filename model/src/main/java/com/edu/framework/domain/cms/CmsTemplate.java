@@ -25,7 +25,6 @@ public class CmsTemplate {
     private String templateName;
     //模版参数
     private String templateParameter;
-
     //模版文件Id
     private String templateFileId;
 }

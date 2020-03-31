@@ -102,13 +102,13 @@ public class EsCourseService {
         searchSourceBuilder.size(size);
         //布尔查询
         searchSourceBuilder.query(boolQueryBuilder);
-        //高亮设置
-        HighlightBuilder highlightBuilder = new HighlightBuilder();
-        highlightBuilder.preTags("<font class='eslight'>");
-        highlightBuilder.postTags("</font>");
-        //设置高亮字段
-        highlightBuilder.fields().add(new HighlightBuilder.Field("name"));
-        searchSourceBuilder.highlighter(highlightBuilder);
+//        //高亮设置
+//        HighlightBuilder highlightBuilder = new HighlightBuilder();
+//        highlightBuilder.preTags("<font class=\"eslight\">");
+//        highlightBuilder.postTags("</font>");
+//        //设置高亮字段
+//        highlightBuilder.fields().add(new HighlightBuilder.Field("name"));
+//        searchSourceBuilder.highlighter(highlightBuilder);
         //请求搜索
         searchRequest.source(searchSourceBuilder);
         SearchResponse searchResponse = null;
@@ -152,24 +152,32 @@ public class EsCourseService {
             //图片
             String pic = (String) sourceAsMap.get("pic");
             coursePub.setPic(pic);
-            //价格
-            Double price = null;
-            if (sourceAsMap.get("price") != null) {
-                price = (Double) sourceAsMap.get("price");
-            }
             //收费
             String charge = null;
             if (sourceAsMap.get("charge") != null) {
-                charge = (String) sourceAsMap.get("charge");
+                charge = String.valueOf(sourceAsMap.get("charge"));
             }
             coursePub.setCharge(charge);
-            //原价格
-            Double priceOld = null;
-            if (sourceAsMap.get("price_old") != null) {
-                priceOld = (Double) sourceAsMap.get("price_old");
+            //价格
+            Float price = null;
+            if (sourceAsMap.get("price") != null) {
+                price = Float.parseFloat(sourceAsMap.get("price").toString());
             }
-            coursePub.setPrice_old(priceOld);
-
+            coursePub.setPrice(price);
+            //原价格
+            Float priceOld = null;
+            if (sourceAsMap.get("price_old") != null) {
+                priceOld = Float.parseFloat(sourceAsMap.get("price_old").toString());
+            }
+            coursePub.setPriceOld(priceOld);
+            //设置等级
+            if (sourceAsMap.get("grade") != null) {
+                coursePub.setGrade(String.valueOf(sourceAsMap.get("grade")));
+            }
+            //设置描述
+            if (sourceAsMap.get("description") != null) {
+                coursePub.setDescription(String.valueOf(sourceAsMap.get("description")));
+            }
             list.add(coursePub);
         }
         QueryResult<CoursePub> queryResult = new QueryResult<>();
