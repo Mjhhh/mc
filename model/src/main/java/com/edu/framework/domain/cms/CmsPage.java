@@ -65,4 +65,6 @@ public class CmsPage {
     @ApiModelProperty("数据Url")
     private String dataUrl;
 
+    @ApiModelProperty("页面状态")
+    private String status;
 }

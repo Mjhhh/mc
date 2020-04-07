@@ -9,6 +9,7 @@ import com.edu.framework.domain.cms.response.CmsCode;
 import com.edu.framework.domain.cms.response.CmsPageResult;
 import com.edu.framework.exception.ExceptionCast;
 import com.edu.framework.model.response.*;
+import com.edu.manage_cms.client.CourseClient;
 import com.edu.manage_cms.config.RabbitMQConfig;
 import com.edu.manage_cms.dao.CmsPageRepository;
 import com.edu.manage_cms.dao.CmsSiteRepository;
@@ -72,6 +73,9 @@ public class CmsPageService {
 
     @Resource
     GridFSBucket gridFSBucket;
+
+    @Autowired
+    CourseClient courseClient;
 
 
     /**
@@ -289,6 +293,8 @@ public class CmsPageService {
         }
         //主键由spring data自动生成
         cmsPage.setPageId(null);
+        //页面默认审核中
+        cmsPage.setStatus("0");
         cmsPageRepository.save(cmsPage);
         //返回结果
         return new CmsPageResult(CommonCode.SUCCESS, cmsPage);
@@ -339,6 +345,20 @@ public class CmsPageService {
         one.setDataUrl(cmsPage.getDataUrl());
         //更新页面类型
         one.setPageType(cmsPage.getPageType());
+        //更新页面状态
+        //如果状态值不为空，且状态值与原先不相等，那么更新
+        if (StringUtils.isNotBlank(cmsPage.getStatus())
+                && !StringUtils.equals(cmsPage.getStatus(),one.getStatus())) {
+            one.setStatus(cmsPage.getStatus());
+            //如果是审核通过，那么调整课程状态,且页面为动态
+            if (StringUtils.equals(cmsPage.getStatus(), "1") && StringUtils.equals(one.getPageType(),"1")) {
+                //获取课程id
+                String[] split = one.getPageName().split("\\.");
+                //发布页面
+                this.postPage(pageId);
+                courseClient.updateCourseBaseCheckPass(split[0]);
+            }
+        }
         //执行更新
         CmsPage save = cmsPageRepository.save(one);
         return new CmsPageResult(CommonCode.SUCCESS, save);
@@ -441,11 +461,11 @@ public class CmsPageService {
         CmsPage postPage = cmsPageResult.getCmsPage();
         //要发布的页面ID
         String pageId = postPage.getPageId();
-        //发布页面
-        ResponseResult responseResult = this.postPage(pageId);
-        if (!responseResult.isSuccess()) {
-            return new CommonResponseResult(CmsCode.CMS_PAGE_POST_FAIL, null);
-        }
+//        //发布页面
+//        ResponseResult responseResult = this.postPage(pageId);
+//        if (!responseResult.isSuccess()) {
+//            return new CommonResponseResult(CmsCode.CMS_PAGE_POST_FAIL, null);
+//        }
         //得到页面的url
         //页面url=站点域名+站点webpath+页面webpath+页面名称
         //站点id

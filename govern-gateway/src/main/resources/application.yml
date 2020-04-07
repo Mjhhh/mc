@@ -40,6 +40,11 @@ ribbon:
   ReadTimeout: 6000 #请求处理的超时时间
 zuul:
   routes:
+    service-netty:
+      path: /chat/**
+      serviceId: service-message
+      sensitiveHeaders:
+      strip‐prefix: false
     service-message:
       path: /msg/**
       serviceId: service-message
@@ -80,8 +85,8 @@ zuul:
       serviceId: manage-cms
       strip‐prefix: false
       sensitiveHeaders:
-    #路由名称，名称任意，保持所有路由名称唯一
-    manage‐course:
+
+    manage‐course: #路由名称，名称任意，保持所有路由名称唯一
       #指定服务id，从Eureka中找到服务的ip和端口
       path: /course/**
       serviceId: manage-course

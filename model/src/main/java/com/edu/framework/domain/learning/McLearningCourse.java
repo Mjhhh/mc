@@ -1,5 +1,6 @@
 package com.edu.framework.domain.learning;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
@@ -30,8 +31,10 @@ public class McLearningCourse implements Serializable {
     private Float price;
     private String valid;
     @Column(name = "start_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date startTime;
     @Column(name = "end_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date endTime;
     private String status;
 

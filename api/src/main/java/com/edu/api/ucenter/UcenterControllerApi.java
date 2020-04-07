@@ -34,6 +34,9 @@ public interface UcenterControllerApi {
     @ApiOperation("用户绑定手机号码")
     ResponseResult userBindPhone(String phone, String code);
 
+    @ApiOperation("用户修改密码")
+    ResponseResult changePassword(String oldPassword, String newPassword);
+
     @ApiOperation("删除用户信息")
     ResponseResult deltUser(String username);
 

@@ -81,6 +81,12 @@ public class CourseController implements CourseControllerApi {
     }
 
     @Override
+    @PutMapping("/coursebase/checkpass/{id}")
+    public ResponseResult updateCourseBaseCheckPass(@PathVariable String id) {
+        return courseService.updateCourseBaseCheckPass(id);
+    }
+
+    @Override
     @GetMapping("/coursemarket/get/{courseId}")
     public CommonResponseResult getCourseMarketById(@PathVariable String courseId) {
         return courseService.getCourseMarketById(courseId);
@@ -181,6 +187,42 @@ public class CourseController implements CourseControllerApi {
     @DeleteMapping("/courseevaluate/list/{id}")
     public ResponseResult delCourseEvaluate(@PathVariable String id) {
         return courseService.delCourseEvaluate(id);
+    }
+
+    @Override
+    @GetMapping("/coursequestion/list/{courseId}")
+    public CommonResponseResult findCourseQuestionList(@PathVariable String courseId) {
+        return courseService.findCourseQuestionList(courseId);
+    }
+
+    @Override
+    @PostMapping("/coursequestion/add")
+    public ResponseResult addCourseQuestion(@RequestBody CourseQuestion courseQuestion) {
+        return courseService.addCourseQuestion(courseQuestion);
+    }
+
+    @Override
+    @DeleteMapping("/coursequestion/delete/{id}")
+    public ResponseResult delCourseQuestion(@PathVariable String id) {
+        return courseService.delCourseQuestion(id);
+    }
+
+    @Override
+    @GetMapping("/courseanswer/list/{questionId}")
+    public CommonResponseResult findCourseAnswerList(@PathVariable String questionId) {
+        return courseService.findCourseAnswerList(questionId);
+    }
+
+    @Override
+    @PostMapping("/courseanswer/add")
+    public ResponseResult addCourseAnswer(@RequestBody CourseAnswer courseAnswer) {
+        return courseService.addCourseAnswer(courseAnswer);
+    }
+
+    @Override
+    @DeleteMapping("/courseanswer/delete/{id}")
+    public ResponseResult delCourseAnswer(@PathVariable String id) {
+        return courseService.delCourseAnswer(id);
     }
 
 

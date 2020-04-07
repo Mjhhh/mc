@@ -425,7 +425,9 @@ public class UcenterService {
             updateUser.setUtype(mcUserExtRole.getUtype());
         }
         if (StringUtils.isNotBlank(mcUserExtRole.getBirthday())) {
-            updateUser.setBirthday(mcUserExtRole.getBirthday());
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            String date = format.format(new Date(Long.parseLong(mcUserExtRole.getBirthday())));
+            updateUser.setBirthday(date);
         }
         if (StringUtils.isNotBlank(mcUserExtRole.getSex())) {
             updateUser.setSex(mcUserExtRole.getSex());
@@ -1072,5 +1074,32 @@ public class UcenterService {
             array.add(object);
         }
         return new CommonResponseResult(CommonCode.SUCCESS, array);
+    }
+
+    /**
+     * 用户修改密码
+     * @param oldPassword
+     * @param newPassword
+     * @return
+     */
+    public ResponseResult changePassword(String oldPassword, String newPassword) {
+        if (StringUtils.isBlank(oldPassword) || StringUtils.isBlank(newPassword)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        String userId = this.getUserId();
+        McUser mcUser = this.getMcUserById(userId);
+        if (mcUser == null) {
+            ExceptionCast.cast(UcenterCode.UCENTER_ACCOUNT_NOTEXISTS);
+        }
+        //校验旧密码
+        String encodeOldPassword = BCryptUtil.encode(oldPassword);
+        boolean isEquals = BCryptUtil.matches(encodeOldPassword, mcUser.getPassword());
+        if (!isEquals) {
+            ExceptionCast.cast(UcenterCode.UCENTER_PASSWORD_ERROR);
+        }
+        String encodeNewPassword = BCryptUtil.encode(newPassword);
+        mcUser.setPassword(encodeNewPassword);
+        mcUserRepository.save(mcUser);
+        return ResponseResult.SUCCESS();
     }
 }

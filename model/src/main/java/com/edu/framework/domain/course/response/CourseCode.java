@@ -28,6 +28,7 @@ public enum CourseCode implements ResultCode {
     COURSE_CATEGORY_IS_NULL(false, 31206, "课程分类为空"),
     COURSE_EVALUATE_IS_NULL(false, 31206, "课程评论为空"),
     COURSE_PARAMS_IS_NULL(false, 31207, "重要参数为空"),
+    YOU_NOT_HAVE_AUTHORITY(false, 31209, "你没有权限进行操作"),
     COURSE_PRICE_IS_NULL(false, 31208, "价格不能为空");
 
     /**

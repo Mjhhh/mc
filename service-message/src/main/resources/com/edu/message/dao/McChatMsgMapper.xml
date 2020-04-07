@@ -6,18 +6,23 @@
         SELECT
             *
         FROM
-            chat_msg
+            mc_chat_msg
         WHERE
             accept_user_id = #{userId}
             OR send_user_id = #{userId}
+        ORDER BY
+            create_time ASC
     </select>
+
     <select id="selectListByUserIdAndUserName" resultType="com.edu.framework.domain.message.McChatMsg">
         SELECT
             *
         FROM
-            chat_msg
+            mc_chat_msg
         WHERE
             ( accept_user_id = #{userId} AND send_user_name like '%${findName}%' )
             OR ( accept_user_name like '%${findName}%' AND send_user_id = #{userId} )
+        ORDER BY
+            create_time ASC
     </select>
 </mapper>

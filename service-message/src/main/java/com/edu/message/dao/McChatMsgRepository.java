@@ -8,6 +8,4 @@ import java.util.List;
 
 public interface McChatMsgRepository extends JpaRepository<McChatMsg, String> {
     List<McChatMsg> findByAcceptUserIdAndSignFlag(String acceptUserId, Integer SignFlag);
-
-
 }

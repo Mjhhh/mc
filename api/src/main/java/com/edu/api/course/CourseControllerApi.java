@@ -48,6 +48,9 @@ public interface CourseControllerApi {
     @ApiOperation("更新课程基础信息")
     ResponseResult updateCourseBase(String id, CourseBase courseBase);
 
+    @ApiOperation("课程审核通过")
+    ResponseResult updateCourseBaseCheckPass(String id);
+
     @ApiOperation("获取课程营销信息")
     CommonResponseResult getCourseMarketById(String courseId);
 
@@ -98,4 +101,22 @@ public interface CourseControllerApi {
 
     @ApiOperation("删除课程评论")
     ResponseResult delCourseEvaluate(String id);
+
+    @ApiOperation("课程问题列表")
+    CommonResponseResult findCourseQuestionList(String courseId);
+
+    @ApiOperation("添加课程问题")
+    ResponseResult addCourseQuestion(CourseQuestion courseQuestion);
+
+    @ApiOperation("删除课程问题")
+    ResponseResult delCourseQuestion(String id);
+
+    @ApiOperation("课程回答列表")
+    CommonResponseResult findCourseAnswerList(String questionId);
+
+    @ApiOperation("添加课程回答")
+    ResponseResult addCourseAnswer(CourseAnswer courseAnswer);
+
+    @ApiOperation("删除课程回答")
+    ResponseResult delCourseAnswer(String id);
 }

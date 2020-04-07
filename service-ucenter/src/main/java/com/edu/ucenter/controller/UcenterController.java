@@ -51,6 +51,12 @@ public class UcenterController implements UcenterControllerApi {
     }
 
     @Override
+    @PutMapping("/user/changepassword")
+    public ResponseResult changePassword(@RequestParam String oldPassword,@RequestParam String newPassword) {
+        return ucenterService.changePassword(oldPassword, newPassword);
+    }
+
+    @Override
     @DeleteMapping("/user/del/{username}")
     public ResponseResult deltUser(@PathVariable String username) {
         return ucenterService.deltUser(username);

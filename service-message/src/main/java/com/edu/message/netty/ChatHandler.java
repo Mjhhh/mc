@@ -11,6 +11,7 @@ import com.edu.message.dao.McChatMsgMapper;
 import com.edu.message.dao.McChatMsgRepository;
 import com.edu.message.enums.MsgActionEnum;
 import com.edu.message.service.ChatMsgService;
+import com.edu.message.utils.JsonUtils;
 import com.edu.message.utils.SpringUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -75,8 +76,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         Channel currentChannel = ctx.channel();
 
         // 1. 获取客户端发来的消息
-        DataContent dataContent = JSON.parseObject(JSONObject.toJSONString(content), DataContent.class);
-//        DataContent dataContent = JsonUtils.jsonToPojo(content, DataContent.class);
+        DataContent dataContent = JsonUtils.jsonToPojo(content, DataContent.class);
         assert dataContent != null;
         Integer action = dataContent.getAction();
 
@@ -129,8 +129,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
             Channel findChannel = users.find(receiverChannel.id());
             if (findChannel != null) {
                 // 用户在线,发送消息
-//                receiverChannel.writeAndFlush(new TextWebSocketFrame(JsonUtils.objectToJson(dataContent)));
-                receiverChannel.writeAndFlush(new TextWebSocketFrame(JSONObject.toJSONString(dataContent)));
+                receiverChannel.writeAndFlush(new TextWebSocketFrame(JsonUtils.objectToJson(dataContent)));
             }
         }
     }
@@ -146,8 +145,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
             userChatMsg.setCreateTime(new Date());
             if (findChannel != null) {
                 // 用户在线,发送消息
-//                receiverChannel.writeAndFlush(new TextWebSocketFrame(JsonUtils.objectToJson(dataContent)));
-                receiverChannel.writeAndFlush(new TextWebSocketFrame(JSONObject.toJSONString(dataContent)));
+                receiverChannel.writeAndFlush(new TextWebSocketFrame(JsonUtils.objectToJson(dataContent)));
             }
         }
     }
@@ -178,8 +176,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
      */
     public static void pushSysMessage(DataContent dataContent) {
         for (Channel receiverChannel : users) {
-//            receiverChannel.writeAndFlush(new TextWebSocketFrame(JsonUtils.objectToJson(dataContent)));
-            receiverChannel.writeAndFlush(new TextWebSocketFrame(JSONObject.toJSONString(dataContent)));
+            receiverChannel.writeAndFlush(new TextWebSocketFrame(JsonUtils.objectToJson(dataContent)));
         }
     }
 

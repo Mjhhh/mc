@@ -14,8 +14,8 @@ public class SendMessageAction implements Action {
      */
     @Override
     public void doAction(Channel currentChannel, DataContent dataContent) {
-        String receiverId = dataContent.getUserChatMsg().getAcceptUserId();
-        Channel receiverChannel = UserChannelRel.get(receiverId);
+        String acceptUserId = dataContent.getUserChatMsg().getAcceptUserId();
+        Channel receiverChannel = UserChannelRel.get(acceptUserId);
         //发送聊天记录
         ChatHandler.sendMsg(receiverChannel, dataContent);
     }

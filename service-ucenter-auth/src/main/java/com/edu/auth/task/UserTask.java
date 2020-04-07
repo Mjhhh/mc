@@ -37,14 +37,4 @@ public class UserTask {
             }
         }
     }
-
-    @Async
-    @Scheduled(cron = "0 0/5 * * * *")
-    public void clearUserSalt() {
-        List<McUser> mcUserList = mcUserRepository.findAll();
-        for (McUser mcUser : mcUserList) {
-            mcUser.setSalt(null);
-        }
-        mcUserRepository.saveAll(mcUserList);
-    }
 }

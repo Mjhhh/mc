@@ -3,13 +3,9 @@ package com.edu.manage_course.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.edu.framework.domain.cms.CmsPage;
-import com.edu.framework.domain.cms.response.CmsCode;
 import com.edu.framework.domain.cms.response.CmsPageResult;
 import com.edu.framework.domain.course.*;
-import com.edu.framework.domain.course.ext.CourseEvaluateExt;
-import com.edu.framework.domain.course.ext.CourseInfo;
-import com.edu.framework.domain.course.ext.CourseView;
-import com.edu.framework.domain.course.ext.TeachplanNode;
+import com.edu.framework.domain.course.ext.*;
 import com.edu.framework.domain.course.request.CourseListRequest;
 import com.edu.framework.domain.course.response.CourseCode;
 import com.edu.framework.domain.course.response.CoursePreResult;
@@ -41,10 +37,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CourseService {
@@ -109,6 +102,27 @@ public class CourseService {
 
     @Autowired
     CourseEvaluateRepository courseEvaluateRepository;
+
+    @Autowired
+    CourseQuestionRepository courseQuestionRepository;
+
+    @Autowired
+    CourseAnswerRepository courseAnswerRepository;
+
+    /**
+     * 获取用户id
+     *
+     * @return
+     */
+    private String getUserId() {
+        HttpServletRequest request = this.getRequest();
+        McOauth2Util mcOauth2Util = new McOauth2Util();
+        McOauth2Util.UserJwt userJwt = mcOauth2Util.getUserJwtFromHeader(request);
+        if (StringUtils.isBlank(userJwt.getId())) {
+            ExceptionCast.cast(CommonCode.UNAUTHENTICATED);
+        }
+        return userJwt.getId();
+    }
 
     /**
      * 获取课程视频映射记录
@@ -703,21 +717,21 @@ public class CourseService {
         CmsPage cmsPage = this.setCmsPageAttribute(courseId);
         //一键发布页面
         CommonResponseResult commonResponseResult = cmsPageClient.postPageQuick(cmsPage);
-        if (!commonResponseResult.isSuccess()) {
-            ExceptionCast.cast(CmsCode.CMS_PAGE_POST_FAIL);
-        }
-        //更新课程状态-已发布
-        CourseBase courseBase = this.saveCourseBaseStatus(courseId, "202002");
-        //创建课程索引信息
-        CoursePub coursePub = this.createCoursePub(courseId);
-        //向数据库保存课程索引信息
-        CoursePub newCoursePub = this.saveCoursePub(courseId, coursePub);
-        if (newCoursePub == null) {
-            //创建课程索引信息失败
-            ExceptionCast.cast(CourseCode.COURSE_PUB_IS_NULL);
-        }
-        //保存课程计划媒资信息到待索引表
-        this.saveTeachplanMediaPub(courseId);
+//        if (!commonResponseResult.isSuccess()) {
+//            ExceptionCast.cast(CmsCode.CMS_PAGE_POST_FAIL);
+//        }
+        //更新课程状态-审核中
+        CourseBase courseBase = this.saveCourseBaseStatus(courseId, "202004");
+//        //创建课程索引信息
+//        CoursePub coursePub = this.createCoursePub(courseId);
+//        //向数据库保存课程索引信息
+//        CoursePub newCoursePub = this.saveCoursePub(courseId, coursePub);
+//        if (newCoursePub == null) {
+//            //创建课程索引信息失败
+//            ExceptionCast.cast(CourseCode.COURSE_PUB_IS_NULL);
+//        }
+//        //保存课程计划媒资信息到待索引表
+//        this.saveTeachplanMediaPub(courseId);
         //页面url
         String pageUrl = (String) commonResponseResult.getData();
         return new CourseResult(CommonCode.SUCCESS, pageUrl);
@@ -939,13 +953,16 @@ public class CourseService {
         if (StringUtils.isBlank(courseId)) {
             ExceptionCast.cast(CommonCode.MISS_PARAM);
         }
-        List<CourseEvaluate> courseEvaluateList = courseEvaluateRepository.findByCourseId(courseId);
+        List<CourseEvaluate> courseEvaluateList = courseEvaluateRepository.selectByCourseId(courseId);
         List<String> userIds = new ArrayList<>();
         for (CourseEvaluate courseEvaluate : courseEvaluateList) {
             String userId = courseEvaluate.getUserId();
             userIds.add(userId);
         }
-        List<McUser> mcUserList = userClient.findUserListByIds(userIds);
+        List<McUser> mcUserList = new ArrayList<>();
+        if (userIds.size() > 0) {
+            mcUserList = userClient.findUserListByIds(userIds);
+        }
         List<CourseEvaluateExt> courseEvaluateExts = new ArrayList<>();
         double totalScore = 0;
         for (CourseEvaluate courseEvaluate : courseEvaluateList) {
@@ -1008,5 +1025,198 @@ public class CourseService {
     public List<CoursePub> findCoursePubByIds(List<String> ids) {
         List<CoursePub> coursePubs = coursePubMapper.selectListByIds(ids);
         return coursePubs;
+    }
+
+    /**
+     * 课程审核通过
+     * @param courseId
+     * @return
+     */
+    @Transactional
+    public ResponseResult updateCourseBaseCheckPass(String courseId) {
+        CourseBase course = this.getCourseBase(courseId);
+        if (course == null) {
+            ExceptionCast.cast(CourseCode.COURSE_PUBLISH_IS_NULL);
+        }
+        //课程审核通过-发布
+        course.setStatus("202002");
+        courseBaseRepository.save(course);
+        //创建课程索引信息
+        CoursePub coursePub = this.createCoursePub(courseId);
+        //向数据库保存课程索引信息
+        CoursePub newCoursePub = this.saveCoursePub(courseId, coursePub);
+        if (newCoursePub == null) {
+            //创建课程索引信息失败
+            ExceptionCast.cast(CourseCode.COURSE_PUB_IS_NULL);
+        }
+        //保存课程计划媒资信息到待索引表
+        this.saveTeachplanMediaPub(courseId);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 课程问题列表
+     * @param courseId
+     * @return
+     */
+    public CommonResponseResult findCourseQuestionList(String courseId) {
+        if (StringUtils.isBlank(courseId)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+
+        List<CourseQuestion> courseQuestionList = courseQuestionRepository.selectByCourseId(courseId);
+
+        List<String> userIds = new ArrayList<>();
+        for (CourseQuestion courseQuestion : courseQuestionList) {
+            String userId = courseQuestion.getUserId();
+            userIds.add(userId);
+        }
+        List<McUser> mcUserList = new ArrayList<>();
+        if (userIds.size() > 0) {
+            mcUserList = userClient.findUserListByIds(userIds);
+        }
+        List<CourseQuestionExt> courseQuestionExts = new ArrayList<>();
+        Random random = new Random();
+        for (CourseQuestion courseQuestion : courseQuestionList) {
+            for (McUser mcUser : mcUserList) {
+                if (StringUtils.equals(courseQuestion.getUserId(), mcUser.getId())) {
+                    CourseQuestionExt courseQuestionExt = new CourseQuestionExt();
+                    BeanUtils.copyProperties(courseQuestion, courseQuestionExt);
+                    if (StringUtils.isNotBlank(mcUser.getName())) {
+                        courseQuestionExt.setUsername(mcUser.getName());
+                    }
+                    if (StringUtils.isNotBlank(mcUser.getUserpic())) {
+                        courseQuestionExt.setUserpic("http://mjh0523.xyz/" + mcUser.getUserpic());
+                    }
+                    List<CourseAnswer> courseAnswerList = courseAnswerRepository.findByQuestionId(courseQuestion.getId());
+                    courseQuestionExt.setAnswerTotal(courseAnswerList.size());
+                    courseQuestionExt.setLookNum(random.nextInt(900)+100);
+
+                    courseQuestionExts.add(courseQuestionExt);
+                    break;
+                }
+            }
+        }
+
+        return new CommonResponseResult(CommonCode.SUCCESS, courseQuestionExts);
+    }
+
+    /**
+     * 添加课程问题
+     * @param courseQuestion
+     * @return
+     */
+    public ResponseResult addCourseQuestion(CourseQuestion courseQuestion) {
+        if (courseQuestion == null
+                || StringUtils.isBlank(courseQuestion.getUserId())
+                || StringUtils.isBlank(courseQuestion.getCourseId())) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        courseQuestion.setCreateTime(new Date());
+        courseQuestionRepository.save(courseQuestion);
+        return ResponseResult.SUCCESS();
+    }
+
+    /**
+     * 删除课程评论
+     * @param id
+     * @return
+     */
+    public ResponseResult delCourseQuestion(String id) {
+        if (StringUtils.isBlank(id)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        String userId = this.getUserId();
+        Optional<CourseQuestion> optional = courseQuestionRepository.findById(id);
+        if (!optional.isPresent()) {
+            ExceptionCast.cast(CommonCode.OBJECT_IS_NOT_EXISTS);
+        }
+        CourseQuestion courseQuestion = optional.get();
+        if (!StringUtils.equals(courseQuestion.getUserId(), userId)) {
+            ExceptionCast.cast(CourseCode.YOU_NOT_HAVE_AUTHORITY);
+        }
+        courseQuestionRepository.deleteById(id);
+        return ResponseResult.SUCCESS();
+    }
+
+    /**
+     * 课程回答列表
+     * @param questionId
+     * @return
+     */
+    public CommonResponseResult findCourseAnswerList(String questionId) {
+        if (StringUtils.isBlank(questionId)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+
+        List<CourseAnswer> courseAnswerList = courseAnswerRepository.findByQuestionId(questionId);
+
+        List<String> userIds = new ArrayList<>();
+        for (CourseAnswer courseAnswer : courseAnswerList) {
+            String userId = courseAnswer.getUserId();
+            userIds.add(userId);
+        }
+        List<McUser> mcUserList = new ArrayList<>();
+        if (userIds.size() > 0) {
+            mcUserList = userClient.findUserListByIds(userIds);
+        }
+        List<CourseAnswerExt> courseAnswerExts = new ArrayList<>();
+        for (CourseAnswer courseAnswer : courseAnswerList) {
+            for (McUser mcUser : mcUserList) {
+                if (StringUtils.equals(courseAnswer.getUserId(), mcUser.getId())) {
+                    CourseAnswerExt courseAnswerExt = new CourseAnswerExt();
+                    BeanUtils.copyProperties(courseAnswer, courseAnswerExt);
+                    if (StringUtils.isNotBlank(mcUser.getName())) {
+                        courseAnswerExt.setUsername(mcUser.getName());
+                    }
+                    if (StringUtils.isNotBlank(mcUser.getUserpic())) {
+                        courseAnswerExt.setUserpic("http://mjh0523.xyz/" + mcUser.getUserpic());
+                    }
+
+                    courseAnswerExts.add(courseAnswerExt);
+                    break;
+                }
+            }
+        }
+
+        return new CommonResponseResult(CommonCode.SUCCESS, courseAnswerExts);
+    }
+
+    /**
+     * 添加课程回答
+     * @param courseAnswer
+     * @return
+     */
+    public ResponseResult addCourseAnswer(CourseAnswer courseAnswer) {
+        if (courseAnswer == null
+                || StringUtils.isBlank(courseAnswer.getQuestionId())
+                || StringUtils.isBlank(courseAnswer.getUserId())) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        courseAnswer.setCreateTime(new Date());
+        courseAnswerRepository.save(courseAnswer);
+        return ResponseResult.SUCCESS();
+    }
+
+    /**
+     * 删除课程回答
+     * @param id
+     * @return
+     */
+    public ResponseResult delCourseAnswer(String id) {
+        if (StringUtils.isBlank(id)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        String userId = this.getUserId();
+        Optional<CourseAnswer> optional = courseAnswerRepository.findById(id);
+        if (!optional.isPresent()) {
+            ExceptionCast.cast(CommonCode.OBJECT_IS_NOT_EXISTS);
+        }
+        CourseAnswer courseAnswer = optional.get();
+        if (!StringUtils.equals(courseAnswer.getUserId(), userId)) {
+            ExceptionCast.cast(CourseCode.YOU_NOT_HAVE_AUTHORITY);
+        }
+        courseAnswerRepository.deleteById(id);
+        return ResponseResult.SUCCESS();
     }
 }

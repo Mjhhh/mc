@@ -21,9 +21,9 @@ import org.springframework.web.client.RestTemplate;
 @ComponentScan(basePackages={"com.edu.api"})//扫描接口
 @ComponentScan(basePackages={"com.edu.framework"})//扫描common下的所有类
 @SpringBootApplication
-public class MessageApplication {
-    public static void main(String[] args) throws Exception {
-        SpringApplication.run(MessageApplication.class, args);
+public class ManageMessageApplication {
+    public static void main(String[] args){
+        SpringApplication.run(ManageMessageApplication.class, args);
         WSServer.getInstance().start();
 
     }

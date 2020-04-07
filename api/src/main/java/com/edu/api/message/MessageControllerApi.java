@@ -11,7 +11,7 @@ import java.util.List;
 @Api(value = "消息接口管理", tags = "消息接口管理")
 public interface MessageControllerApi {
 
-    @ApiOperation("发布公告")
+    @ApiOperation("公告列表")
     CommonResponseResult msgList();
 
     @ApiOperation("发布公告")

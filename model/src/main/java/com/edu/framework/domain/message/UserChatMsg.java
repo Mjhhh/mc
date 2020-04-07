@@ -1,5 +1,6 @@
 package com.edu.framework.domain.message;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.ToString;
 
@@ -44,5 +45,6 @@ public class UserChatMsg implements Serializable {
     /**
      * 发送时间
      */
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 }

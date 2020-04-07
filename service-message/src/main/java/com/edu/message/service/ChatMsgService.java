@@ -19,6 +19,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -71,7 +72,7 @@ public class ChatMsgService {
         for (McChatMsg chatMsg : chatMsgList) {
             UserChatMsg userChatMsg = new UserChatMsg();
             BeanUtils.copyProperties(chatMsg, userChatMsg);
-
+            userChatMsg.setMsgId(chatMsg.getId());
             result.add(userChatMsg);
         }
         return new CommonResponseResult(CommonCode.SUCCESS, result);
@@ -98,6 +99,7 @@ public class ChatMsgService {
             }
         }
         //装配返回的数据
+        SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         JSONArray returnData = new JSONArray();
         for (String key : keys) {
             List<UserChatMsg> userChatMsgList = new ArrayList<>();
@@ -114,6 +116,7 @@ public class ChatMsgService {
                     }
                     UserChatMsg userChatMsg = new UserChatMsg();
                     BeanUtils.copyProperties(chatMsg, userChatMsg);
+                    userChatMsg.setMsgId(chatMsg.getId());
 
                     userChatMsgList.add(userChatMsg);
                 }
@@ -122,17 +125,20 @@ public class ChatMsgService {
             JSONArray message = new JSONArray();
             for (UserChatMsg userChatMsg : userChatMsgList) {
                 JSONObject messageBody = new JSONObject();
+                messageBody.put("sendUserId", userChatMsg.getSendUserId());
                 messageBody.put("sendUserName", userChatMsg.getSendUserName());
+                messageBody.put("acceptUserId", userChatMsg.getAcceptUserId());
                 messageBody.put("acceptUserName", userChatMsg.getAcceptUserName());
                 messageBody.put("msg", userChatMsg.getMsg());
+                messageBody.put("msgId", userChatMsg.getMsgId());
                 messageBody.put("picture", userChatMsg.getPicture());
-                messageBody.put("createTime", userChatMsg.getCreateTime());
+                messageBody.put("createTime", dateFormat.format(userChatMsg.getCreateTime()));
 
                 message.add(messageBody);
             }
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name",listName);
-            jsonObject.put("userpic", this.getHeadIcon(userId));
+            jsonObject.put("userpic", this.getHeadIcon(key));
             jsonObject.put("id",key);
             jsonObject.put("message",message);
 

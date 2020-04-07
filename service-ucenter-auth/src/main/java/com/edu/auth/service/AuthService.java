@@ -295,9 +295,6 @@ public class AuthService {
      */
     private AuthToken loginAuthorization(String username, String password) {
         AuthToken authToken = this.applyToken(username, password);
-        if (authToken == null) {
-            ExceptionCast.cast(AuthCode.AUTH_LOGIN_APPLYTOKEN_FAIL);
-        }
         //将token存储到redis
         String jti = authToken.getJtl();
         String content = JSON.toJSONString(authToken);

@@ -4,9 +4,11 @@ import com.edu.framework.client.ServiceList;
 import com.edu.framework.domain.course.CoursePub;
 import com.edu.framework.domain.course.ext.CourseView;
 import com.edu.framework.domain.course.response.CoursePreResult;
+import com.edu.framework.model.response.ResponseResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -23,4 +25,7 @@ public interface CourseClient {
 
     @GetMapping("/course/coursepub/list")
     List<CoursePub> findCoursePubByIds(@RequestParam List<String> ids);
+
+    @PutMapping("/course/coursebase/checkpass/{id}")
+    ResponseResult updateCourseBaseCheckPass(@PathVariable String id);
 }
