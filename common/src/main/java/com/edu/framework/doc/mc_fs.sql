@@ -1,0 +1,963 @@
+/*
+ Navicat Premium Data Transfer
+
+ Source Server         : localhost_27017
+ Source Server Type    : MongoDB
+ Source Server Version : 40203
+ Source Host           : localhost:27017
+ Source Schema         : mc_fs
+
+ Target Server Type    : MongoDB
+ Target Server Version : 40203
+ File Encoding         : 65001
+
+ Date: 07/04/2020 22:26:28
+*/
+
+
+// ----------------------------
+// Collection structure for filesystem
+// ----------------------------
+db.getCollection("filesystem").drop();
+db.createCollection("filesystem");
+
+// ----------------------------
+// Documents of filesystem
+// ----------------------------
+db.getCollection("filesystem").insert([ {
+    _id: ObjectId("5e441d9fdda8d52794c88a4e"),
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    businesskey: "364326",
+    filetag: "course",
+    metadata: {
+        name: "测试文件"
+    },
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: ObjectId("5e441ef0dda8d50490574821"),
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    businesskey: "364326",
+    filetag: "course",
+    metadata: {
+        name: "测试文件"
+    },
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5EIHSAdhNYAALpWbaWNrg114.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5EIHSAdhNYAALpWbaWNrg114.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    businesskey: "364326",
+    filetag: "course",
+    metadata: {
+        name: "测试文件"
+    },
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: ObjectId("5e4420acdda8d512ec1ef258"),
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    businesskey: "364326",
+    filetag: "course",
+    metadata: {
+        name: "测试文件"
+    },
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5EINiAXY9mAALpWbaWNrg787.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5EINiAXY9mAALpWbaWNrg787.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    businesskey: "654312",
+    filetag: "course",
+    metadata: {
+        name: "测试文件"
+    },
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5EIXCAGbZfAALpWbaWNrg584.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5EIXCAGbZfAALpWbaWNrg584.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    businesskey: "654312",
+    filetag: "course",
+    metadata: {
+        name: "测试文件"
+    },
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: ObjectId("5e4421b1dda8d53d14aa4a70"),
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    businesskey: "654312",
+    filetag: "course",
+    metadata: {
+        name: "测试文件"
+    },
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5FdI-AG6ClAALpWbaWNrg524.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5FdI-AG6ClAALpWbaWNrg524.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5Fey6APHKTAALpWbaWNrg750.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5Fey6APHKTAALpWbaWNrg750.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5RQPmADTqyAALpWbaWNrg654.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5RQPmADTqyAALpWbaWNrg654.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5WioiAH6CTAALpWbaWNrg882.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5WioiAH6CTAALpWbaWNrg882.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5soa-AYE0QAALpWbaWNrg574.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5soa-AYE0QAALpWbaWNrg574.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5sofKAbma4AALpWbaWNrg127.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5sofKAbma4AALpWbaWNrg127.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5sosWADLRUAALpWbaWNrg324.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5sosWADLRUAALpWbaWNrg324.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5so92ACrwLAALpWbaWNrg272.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5so92ACrwLAALpWbaWNrg272.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5so-GAFyxRAALpWbaWNrg894.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5so-GAFyxRAALpWbaWNrg894.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5so-SAdSdcAALpWbaWNrg291.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5so-SAdSdcAALpWbaWNrg291.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5spOyANrnpAALpWbaWNrg860.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5spOyANrnpAALpWbaWNrg860.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5spPOASXLxAALpWbaWNrg256.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5spPOASXLxAALpWbaWNrg256.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5spRWAX3fdAALpWbaWNrg133.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5spRWAX3fdAALpWbaWNrg133.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5spYSAdZtvAALpWbaWNrg881.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5spYSAdZtvAALpWbaWNrg881.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5spY2AOfuVAALpWbaWNrg644.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5spY2AOfuVAALpWbaWNrg644.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5spe2AQNHRAALpWbaWNrg506.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5spe2AQNHRAALpWbaWNrg506.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5spfqAJDKIAALpWbaWNrg983.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5spfqAJDKIAALpWbaWNrg983.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5sqbiAeR41AALpWbaWNrg268.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5sqbiAeR41AALpWbaWNrg268.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5sqeWAWEF3AALpWbaWNrg886.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5sqeWAWEF3AALpWbaWNrg886.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5sqlOAFfHBAALpWbaWNrg484.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5sqlOAFfHBAALpWbaWNrg484.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5sqr2AJ0DAAALpWbaWNrg816.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5sqr2AJ0DAAALpWbaWNrg816.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5sq2yAGrWXAALpWbaWNrg270.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5sq2yAGrWXAALpWbaWNrg270.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5sq4GAKreMAALpWbaWNrg151.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5sq4GAKreMAALpWbaWNrg151.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5srnmAFVm2AALpWbaWNrg890.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5srnmAFVm2AALpWbaWNrg890.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5sroyAHCjfAALpWbaWNrg549.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5sroyAHCjfAALpWbaWNrg549.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5ssRSAEomdAALpWbaWNrg507.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5ssRSAEomdAALpWbaWNrg507.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5ssS6AH2jdAALpWbaWNrg373.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5ssS6AH2jdAALpWbaWNrg373.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5sscKAeh8pAALpWbaWNrg062.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5sscKAeh8pAALpWbaWNrg062.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5stMKAIC_4AALpWbaWNrg467.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5stMKAIC_4AALpWbaWNrg467.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5stMWAC05kAALpWbaWNrg000.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5stMWAC05kAALpWbaWNrg000.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5stMqAOHKSAALpWbaWNrg463.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5stMqAOHKSAALpWbaWNrg463.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5stM2AIg_sAALpWbaWNrg404.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5stM2AIg_sAALpWbaWNrg404.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5stNiAQNOnAALpWbaWNrg166.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5stNiAQNOnAALpWbaWNrg166.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5stNuAdiIGAALpWbaWNrg843.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5stNuAdiIGAALpWbaWNrg843.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5stN6AVnWQAALpWbaWNrg500.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5stN6AVnWQAALpWbaWNrg500.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5xzkiAJQ_CAAMDFVUpnL0350.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5xzkiAJQ_CAAMDFVUpnL0350.jpg",
+    fileSize: NumberLong("197397"),
+    fileName: "banner1.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5xzk2AT0JSAAF7anPiSK0949.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5xzk2AT0JSAAF7anPiSK0949.jpg",
+    fileSize: NumberLong("97130"),
+    fileName: "banner3.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5xzlCAUupkAAGUeHA3nvU474.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5xzlCAUupkAAGUeHA3nvU474.jpg",
+    fileSize: NumberLong("103544"),
+    fileName: "widget-banner4.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5xz86AeNf7AAD-1WlURLc874.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5xz86AeNf7AAD-1WlURLc874.jpg",
+    fileSize: NumberLong("65237"),
+    fileName: "banner2.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5xz9mAH1BwAAF7anPiSK0147.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5xz9mAH1BwAAF7anPiSK0147.jpg",
+    fileSize: NumberLong("97130"),
+    fileName: "banner3.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5yCkGAcU8cAAIkOHlpWcs034.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5yCkGAcU8cAAIkOHlpWcs034.jpg",
+    fileSize: NumberLong("140344"),
+    fileName: "widget-banner3.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF5yCpKAadiQAAIkOHlpWcs521.jpg",
+    filePath: "group1/M00/00/00/rBg6yF5yCpKAadiQAAIkOHlpWcs521.jpg",
+    fileSize: NumberLong("140344"),
+    fileName: "widget-banner3.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF50zBOAEjT7AALpWbaWNrg884.jpg",
+    filePath: "group1/M00/00/00/rBg6yF50zBOAEjT7AALpWbaWNrg884.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF50zG2AbGEdAALpWbaWNrg096.jpg",
+    filePath: "group1/M00/00/00/rBg6yF50zG2AbGEdAALpWbaWNrg096.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF50zQeAYIeqAALpWbaWNrg818.jpg",
+    filePath: "group1/M00/00/00/rBg6yF50zQeAYIeqAALpWbaWNrg818.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF50zXiACO7PAALpWbaWNrg696.jpg",
+    filePath: "group1/M00/00/00/rBg6yF50zXiACO7PAALpWbaWNrg696.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF501jOAGuVXAALpWbaWNrg738.jpg",
+    filePath: "group1/M00/00/00/rBg6yF501jOAGuVXAALpWbaWNrg738.jpg",
+    fileSize: NumberLong("190809"),
+    fileName: "java路线.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF51s5CAaZeiAAQaaN62xyI723.jpg",
+    filePath: "group1/M00/00/00/rBg6yF51s5CAaZeiAAQaaN62xyI723.jpg",
+    fileSize: NumberLong("268904"),
+    fileName: "5e6606be083a3f8506000338-240-135.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF52KbyAHWQdAAAYeKzFDQ8125.jpg",
+    filePath: "group1/M00/00/00/rBg6yF52KbyAHWQdAAAYeKzFDQ8125.jpg",
+    fileSize: NumberLong("6264"),
+    fileName: "54586333000160de02200220-140-140.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_teacher_avatar",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF52Ke-ANUeZAAAYeKzFDQ8392.jpg",
+    filePath: "group1/M00/00/00/rBg6yF52Ke-ANUeZAAAYeKzFDQ8392.jpg",
+    fileSize: NumberLong("6264"),
+    fileName: "54586333000160de02200220-140-140.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_teacher_avatar",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF52KgqAf-44AAAYeKzFDQ8808.jpg",
+    filePath: "group1/M00/00/00/rBg6yF52KgqAf-44AAAYeKzFDQ8808.jpg",
+    fileSize: NumberLong("6264"),
+    fileName: "54586333000160de02200220-140-140.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_teacher_avatar",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF52KsaABRvOAAAYeKzFDQ8568.jpg",
+    filePath: "group1/M00/00/00/rBg6yF52KsaABRvOAAAYeKzFDQ8568.jpg",
+    fileSize: NumberLong("6264"),
+    fileName: "54586333000160de02200220-140-140.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_teacher_avatar",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF52LJiAIhX4AAAYeKzFDQ8356.jpg",
+    filePath: "group1/M00/00/00/rBg6yF52LJiAIhX4AAAYeKzFDQ8356.jpg",
+    fileSize: NumberLong("6264"),
+    fileName: "54586333000160de02200220-140-140.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_teacher_avatar",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF53KEqABHyLAAANUQ9gZm0722.jpg",
+    filePath: "group1/M00/00/00/rBg6yF53KEqABHyLAAANUQ9gZm0722.jpg",
+    fileSize: NumberLong("3409"),
+    fileName: "u=521896100,1902804774&fm=74&app=80&f=JPEG&size=f121,121.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "company_log",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF58bxmAep4PAAAYeKzFDQ8361.jpg",
+    filePath: "group1/M00/00/00/rBg6yF58bxmAep4PAAAYeKzFDQ8361.jpg",
+    fileSize: NumberLong("6264"),
+    fileName: "54586333000160de02200220-140-140.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "user_pic",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF58b9qAHcgxAAAYeKzFDQ8184.jpg",
+    filePath: "group1/M00/00/00/rBg6yF58b9qAHcgxAAAYeKzFDQ8184.jpg",
+    fileSize: NumberLong("6264"),
+    fileName: "54586333000160de02200220-140-140.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "user_pic",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF59roCAEs2fAAANUQ9gZm0865.jpg",
+    filePath: "group1/M00/00/00/rBg6yF59roCAEs2fAAANUQ9gZm0865.jpg",
+    fileSize: NumberLong("3409"),
+    fileName: "u=521896100,1902804774&fm=74&app=80&f=JPEG&size=f121,121.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "user_pic",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6AsDSATBQjAAAOu3TLGs4299.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6AsDSATBQjAAAOu3TLGs4299.jpg",
+    fileSize: NumberLong("3771"),
+    fileName: "5e646d5708f882d512000676-240-135.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_cover",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6AsoKAJ-DvAAAdWlje360841.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6AsoKAJ-DvAAAdWlje360841.jpg",
+    fileSize: NumberLong("7514"),
+    fileName: "5333a0600001f9ed02000200.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_teacher_avatar",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6Asr2AfoFyAAANyh-8_Cg301.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6Asr2AfoFyAAANyh-8_Cg301.jpg",
+    fileSize: NumberLong("3530"),
+    fileName: "5e3c0b840001796401500124-140-140.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_teacher_avatar",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6ERj6AbWcTAAANUQ9gZm0879.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6ERj6AbWcTAAANUQ9gZm0879.jpg",
+    fileSize: NumberLong("3409"),
+    fileName: "u=521896100,1902804774&fm=74&app=80&f=JPEG&size=f121,121.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "user_pic",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6ESwGAIcPrAAEB6hFNSH0158.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6ESwGAIcPrAAEB6hFNSH0158.jpg",
+    fileSize: NumberLong("66026"),
+    fileName: "545862510001f70c02200220.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "user_pic",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6ESwyAaw0JAAnwrQXLCQg054.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6ESwyAaw0JAAnwrQXLCQg054.jpg",
+    fileSize: NumberLong("651437"),
+    fileName: "5458458d000181e402200220.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "user_pic",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6ES0mAVK-XAAEB6hFNSH0824.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6ES0mAVK-XAAEB6hFNSH0824.jpg",
+    fileSize: NumberLong("66026"),
+    fileName: "545862510001f70c02200220.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "user_pic",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6HZTKAU4KjAAAkzP--tAw572.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6HZTKAU4KjAAAkzP--tAw572.jpg",
+    fileSize: NumberLong("9420"),
+    fileName: "5e32d2530847528006000338-360-202.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_cover",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6HZguAS9SMAAART0_YASY706.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6HZguAS9SMAAART0_YASY706.jpg",
+    fileSize: NumberLong("4431"),
+    fileName: "533e4cf4000151f602000200-100-100.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_teacher_avatar",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6JUo6AQG-eAAAPzo_E3jU948.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6JUo6AQG-eAAAPzo_E3jU948.jpg",
+    fileSize: NumberLong("4046"),
+    fileName: "5d3fe66408c059fd06000338-240-135.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_cover",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6JU16AKp5nAAAoLE1_-dk116.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6JU16AKp5nAAAoLE1_-dk116.jpg",
+    fileSize: NumberLong("10284"),
+    fileName: "5d5f87820001c49e12761276-140-140.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_teacher_avatar",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6JVvCAVmF1AAAfUmGsxIo602.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6JVvCAVmF1AAAfUmGsxIo602.jpg",
+    fileSize: NumberLong("8018"),
+    fileName: "5704ae850001f59906000338-240-135.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_cover",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6JV6uAGG4LAAEdqkOdlPY363.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6JV6uAGG4LAAEdqkOdlPY363.jpg",
+    fileSize: NumberLong("73130"),
+    fileName: "54586870000183e302200220.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_teacher_avatar",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6JYISAa6aVAAAU3GtLpHA415.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6JYISAa6aVAAAU3GtLpHA415.jpg",
+    fileSize: NumberLong("5340"),
+    fileName: "5c760767084b92ce06000338-240-135.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_cover",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6JYQWAZFlzAAARi4Z8mrQ373.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6JYQWAZFlzAAARi4Z8mrQ373.jpg",
+    fileSize: NumberLong("4491"),
+    fileName: "5bac9e16000113c403070307-140-140.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_teacher_avatar",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6JYciAD3BtAABR5e6UHIM367.png",
+    filePath: "group1/M00/00/00/rBg6yF6JYciAD3BtAABR5e6UHIM367.png",
+    fileSize: NumberLong("20965"),
+    fileName: "5e1c0ef609ca932612000676-240-135.png",
+    fileType: "image/png",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_cover",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6JYjqAY-5iAAAZrWSk7pU998.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6JYjqAY-5iAAAZrWSk7pU998.jpg",
+    fileSize: NumberLong("6573"),
+    fileName: "5e4dfaf20001058405000500-140-140.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course_teacher_avatar",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/00/rBg6yF6JrsiABCaLAAMDFVUpnL0746.jpg",
+    filePath: "group1/M00/00/00/rBg6yF6JrsiABCaLAAMDFVUpnL0746.jpg",
+    fileSize: NumberLong("197397"),
+    fileName: "banner1.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
+db.getCollection("filesystem").insert([ {
+    _id: "group1/M00/00/01/rBg6yF6Jrs-AJZ7bAAJdPUYiBxQ650.jpg",
+    filePath: "group1/M00/00/01/rBg6yF6Jrs-AJZ7bAAJdPUYiBxQ650.jpg",
+    fileSize: NumberLong("154941"),
+    fileName: "banner5.jpg",
+    fileType: "image/jpeg",
+    fileWidth: NumberInt("0"),
+    fileHeight: NumberInt("0"),
+    filetag: "course",
+    _class: "com.edu.framework.domain.filesystem.FileSystem"
+} ]);
