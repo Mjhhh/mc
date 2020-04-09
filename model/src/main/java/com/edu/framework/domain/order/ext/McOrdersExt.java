@@ -1,5 +1,6 @@
-package com.edu.framework.domain.order;
+package com.edu.framework.domain.order.ext;
 
+import com.edu.framework.domain.order.McOrders;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
@@ -13,6 +14,8 @@ import java.util.Date;
  */
 @Data
 @ToString
-public class McOrdersExt extends McOrders{
+public class McOrdersExt extends McOrders {
+    private String payId;
+    private String paySystem;
     private String pic;
 }

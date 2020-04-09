@@ -2,4 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.edu.order.dao.McOrdersMapper">
 
+    <select id="selectListByCourseIds" resultType="com.edu.framework.domain.order.ext.McOrdersExt">
+        SELECT
+            orders.order_id,
+            orders.initial_price,
+            orders.price,
+            orders.user_id,
+            orders.course_id,
+            orders.course_name,
+            orders.valid,
+            orders.status,
+            orders.pay_time,
+            pay.pay_system,
+            pay.pay_id
+        FROM
+            mc_orders orders
+        LEFT JOIN
+            mc_orders_pay pay
+        ON
+            orders.order_id = pay.order_id
+        WHERE
+        (orders.course_id
+            IN(
+            <foreach collection="courseIds" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        )
+        <if test="orderId != null and orderId != ''">
+            AND orders.order_id = #{orderId}
+        </if>
+        <if test="courseName != null and courseName != ''">
+            AND orders.course_name = LIKE '%${courseName}%'
+        </if>
+        AND orders.status in ('401002','401004')
+    </select>
 </mapper>

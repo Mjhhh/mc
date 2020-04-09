@@ -36,6 +36,8 @@ public class McOrders implements Serializable {
     private Date startTime;
     @Column(name = "end_time")
     private Date endTime;
+    @Column(name = "pay_time")
+    private Date payTime;
     private String status;
     @Column(name = "details")
     private String details;

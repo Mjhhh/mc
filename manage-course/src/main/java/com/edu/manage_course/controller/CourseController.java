@@ -124,6 +124,12 @@ public class CourseController implements CourseControllerApi {
     }
 
     @Override
+    @GetMapping("/coursebase/listbycompany")
+    public List<CourseBase> findCourseBaseByCompanyId(@RequestParam String companyId) {
+        return courseService.findCourseBaseByCompanyId(companyId);
+    }
+
+    @Override
     @GetMapping("/courseview/{courseId}")
     public CourseView courseview(@PathVariable String courseId) {
         return courseService.getCoruseView(courseId);

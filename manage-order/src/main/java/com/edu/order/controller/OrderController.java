@@ -3,6 +3,7 @@ package com.edu.order.controller;
 import com.edu.api.order.OrderControllerApi;
 import com.edu.framework.domain.order.McOrders;
 import com.edu.framework.domain.order.McOrdersPay;
+import com.edu.framework.domain.order.request.QueryMcOrderRequest;
 import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.ResponseResult;
 import com.edu.order.service.OrderService;
@@ -10,12 +11,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/order")
 public class OrderController implements OrderControllerApi {
 
     @Autowired
     OrderService orderService;
+
+    @Override
+    @ResponseBody
+    @GetMapping("/list/{page}/{size}")
+    public CommonResponseResult findList(@PathVariable int page, @PathVariable int size, QueryMcOrderRequest queryMcOrderRequest) {
+        return orderService.findList(page,size, queryMcOrderRequest);
+    }
 
     @Override
     @ResponseBody

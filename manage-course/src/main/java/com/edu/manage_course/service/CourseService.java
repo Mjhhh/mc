@@ -1219,4 +1219,17 @@ public class CourseService {
         courseAnswerRepository.deleteById(id);
         return ResponseResult.SUCCESS();
     }
+
+    /**
+     * 根据companyId查找课程信息
+     * @param companyId
+     * @return
+     */
+    public List<CourseBase> findCourseBaseByCompanyId(String companyId) {
+        if (StringUtils.isBlank(companyId)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        List<CourseBase> courseBaseList = courseBaseRepository.findByCompanyId(companyId);
+        return courseBaseList;
+    }
 }

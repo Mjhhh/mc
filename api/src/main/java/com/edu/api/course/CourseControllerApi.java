@@ -69,6 +69,9 @@ public interface CourseControllerApi {
     @ApiOperation("根据id查找课程索引")
     List<CoursePub> findCoursePubByIds(List<String> ids);
 
+    @ApiOperation("根据companyId查找课程信息")
+    List<CourseBase> findCourseBaseByCompanyId(String companyId);
+
     @ApiOperation("课程模型数据查询")
     CourseView courseview(String courseId);
 

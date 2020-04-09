@@ -6,10 +6,12 @@ import com.edu.framework.domain.course.CourseBase;
 import com.edu.framework.domain.course.CourseMarket;
 import com.edu.framework.domain.course.CoursePic;
 import com.edu.framework.domain.order.McOrders;
-import com.edu.framework.domain.order.McOrdersExt;
+import com.edu.framework.domain.order.ext.McOrdersExt;
 import com.edu.framework.domain.order.McOrdersPay;
 import com.edu.framework.domain.order.request.AliPayRequestParams;
+import com.edu.framework.domain.order.request.QueryMcOrderRequest;
 import com.edu.framework.domain.order.response.OrderCode;
+import com.edu.framework.domain.ucenter.request.QueryMcUserRequest;
 import com.edu.framework.exception.ExceptionCast;
 import com.edu.framework.model.response.CommonCode;
 import com.edu.framework.model.response.CommonResponseResult;
@@ -55,6 +57,20 @@ public class OrderService {
 
     @Autowired
     McOrdersMapper mcOrdersMapper;
+
+    /**
+     * 获取公司id
+     * @return
+     */
+    private String getCompanyId() {
+        HttpServletRequest request = this.getRequest();
+        McOauth2Util mcOauth2Util = new McOauth2Util();
+        McOauth2Util.UserJwt userJwt = mcOauth2Util.getUserJwtFromHeader(request);
+        if (StringUtils.isBlank(userJwt.getCompanyId())) {
+            ExceptionCast.cast(CommonCode.MISS_COMPANY_ID);
+        }
+        return userJwt.getCompanyId();
+    }
 
     /**
      * 获得订单
@@ -253,6 +269,7 @@ public class OrderService {
 
                     McOrders mcOrders = this.getMcOrders(outTradeNo);
                     mcOrders.setStatus("401002");
+                    mcOrders.setPayTime(new Date());
                     mcOrdersRepository.save(mcOrders);
                 }
                 response.getWriter().print("success");
@@ -379,6 +396,7 @@ public class OrderService {
 
                 McOrders mcOrders = this.getMcOrders(outTradeNo);
                 mcOrders.setStatus("401002");
+                mcOrders.setPayTime(new Date());
                 mcOrdersRepository.save(mcOrders);
 
 
@@ -451,6 +469,36 @@ public class OrderService {
         JSONObject result = new JSONObject();
         result.put("total", startPage.getTotal());
         result.put("list", mcOrdersExts);
+        return new CommonResponseResult(CommonCode.SUCCESS, result);
+    }
+
+    /**
+     * 查找订单列表
+     * @param page
+     * @param size
+     * @param queryMcOrderRequest
+     * @return
+     */
+    public CommonResponseResult findList(int page, int size, QueryMcOrderRequest queryMcOrderRequest) {
+        if (page < 0) {
+            page = 0;
+        }
+        if (size <= 0) {
+            size = 10;
+        }
+        Page<Object> startPage = PageHelper.startPage(page, size);
+
+        String companyId = this.getCompanyId();
+        List<CourseBase> courseBaseList = courseClient.findCourseBaseByCompanyId(companyId);
+        List<String> courseIds = new ArrayList<>();
+        for (CourseBase courseBase : courseBaseList) {
+            courseIds.add(courseBase.getId());
+        }
+        queryMcOrderRequest.setCourseIds(courseIds);
+        List<McOrdersExt> mcOrdersList = mcOrdersMapper.selectListByCourseIds(queryMcOrderRequest);
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", mcOrdersList);
+        result.put("total", startPage.getTotal());
         return new CommonResponseResult(CommonCode.SUCCESS, result);
     }
 }
