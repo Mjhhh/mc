@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="content-type" content="no-cache, must-revalidate"/>
+    <title>MOCK--${courseBase.name}</title>
+</head>
+<body data-spy="scroll" data-target="#articleNavbar" data-offset="150">
+
+<!-- 页面头部 -->
+<!--#include virtual="/include/header.html"-->
+<!--页面头部结束-->
+
+<div id="body">
+    <div class="article-banner">
+        <div class="banner-bg">
+            <div class="description">
+            </div>
+        </div>
+        <div class="banner-info">
+            <div class="banner-left">
+                <p class="tit">${courseBase.name}</p>
+                <p class="pic">
+                    <#if courseMarket.charge=='203001'>
+                    <span class="new-pic">免费课程</span>
+                    <#elseif courseMarket.charge=='203002'>
+                    <span class="new-pic">特惠价格￥${(courseMarket.price)!""}</span>
+                    <span class="old-pic">原价￥${(courseMarket.priceOld)!""}</span>
+                    </#if>
+                </p>
+                <p class="info">
+                    <a href="http://ucenter.mock.com/#/learning/${courseBase.id}/0" target="_blank" v-if="learnstatus == 1" v-cloak>马上学习</a>
+                    <a href="#" @click="addopencourse" v-if="learnstatus == 2" v-cloak>立即报名</a>
+                    <a href="#" @click="buy" v-if="learnstatus == 3" v-cloak>立即购买</a>
+                    <span><em>难度等级</em>
+                    <#if courseBase.grade=='200001'>
+                        低级
+                    <#elseif courseBase.grade=='200002'>
+                        中级
+                    <#elseif courseBase.grade=='200003'>
+                        高级
+                    </#if>
+                    </span>
+                    <span><em>课程时长</em>2小时27分</span>
+                    <span><em>评分</em>{{averageScore}}分</span>
+                    <span><em>授课模式</em>
+                    <#if courseBase.studymodel=='201001'>
+                        自由学习
+                    <#elseif courseBase.studymodel=='201002'>
+                        任务式学习
+                    </#if>
+                    </span>
+                </p>
+            </div>
+            <div class="banner-rit" style="width: 200px;">
+                <p class="vid-act">
+                    <span> <i class="i-heart"></i>收藏 23 </span> <span>分享 <i class="i-weixin"></i><i class="i-qq"></i></span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="article-cont">
+        <!--导航栏列表-->
+        <div class="tit-list">
+            <a href="javascript:;" id="articleClass" class="active">课程介绍</a>
+            <a href="javascript:;" id="articleItem">目录</a>
+            <a href="javascript:;" id="artcleAsk">问答</a>
+            <a href="javascript:;" id="artcleCod">评价</a>
+        </div>
+
+        <div class="article-box">
+            <!--课程介绍-->
+            <div class="articleClass" style="display: block">
+                <!--<div class="rit-title">评价</div>-->
+                <div class="article-cont">
+                    <div class="article-left-box">
+                        <div class="content">
+                            <div class="content-com suit course-wrap">
+                                <div class="title"><span>适用人群</span></div>
+                                <div class="cont cktop">
+                                    <div>
+                                        <p>${(courseBase.users)!""}</p>
+                                    </div>
+                                    <span class="on-off">更多 <i class="i-chevron-bot"></i></span>
+                                </div>
+                            </div>
+                            <div class="content-com course course-wrap">
+                                <div class="title"><span>课程制作</span></div>
+                                <div class="cont">
+                                    <div class="img-box"><img src="http://mjh0523.xyz/${courseTeacher.avatar}" alt=""></div>
+                                    <div class="info-box">
+                                        <p class="name">教学方：<em>${(courseTeacher.name)!"佚名"}</em></p>
+                                        <!-- <p class="lab">高级前端开发工程师 10年开发经验</p>-->
+                                        <p class="info">
+                                            ${(courseTeacher.description)!""}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content-com about course-wrap">
+                                <div class="title"><span>课程介绍</span></div>
+                                <div class="cont cktop">
+                                    <div>
+                                        <p>
+                                            ${(courseBase.description)!""}
+                                        </p>
+                                    </div>
+                                    <!--<span class="on-off">更多 <i class="i-chevron-bot"></i></span>-->
+                                </div>
+                            </div>
+                            <div class="content-com prob course-wrap">
+                                <div class="title"><span>常见问题</span></div>
+                                <div class="cont">
+                                    <ul>
+                                        <li class="item"><span class="on-off"><i class="i-chevron-bot"></i> 我怎么开始自己的学习？</span>
+                                            <div class="drop-down">
+                                                <p>
+                                                    免费课程点击加入学习队列即可开始学习观看，收费视频需要先下单购买，才能拥有观看权限！
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li class="item"><span class="on-off"><i class="i-chevron-bot"></i> 课程安排如何，我平时太忙了没空学习怎么办？</span>
+                                            <div class="drop-down">
+                                                <p>
+                                                    课程安排灵活，采用的是点播的形式，有别于直播是，你可以任意安排自己的空闲时间来进行学习！
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li class="item"><span class="on-off"><i
+                                                class="i-chevron-bot"></i> 我支付次课程之后会得到什么？</span>
+                                            <div class="drop-down">
+                                                <p>
+                                                    你将会获得由资深讲师提供的自身经验与最新的行业专业知识，讲师将会致力于解决你在观看视频中遇到的各种疑问，相较于自学更加的节省您的时间！
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li class="item"><span class="on-off"><i
+                                                class="i-chevron-bot"></i> 退款条例是如何规定的？</span>
+                                            <div class="drop-down">
+                                                <p>
+                                                    一旦选择支付购买课程，你只能在一个小时内提出退款申请，逾期将关闭交易！
+                                                </p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--侧边栏-->
+                    <div class="article-right-box">
+                        <div class="about-teach">
+                            <div class="teach-info">
+                                <!--机构logo-->
+                                <img src="http://mjh0523.xyz/${mcCompany.logo}" width="40px" alt="">
+                                <p>${mcCompany.name}</p>
+                            </div>
+                            <div class="teach-info">
+                                <ul class="tree-list"><li><p class="item-tt">好评度</p><span class="item-num">  93%  </span></li><li><p class="item-tt">课程数</p><span class="item-num js-item-num" data-num="39">39</span></li><li><p class="item-tt">学生数</p><span class="item-num js-item-num" data-num="364386">36万</span></li></ul>
+                            </div>
+                            <div class="teach-info">
+                                <p><a href="#" class="courselist_link">TA的课程</a></p>
+                            </div>
+
+                            <p class="synopsis">${mcCompany.intro}</p>
+                        </div>
+                    </div>
+                    <!--侧边栏-->
+
+                </div>
+            </div>
+            <!--目录-->
+            <div class="articleItem" style="display: none">
+                <div class="article-cont-catalog">
+                    <div class="article-left-box course-info-main">
+                        <div class="content">
+                            <!-- 课程简介 -->
+                            <div class="course-description course-wrap">
+                                简介：${(courseBase.description)!""}
+                            </div>
+                            <!-- 课程简介 end -->
+                            <#if (teachplanNode.children)??>
+                            <#list teachplanNode.children as firstNode>
+                            <!-- 课程章节 -->
+                            <div class="course-chapters">
+                                <div class="chapter course-wrap ">
+                                    <!-- 章节标题 -->
+                                    <h3>
+                                        ${firstNode.pname}
+                                    </h3>
+                                    <div class="chapter-description">
+                                        ${firstNode.description!""}
+                                    </div>
+                                    <!-- 章节标题 end -->
+                                    <!-- 章节小节 -->
+                                    <ul class="video">
+                                        <#list firstNode.children as secondNode>
+                                        <li>
+                                            <a href="http://ucenter.mock.com/#/learning/${courseBase.id}/${secondNode.mediaId!''}" class="J-media-item">
+                                                <i class="imv2-play_circle type">
+                                                    <img src="../../img/play.png" alt="" style="margin-bottom: 5px">
+                                                </i>
+                                                ${secondNode.pname}
+                                            </a>
+                                        </li>
+                                        </#list>
+                                    </ul>
+                                    <!-- 章节小节 end -->
+                                </div>
+                            </div>
+                            <!-- 课程章节 end -->
+                            </#list>
+                            </#if>
+                        </div>
+                    </div>
+                    <!--侧边栏-->
+                    <div class="article-right-box">
+                        <div class="about-teach">
+                            <div class="teach-info">
+                                <!--机构logo-->
+                                <img src="http://mjh0523.xyz/${mcCompany.logo}" width="40px" alt="">
+                                <p>${mcCompany.name}</p>
+                            </div>
+                            <div class="teach-info">
+                                <ul class="tree-list"><li><p class="item-tt">好评度</p><span class="item-num">  93%  </span></li><li><p class="item-tt">课程数</p><span class="item-num js-item-num" data-num="39">39</span></li><li><p class="item-tt">学生数</p><span class="item-num js-item-num" data-num="364386">36万</span></li></ul>
+                            </div>
+                            <div class="teach-info">
+                                <p><a href="#" class="courselist_link">TA的课程</a></p>
+                            </div>
+
+                            <p class="synopsis">${mcCompany.intro}</p>
+                        </div>
+                    </div>
+                    <!--侧边栏-->
+                </div>
+            </div>
+
+            <!--问答-->
+            <div class="artcleAsk" style="display: none">
+                <div class="article-cont-ask">
+                    <div class="article-left-box">
+                        <div class="content">
+                            <div class="item course-wrap">
+                                <div class="item-left">
+                                    <p>
+                                        <img v-if="userpic" :src="userpic" width="60px" alt="">
+                                        <img v-else src="http://www.mock.com/static/img/default-userpic.jpg"
+                                             width="60px" alt="">
+                                    </p>
+                                    <p>{{username}}</p>
+                                </div>
+                                <div class="item-right">
+                                    <p class="title">在学习过程中遇到了难题？</p>
+                                    <p><span @click="openQuestionDialog">我有疑问</span></p>
+                                </div>
+                            </div>
+
+                            <div class="item course-wrap" v-for="courseQuestion in courseQuestionList">
+                                <div class="item-left">
+                                    <p>
+                                        <img v-if="courseQuestion.userpic" :src="courseQuestion.userpic" width="60px" alt="">
+                                        <img v-else src="http://www.mock.com/static/img/default-userpic.jpg" width="60px" alt="">
+                                    </p>
+                                    <p>{{courseQuestion.username}}</p>
+                                </div>
+                                <div class="item-right">
+                                    <p class="title">{{courseQuestion.title}}</p>
+                                    <p>
+                                        {{courseQuestion.content}}
+                                    </p>
+                                    <p>{{courseQuestion.createTime}}
+                                        <span class="action-box" style="cursor: pointer" @click="openAnswerDialog(courseQuestion)">
+                                            <span><i class="i-answer"></i>回答 {{courseQuestion.answerTotal}}</span><span>
+                                            <i class="i-browse"></i>浏览 {{courseQuestion.lookNum}}</span>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="itemlast course-wrap">
+                                <a href="#" class="overwrite">显示更多问题</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--侧边栏-->
+                    <div class="article-right-box">
+                        <div class="about-teach">
+                            <div class="teach-info">
+                                <!--机构logo-->
+                                <img src="http://mjh0523.xyz/group1/M00/00/00/rBg6yF53KEqABHyLAAANUQ9gZm0722.jpg"
+                                     width="40px" alt="">
+                                <p>华软搬运工</p>
+                            </div>
+                            <div class="teach-info">
+                                <ul class="tree-list">
+                                    <li><p class="item-tt">好评度</p><span class="item-num">  93%  </span></li>
+                                    <li><p class="item-tt">课程数</p><span class="item-num js-item-num"
+                                                                        data-num="39">39</span></li>
+                                    <li><p class="item-tt">学生数</p><span class="item-num js-item-num" data-num="364386">36万</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="teach-info">
+                                <p><a href="#" class="courselist_link">TA的课程</a></p>
+                            </div>
+
+                            <p class="synopsis">
+                                广州大学华软软件学院（简称华软学院）成立于2002年，2006年经国家教育部批准为实施本科层次教育的全日制普通高等学校，是全国300多家独立学院中以IT人才培养为特色的唯一一所软件学院，是国家发展和改革委员会国际合作中心合作示范学院</p>
+                        </div>
+                    </div>
+                    <!--侧边栏-->
+                </div>
+            </div>
+            <!--评价-->
+            <div class="artcleCod" style="display: none;">
+                <div class="article-cont">
+                    <div class="article-left-box">
+                        <div class="comment-box">
+                            <div class="evaluate course-wrap">
+                                <div class="eva-top">
+                                    <div class="tit">课程评分</div>
+                                    <div class="star">
+                                        <div class="score"><i>5</i></div>
+                                    </div>
+                                    <span class="star-score">
+                                        <i>5</i> 分
+                                    </span>
+                                </div>
+                                <div class="eva-cont">
+                                    <div class="tit">学员评语</div>
+                                    <div class="text-box">
+                                        <textarea v-model="courseEvaluateForm.content" class="form-control" rows="5"
+                                                  placeholder="请输入您的宝贵意见！"></textarea>
+                                        <div class="text-right" @click="addCourseEvaluate"><span>发表评论</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="course-evaluate course-wrap">
+                                <div class="top-tit">评论
+                                </div>
+                                <div class="top-cont">
+                                    <div class="cont-top-left">
+                                        <div class="star-scor">
+                                            <div v-if="averageScore < 2" class="star-show-one"><div class="score"><i></i></div></div>
+                                            <div v-else-if="averageScore > 2 && averageScore < 3" class="star-show-two"><div class="score"><i></i></div></div>
+                                            <div v-else-if="averageScore > 3 && averageScore < 4" class="star-show-three"><div class="score"><i></i></div></div>
+                                            <div v-else-if="averageScore > 4 && averageScore < 5" class="star-show-four"><div class="score"><i></i></div></div>
+                                            <div v-else class="star-show"><div class="score"><i></i></div></div>
+
+                                            <div class="scor" v-if="averageScore">{{averageScore}}分</div>
+                                            <div class="scor" v-else>0分</div>
+                                        </div>
+                                        <div class="all-scor" v-if="totalScore">总评分：{{totalScore}}</div>
+                                        <div class="all-scor" v-else>总评分：0</div>
+                                    </div>
+                                    <div class="cont-top-right">
+                                        <div class="star-grade">五星
+                                            <div class="grade">
+                                                <div class="grade-percent"><span></span></div>
+                                                <div class="percent-num"><i>95</i>%</div>
+                                            </div>
+                                        </div>
+                                        <div class="star-grade">四星
+                                            <div class="grade">
+                                                <div class="grade-percent"><span></span></div>
+                                                <div class="percent-num"><i>5</i>%</div>
+                                            </div>
+                                        </div>
+                                        <div class="star-grade">三星
+                                            <div class="grade">
+                                                <div class="grade-percent"><span></span></div>
+                                                <div class="percent-num"><i>0</i>%</div>
+                                            </div>
+                                        </div>
+                                        <div class="star-grade">二星
+                                            <div class="grade">
+                                                <div class="grade-percent"><span></span></div>
+                                                <div class="percent-num"><i>2</i>%</div>
+                                            </div>
+                                        </div>
+                                        <div class="star-grade">一星
+                                            <div class="grade">
+                                                <div class="grade-percent"><span></span></div>
+                                                <div class="percent-num"><i>1</i>%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="comment-item-box">
+                                    <div class="title" v-if="total">评论 <span>{{total}}条评论</span></div>
+                                    <div class="title" v-else>评论 <span>0条评论</span></div>
+                                    <div class="item" v-for="courseEvaluate in courseEvaluateList">
+                                        <div class="item-left">
+                                            <p>
+                                                <img v-if="courseEvaluate.userpic" :src="courseEvaluate.userpic" width="60px" alt="">
+                                                <img v-else src="http://www.mock.com/static/img/default-userpic.jpg" width="60px" alt="">
+                                            </p>
+                                            <p>{{courseEvaluate.username}}</p>
+                                        </div>
+                                        <div class="item-cent">
+                                            <p>
+                                                {{courseEvaluate.content}}
+                                            </p>
+                                            <p class="time">{{courseEvaluate.createTime}}</p>
+                                        </div>
+                                        <div class="item-rit">
+                                            <p>
+                                            <div v-if="courseEvaluate.score < 2" class="star-show-one"><div class="score"><i></i></div></div>
+                                            <div v-else-if="courseEvaluate.score > 2 && courseEvaluate.score < 3" class="star-show-two"><div class="score"><i></i></div></div>
+                                            <div v-else-if="courseEvaluate.score > 3 && courseEvaluate.score < 4" class="star-show-three"><div class="score"><i></i></div></div>
+                                            <div v-else-if="courseEvaluate.score > 4 && courseEvaluate.score < 5" class="star-show-four"><div class="score"><i></i></div></div>
+                                            <div v-else class="star-show"><div class="score"><i></i></div></div>
+                                            </p>
+                                            <p v-if="courseEvaluate.score < 2">评分 <span>1星</span></p>
+                                            <p v-else-if="courseEvaluate.score > 2 && courseEvaluate.score < 3">评分 <span>2星</span></p>
+                                            <p v-else-if="courseEvaluate.score > 3 && courseEvaluate.score < 4">评分 <span>3星</span></p>
+                                            <p v-else-if="courseEvaluate.score > 4 && courseEvaluate.score < 5">评分 <span>4星</span></p>
+                                            <p v-else>评分 <span>5星</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--侧边栏-->
+                    <div class="article-right-box">
+                        <div class="about-teach">
+                            <div class="teach-info">
+                                <!--机构logo-->
+                                <img src="http://mjh0523.xyz/${mcCompany.logo}" width="40px" alt="">
+                                <p>${mcCompany.name}</p>
+                            </div>
+                            <div class="teach-info">
+                                <ul class="tree-list"><li><p class="item-tt">好评度</p><span class="item-num">  93%  </span></li><li><p class="item-tt">课程数</p><span class="item-num js-item-num" data-num="39">39</span></li><li><p class="item-tt">学生数</p><span class="item-num js-item-num" data-num="364386">36万</span></li></ul>
+                            </div>
+                            <div class="teach-info">
+                                <p><a href="#" class="courselist_link">TA的课程</a></p>
+                            </div>
+
+                            <p class="synopsis">${mcCompany.intro}</p>
+                        </div>
+                    </div>
+                    <!--侧边栏-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="popup-box" style="display: none">
+        <div class="mask"></div>
+        <!--支付弹窗- start -->
+        <div class="popup-pay-box" style="width: 50%">
+            <div class="title">${courseBase.name} <span class="close-popup">×</span></div>
+            <div class="content">
+                <img src="./text.png" alt="">
+                <div class="info">
+                    <#if (courseMarket.valid == '204002')??>
+                    <p class="info-tit">${courseBase.name} <span>课程有效期:${(courseMarket.startTime)!""}-${(courseMarket.endTime)!""}</span></p>
+                    </#if>
+                    <p class="info-pic">课程价格 : <span>￥${(courseMarket.priceOld)!""}</span></p>
+                    <p class="info-new-pic">优惠价格 : <span>￥${(courseMarket.price)!""}</span></p>
+                </div>
+            </div>
+            <div class="fact-pic">实际支付: <span>￥${(courseMarket.price)!""}</span></div>
+            <div class="go-pay">
+                <a href="#" @click="createOrder" :loading="editLoading"> 确认无误，提交订单</a>
+            </div>
+        </div>
+        <!--支付弹窗- end -->
+    </div>
+
+    <div class="question-box" style="display: none">
+        <div class="mask"></div>
+        <div class="popup-pay-box" style="width: 50%">
+            <div class="title">我要提问 <span class="close-popup">×</span></div>
+            <div class="content">
+                <div class="info">
+                    <input v-model="questionForm.title" type="text" placeholder="请输入问题标题">
+                    <textarea v-model="questionForm.content" class="form-control" rows="5"></textarea>
+                </div>
+            </div>
+            <div class="go-pay">
+                <a href="#" @click="addQuestion" :loading="editLoading">发布问题</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="answer-box" style="display: none">
+        <div class="mask"></div>
+        <div class="popup-pay-box" style="width: 50%">
+            <div class="title" style="border-bottom: 1px">问题详情页面<span class="close-popup">×</span></div>
+            <div class="item">
+                <div class="item-left">
+                    <p>
+                        <img v-if="questionItem.userpic" :src="questionItem.userpic" width="60px" alt="">
+                        <img v-else src="http://www.mock.com/static/img/default-userpic.jpg" width="60px" alt="">
+                    </p>
+                    <p>{{questionItem.username}}</p>
+                </div>
+                <div class="item-right">
+                    <h3 style="font-weight:bold;">{{questionItem.title}}</h3>
+                    <p>
+                        {{questionItem.content}}
+                    </p>
+                    <p>
+                        {{questionItem.createTime}}
+                    </p>
+                    <p v-if="userid == questionItem.userId" style="float: right;font-size: 12px;"><a href="#" @click="delQuestion(questionItem.id)">删除</a></p>
+                </div>
+            </div>
+            <div class="item" v-for="courseAnswer in courseAnswerList">
+                <div class="item-left">
+                    <p>
+                        <img v-if="courseAnswer.userpic" :src="courseAnswer.userpic" width="60px" alt="">
+                        <img v-else src="http://www.mock.com/static/img/default-userpic.jpg" width="60px" alt="">
+                    </p>
+                    <p>{{courseAnswer.username}}</p>
+                </div>
+                <div class="item-right">
+                    <p>
+                        {{courseAnswer.content}}
+                    </p>
+                    <p>{{courseAnswer.createTime}}
+                    </p>
+                    <p v-if="userid == courseAnswer.userId" style="float: right"><a href="#" @click="delAnswer(courseAnswer.id)">删除</a></p>
+                </div>
+            </div>
+            <div class="content" style="border: 0px">
+                <div class="info">
+                    <textarea v-model="answerForm.content" class="form-control" rows="5"></textarea>
+                </div>
+            </div>
+            <div class="go-pay">
+                <a href="#" @click="addAnswer" :loading="editLoading">发送</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页面底部 -->
+    <!--底部版权-->
+    <!--#include virtual="/include/footer.html"-->
+    <!--底部版权-->
+</div>
+<script>
+var courseId = "${courseBase.id}"
+var charge = "${courseMarket.charge}"
+</script>
+<!-- 页面 css js -->
+<!--#include virtual="/include/course_detail_dynamic.html"-->
+</body>

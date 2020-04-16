@@ -1,9 +1,6 @@
 package com.edu.api.ucenter;
 
-import com.edu.framework.domain.ucenter.McCompany;
-import com.edu.framework.domain.ucenter.McMenu;
-import com.edu.framework.domain.ucenter.McRole;
-import com.edu.framework.domain.ucenter.McUser;
+import com.edu.framework.domain.ucenter.*;
 import com.edu.framework.domain.ucenter.ext.McRoleExt;
 import com.edu.framework.domain.ucenter.ext.McUserExt;
 import com.edu.framework.domain.ucenter.ext.McUserExtRole;
@@ -51,6 +48,9 @@ public interface UcenterControllerApi {
 
     @ApiOperation("根据用户名查询用户")
     McUser get(String username);
+
+    @ApiOperation("根据昵称查询用户")
+    McUser getByname(String nickname);
 
     @ApiOperation("根据用户名id查询用户")
     McUser getById(String username);
@@ -106,12 +106,27 @@ public interface UcenterControllerApi {
     @ApiOperation("查找组织信息")
     McCompanyResult getCompany(String companyId);
 
+    @ApiOperation("查找组织信息")
+    McCompanyResult getCompanyByUser(String userId);
+
     @ApiOperation("获取组织人员")
     CommonResponseResult findCompanyUserList(int page, int size);
+
+    @ApiOperation("获取组织人员")
+    CommonResponseResult findCompanyUser();
 
     @ApiOperation("邀请用户加入组织")
     ResponseResult inviteUser(String username,String name);
 
     @ApiOperation("从组织中移除用户")
     ResponseResult delCompanyUser(String username);
+
+    @ApiOperation("根据用户id从组织中移除用户")
+    ResponseResult delCompanyUserByUserId(String userId);
+
+    @ApiOperation("获取邀请记录")
+    McCompanyUser getCompanyUser(String userId);
+
+    @ApiOperation("用户接受邀请")
+    ResponseResult accpetInvite(String userId);
 }

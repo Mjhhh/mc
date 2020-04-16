@@ -6,11 +6,14 @@ import com.edu.framework.domain.course.CourseBase;
 import com.edu.framework.domain.course.CourseMarket;
 import com.edu.framework.domain.course.CoursePic;
 import com.edu.framework.domain.order.McOrders;
+import com.edu.framework.domain.order.McOrdersRefund;
 import com.edu.framework.domain.order.ext.McOrdersExt;
 import com.edu.framework.domain.order.McOrdersPay;
 import com.edu.framework.domain.order.request.AliPayRequestParams;
 import com.edu.framework.domain.order.request.QueryMcOrderRequest;
 import com.edu.framework.domain.order.response.OrderCode;
+import com.edu.framework.domain.task.McTask;
+import com.edu.framework.domain.task.McTaskHis;
 import com.edu.framework.domain.ucenter.request.QueryMcUserRequest;
 import com.edu.framework.exception.ExceptionCast;
 import com.edu.framework.model.response.CommonCode;
@@ -22,14 +25,13 @@ import com.edu.order.client.CourseClient;
 import com.edu.order.config.AlipayConfig;
 import com.edu.order.config.WxConfig;
 import com.edu.order.config.WxConstants;
-import com.edu.order.dao.McOrdersMapper;
-import com.edu.order.dao.McOrdersPayRepository;
-import com.edu.order.dao.McOrdersRepository;
+import com.edu.order.dao.*;
 import com.edu.order.utils.AliPayUtils;
 import com.edu.order.utils.WxPayUtils;
 import com.edu.order.utils.WxUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.netflix.discovery.converters.Auto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,15 @@ public class OrderService {
     @Autowired
     McOrdersMapper mcOrdersMapper;
 
+    @Autowired
+    McTaskHisRepository mcTaskHisRepository;
+
+    @Autowired
+    McTaskRepository mcTaskRepository;
+
+    @Autowired
+    McOrdersRefundRepository mcOrdersRefundRepository;
+
     /**
      * 获取公司id
      * @return
@@ -70,6 +81,25 @@ public class OrderService {
             ExceptionCast.cast(CommonCode.MISS_COMPANY_ID);
         }
         return userJwt.getCompanyId();
+    }
+
+    /**
+     * 添加订单消息记录
+     * @param mcOrders
+     */
+    private void saveTaskHis(McOrders mcOrders){
+        McTask mcTask = new McTask();
+        mcTask.setCreateTime(new Date());
+        mcTask.setUpdateTime(new Date());
+        mcTask.setTaskType("add_choosecourse");
+        mcTask.setMqExchange("ex_learning_addchoosecourse");
+        mcTask.setMqRoutingkey("addchoosecourse");
+        mcTask.setVersion(1);
+        mcTask.setStatus("105001");
+        String requestBody = JSONObject.toJSONString(mcOrders);
+        mcTask.setRequestBody(requestBody);
+
+        mcTaskRepository.save(mcTask);
     }
 
     /**
@@ -225,6 +255,46 @@ public class OrderService {
     }
 
     /**
+     * 支付宝退款
+     */
+    @Transactional
+    public ResponseResult aliRefund(String orderId) {
+        McOrders mcOrders = this.getMcOrders(orderId);
+        McOrdersPay mcOrdersPay = mcOrdersPayRepository.findByOrderId(orderId);
+        if (mcOrders == null || mcOrdersPay == null) {
+            ExceptionCast.cast(OrderCode.ORDER_IS_NOT_EXISTS);
+        }
+        if (!StringUtils.equals(mcOrdersPay.getPaySystem(), "1")) {
+            ExceptionCast.cast(OrderCode.ORDER_PAYSYSTEM_IS_NOT_ALI);
+        }
+        AliPayRequestParams aliPayRequestParams = new AliPayRequestParams();
+        aliPayRequestParams.setOutTradeNo(mcOrders.getOrderId());
+        aliPayRequestParams.setPayId(mcOrdersPay.getPayId());
+        aliPayRequestParams.setRefundAmount(mcOrders.getPrice().toString());
+        aliPayRequestParams.setRefundReason("管理员退款");
+
+
+        AliPayUtils alipayUtils = new AliPayUtils();
+        String result = alipayUtils.refund(aliPayRequestParams);
+        Map map = JSON.parseObject(result, Map.class);
+        Map response = JSON.parseObject(map.get("alipay_trade_refund_response").toString(), Map.class);
+        if (!StringUtils.equals(response.get("msg").toString(), "Success")) {
+            ExceptionCast.cast(OrderCode.ORDER_REFUND_ERROR);
+        }
+        mcOrders.setStatus("401004");
+        mcOrdersRepository.save(mcOrders);
+        mcOrdersPay.setStatus("401004");
+        mcOrdersPayRepository.save(mcOrdersPay);
+
+        McOrdersRefund mcOrdersRefund = new McOrdersRefund();
+        BeanUtils.copyProperties(mcOrdersPay, mcOrdersRefund);
+        mcOrdersRefund.setRefundAmount(mcOrders.getPrice().toString());
+        mcOrdersRefundRepository.save(mcOrdersRefund);
+
+        return ResponseResult.SUCCESS();
+    }
+
+    /**
      * 支付宝-服务器异步通知页面
      */
     @Transactional(rollbackFor = Exception.class)
@@ -271,6 +341,10 @@ public class OrderService {
                     mcOrders.setStatus("401002");
                     mcOrders.setPayTime(new Date());
                     mcOrdersRepository.save(mcOrders);
+
+                    //添加记录到消息表
+                    this.saveTaskHis(mcOrders);
+
                 }
                 response.getWriter().print("success");
             }
@@ -399,6 +473,9 @@ public class OrderService {
                 mcOrders.setPayTime(new Date());
                 mcOrdersRepository.save(mcOrders);
 
+                //添加记录到消息表
+                this.saveTaskHis(mcOrders);
+
 
                 xmlContent = "<xml>" +
                         "<return_code><![CDATA[SUCCESS]]></return_code>" +
@@ -501,4 +578,6 @@ public class OrderService {
         result.put("total", startPage.getTotal());
         return new CommonResponseResult(CommonCode.SUCCESS, result);
     }
+
+
 }

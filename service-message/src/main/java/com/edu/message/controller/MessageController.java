@@ -54,20 +54,32 @@ public class MessageController implements MessageControllerApi {
     }
 
     @Override
-    @GetMapping("/getusermsg/{userId}")
-    public CommonResponseResult getUserMsg(@PathVariable String userId) {
-        return messageService.getUserMsg(userId);
+    @GetMapping("/getusermsg/{page}/{size}")
+    public CommonResponseResult getUserMsg(@PathVariable int page, @PathVariable int size, @RequestParam String userId) {
+        return messageService.getUserMsg(page, size, userId);
+    }
+
+    @Override
+    @GetMapping("/getunreadmsg")
+    public CommonResponseResult getUnReadMsg(@RequestParam String userId) {
+        return messageService.getUnReadMsg(userId);
     }
 
     @Override
     @PutMapping("/userreadmsg")
-    public ResponseResult userReadMsg(@RequestParam String userId,@RequestParam String messageId) {
-        return messageService.userReadMsg(userId, messageId);
+    public ResponseResult userReadMsg(@RequestParam String userId) {
+        return messageService.userReadMsg(userId);
     }
 
     @Override
     @DeleteMapping("/delusermsg")
-    public ResponseResult userDeleteMsg(@RequestParam String userId,@RequestParam String messageId) {
+    public ResponseResult userDeleteMsg(@RequestParam String userId, @RequestParam String messageId) {
         return messageService.userDeleteMsg(userId, messageId);
+    }
+
+    @Override
+    @PutMapping("/dealInviteMsg")
+    public ResponseResult dealInviteMsg(@RequestParam String messageId,@RequestParam String receiver,@RequestParam String isAccept) {
+        return messageService.dealInviteMsg(messageId, receiver, isAccept);
     }
 }

@@ -16,10 +16,10 @@ import java.util.List;
 @Api(value = "cms配置管理接口", tags = "cms配置模型管理接口")
 public interface CmsConfigControllerApi {
 
-    @ApiOperation("根据id查询cms配置信息")
+    @ApiOperation("根据id查询页面配置")
     CmsConfig getModel(String id);
 
-    @ApiOperation("获取轮播图配置信息")
+    @ApiOperation("查询轮播图配置信息")
     CommonResponseResult getCarousel();
 
     @ApiOperation("查询所有cms配置信息")

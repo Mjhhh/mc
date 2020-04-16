@@ -25,4 +25,6 @@ public interface McUserRepository extends JpaRepository<McUser, String> {
      * @return
      */
     McUser findByPhone(String phone);
+
+    McUser findByName(String name);
 }

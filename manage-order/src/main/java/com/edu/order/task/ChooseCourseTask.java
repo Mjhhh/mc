@@ -27,13 +27,14 @@ public class ChooseCourseTask {
      * 定时发送添加选课任务
      * 每隔1分钟扫描消息表，向mq发送消息
      */
-    @Scheduled(cron = "0 0/1 * * * *")
+//    @Scheduled(cron = "0 0/1 * * * *")
+    @Scheduled(cron = "0/10 * * * * *")
     public void sendChoosecourseTask() {
         //得到1分钟之前的时间
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(new Date());
-        calendar.set(GregorianCalendar.MINUTE, -1);
-        Date time = calendar.getTime();
+//        Calendar calendar = new GregorianCalendar();
+//        calendar.setTime(new Date());
+//        calendar.set(GregorianCalendar.MINUTE, -1);
+        Date time = new Date();
         List<McTask> mcTaskList = taskService.findTaskList(time, 100);
         //调用service发布消息，将添加选课的任务发送给mq
         for (McTask mcTask : mcTaskList) {
@@ -45,7 +46,6 @@ public class ChooseCourseTask {
                 String routingKey = mcTask.getMqRoutingkey();
                 taskService.publish(mcTask, ex, routingKey);
             }
-
         }
     }
 

@@ -31,6 +31,6 @@ public class FreeMarkerController extends BaseController {
         map.put("teachplanNode", courseview.getTeachplanNode());
         map.put("courseTeacher", courseview.getCourseTeacher());
         map.put("mcCompany", courseview.getMcCompany());
-        return "course_detail";
+        return "course_detail_template";
     }
 }

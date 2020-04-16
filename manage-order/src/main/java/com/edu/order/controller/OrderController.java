@@ -82,6 +82,12 @@ public class OrderController implements OrderControllerApi {
     }
 
     @Override
+    @PutMapping("/alipay/refund/{orderId}")
+    public ResponseResult aliRefund(@PathVariable String orderId) {
+        return orderService.aliRefund(orderId);
+    }
+
+    @Override
     @GetMapping("/wxpay/check")
     @ResponseBody
     public CommonResponseResult createWxPay(@RequestParam String orderId) {

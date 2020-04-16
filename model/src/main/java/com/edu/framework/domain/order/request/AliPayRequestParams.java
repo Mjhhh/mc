@@ -22,4 +22,16 @@ public class AliPayRequestParams {
      * 商品描述
      */
     private String body;
+    /**
+     * 支付单号
+     */
+    private String payId;
+    /**
+     * 退款的金额
+     */
+    private String refundAmount;
+    /**
+     * 退款的原因说明
+     */
+    private String refundReason;
 }

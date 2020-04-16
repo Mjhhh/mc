@@ -21,7 +21,9 @@ public enum OrderCode implements ResultCode {
     ORDER_ALREADY_EXISTS(false,41013,"订单已经存在！"),
     PRICE_IS_NOT_ALLOW_NULL(false,41014,"价格不允许未空！"),
     ORDER_IS_NOT_EXISTS(false,41015,"订单不存在！"),
-    ORDER_STATUS_ERROR(false,41016,"订单状态错误！");
+    ORDER_PAYSYSTEM_IS_NOT_ALI(false,41017,"订单支付方并非阿里！"),
+    ORDER_STATUS_ERROR(false,41016,"订单状态错误！"),
+    ORDER_REFUND_ERROR(false,41017,"订单退款失败！");
 
     /**
      * 操作是否成功

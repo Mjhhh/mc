@@ -9,4 +9,5 @@ public class ServiceList {
     public static final String SERVICE_UCENTER = "SERVICE-UCENTER";
     public static final String BASE_FILESYSTEM = "BASE-FILESYSTEM";
     public static final String SERVER_MANAGE_ORDER = "MANAGE-ORDER";
+    public static final String SERVICE_MESSAGE = "SERVICE-MESSAGE";
 }

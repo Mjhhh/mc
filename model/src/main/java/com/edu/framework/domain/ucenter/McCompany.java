@@ -22,14 +22,13 @@ public class McCompany implements Serializable {
     @Column(length = 32)
     private String id;
     private String name;
-    private String logo;
-    private String intro;
-    private String email;
-    private String mobile;
     private String linkname;
-    private String identitypic;
-    private String worktype;
-    private String businesspic;
+    private String mobile;
+    private String email;
+    private String intro;
+    private String logo;
+    @Column(name = "user_id")
+    private String userId;
     private String status;
 
 

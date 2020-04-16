@@ -33,7 +33,7 @@
             AND orders.order_id = #{orderId}
         </if>
         <if test="courseName != null and courseName != ''">
-            AND orders.course_name = LIKE '%${courseName}%'
+            AND orders.course_name LIKE '%${courseName}%'
         </if>
         AND orders.status in ('401002','401004')
     </select>

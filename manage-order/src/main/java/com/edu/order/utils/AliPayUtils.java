@@ -5,6 +5,7 @@ import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
+import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.edu.framework.domain.order.request.AliPayRequestParams;
 import com.edu.order.config.AlipayConfig;
 
@@ -50,6 +51,47 @@ public class AliPayUtils {
         }
 
         return form;
+    }
+
+    /**
+     * 退款请求
+     * @param aliPayRequestParams
+     * @return
+     */
+    public String refund(AliPayRequestParams aliPayRequestParams) {
+        //获得初始化的AlipayClient
+        AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.GATEWAY_URL, AlipayConfig.APP_ID,
+                AlipayConfig.APP_PRIVATE_KEY, AlipayConfig.FORMAT, AlipayConfig.CHARSET,
+                AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.SIGN_TYPE);
+
+        //设置请求参数
+        AlipayTradeRefundRequest alipayRequest = new AlipayTradeRefundRequest();
+
+        //商户订单号，商户网站订单系统中唯一订单号
+        String outTradeNo = aliPayRequestParams.getOutTradeNo();
+        //支付宝交易号
+        String tradeNo = aliPayRequestParams.getPayId();
+        //需要退款的金额，该金额不能大于订单金额，必填
+        String refundAmount = aliPayRequestParams.getRefundAmount();
+        //退款的原因说明
+        String refundReason = aliPayRequestParams.getRefundReason();
+        //标识一次退款请求，同一笔交易多次退款需要保证唯一，如需部分退款，则此参数必传
+        String outRequestNo = String.valueOf(System.currentTimeMillis());
+
+        alipayRequest.setBizContent("{\"out_trade_no\":\""+ outTradeNo +"\","
+                + "\"trade_no\":\""+ tradeNo +"\","
+                + "\"refund_amount\":\""+ refundAmount +"\","
+                + "\"refund_reason\":\""+ refundReason +"\","
+                + "\"out_request_no\":\""+ outRequestNo +"\"}");
+
+        //请求
+        String result = null;
+        try {
+            result = alipayClient.execute(alipayRequest).getBody();
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**

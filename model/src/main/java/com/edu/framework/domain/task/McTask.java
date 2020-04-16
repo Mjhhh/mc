@@ -12,7 +12,6 @@ import java.util.Date;
 @ToString
 @Entity
 @Table(name = "mc_task")
-//@GenericGenerator(name = "jpa-assigned", strategy = "assigned")
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class McTask implements Serializable {
 

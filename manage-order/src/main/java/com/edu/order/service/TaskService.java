@@ -85,12 +85,12 @@ public class TaskService {
         Optional<McTask> optionalMcTask = mcTaskRepository.findById(taskId);
         if (optionalMcTask.isPresent()) {
             //当前任务
-            McTask xcTask = optionalMcTask.get();
+            McTask mcTask = optionalMcTask.get();
             //历史任务
-            McTaskHis xcTaskHis = new McTaskHis();
-            BeanUtils.copyProperties(xcTask, xcTaskHis);
-            mcTaskHisRepository.save(xcTaskHis);
-            mcTaskRepository.delete(xcTask);
+            McTaskHis mcTaskHis = new McTaskHis();
+            BeanUtils.copyProperties(mcTask, mcTaskHis);
+            mcTaskHisRepository.save(mcTaskHis);
+            mcTaskRepository.delete(mcTask);
         }
     }
 }

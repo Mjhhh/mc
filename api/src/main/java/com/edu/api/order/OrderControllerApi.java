@@ -41,6 +41,9 @@ public interface OrderControllerApi {
     @ApiOperation("支付宝-服务器异步通知链接")
     void aliNotifyUrl();
 
+    @ApiOperation("支付宝-退款")
+    ResponseResult aliRefund(String orderId);
+
     @ApiOperation("微信支付-生成二维码")
     CommonResponseResult wxpay(String orderId);
 

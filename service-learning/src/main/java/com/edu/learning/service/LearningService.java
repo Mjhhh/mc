@@ -104,25 +104,23 @@ public class LearningService {
     /**
      * 添加选课
      *
-     * @param userId
-     * @param courseId
-     * @param valid
-     * @param startTime
-     * @param endTime
+     * @param mcOrders
      * @param mcTask
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public ResponseResult addcourse(String userId, String courseId, String valid, Date startTime, Date endTime, McTask mcTask) {
-        if (StringUtils.isEmpty(courseId)) {
+    public ResponseResult addcourse(McOrders mcOrders, McTask mcTask) {
+        if (StringUtils.isEmpty(mcOrders.getCourseId())) {
             ExceptionCast.cast(LearningCode.LEARNING_GET_MEDIA_ERROR);
         }
-        if (StringUtils.isEmpty(userId)) {
+        if (StringUtils.isEmpty(mcOrders.getUserId())) {
             ExceptionCast.cast(LearningCode.CHOOSECOURSE_USERISNULl);
         }
         if (mcTask == null || StringUtils.isEmpty(mcTask.getId())) {
             ExceptionCast.cast(LearningCode.CHOOSECOURSE_TASKISNULL);
         }
+        String userId = mcOrders.getUserId();
+        String courseId = mcOrders.getCourseId();
         //查询用户学习教程
         McLearningCourse mcLearningCourse = mcLearningCourseRepository.findByUserIdAndCourseId(userId, courseId);
         if (mcLearningCourse == null) {
@@ -131,9 +129,13 @@ public class LearningService {
             mcLearningCourse.setUserId(userId);
             mcLearningCourse.setCourseId(courseId);
         }
-        mcLearningCourse.setStartTime(startTime);
-        mcLearningCourse.setEndTime(endTime);
+        mcLearningCourse.setStartTime(mcOrders.getStartTime());
+        mcLearningCourse.setEndTime(mcOrders.getEndTime());
         mcLearningCourse.setStatus("501001");
+        mcLearningCourse.setValid(mcOrders.getValid());
+        mcLearningCourse.setCharge("203001");
+        mcLearningCourse.setValid(mcOrders.getValid());
+        mcLearningCourse.setPrice(mcOrders.getPrice());
         mcLearningCourseRepository.save(mcLearningCourse);
 
         //查询历史任务
@@ -142,6 +144,7 @@ public class LearningService {
             //添加历史任务
             McTaskHis mcTaskHis = new McTaskHis();
             BeanUtils.copyProperties(mcTask, mcTaskHis);
+            mcTaskHis.setStatus("105002");
             mcTaskHisRepository.save(mcTaskHis);
         }
         return new ResponseResult(CommonCode.SUCCESS);

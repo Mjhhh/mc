@@ -2,7 +2,7 @@ package com.edu.ucenter.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.edu.framework.domain.course.request.CourseListRequest;
+import com.edu.framework.domain.message.McMessage;
 import com.edu.framework.domain.ucenter.*;
 import com.edu.framework.domain.ucenter.ext.McRoleExt;
 import com.edu.framework.domain.ucenter.ext.McUserExt;
@@ -17,6 +17,7 @@ import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.ResponseResult;
 import com.edu.framework.utils.BCryptUtil;
 import com.edu.framework.utils.McOauth2Util;
+import com.edu.ucenter.client.MessageClient;
 import com.edu.ucenter.dao.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -76,6 +77,9 @@ public class UcenterService {
 
     @Autowired
     StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    MessageClient messageClient;
 
     /**
      * 获取HttpServletRequest
@@ -737,6 +741,7 @@ public class UcenterService {
         mcMenu.setStatus("1");
         mcMenu.setId("");
         mcMenu.setCreateTime(new Date());
+        mcMenu.setUpdateTime(new Date());
         mcMenuRepository.save(mcMenu);
         return new ResponseResult(CommonCode.SUCCESS);
     }
@@ -822,6 +827,12 @@ public class UcenterService {
         }
         //禁用状态
         mcCompany.setStatus("0");
+        String userId = this.getUserId();
+        McCompany isExists = mcCompanyRepository.findByUserId(userId);
+        if (isExists != null) {
+            mcCompany.setId(isExists.getId());
+        }
+        mcCompany.setUserId(userId);
         McCompany saveMcCompany = mcCompanyRepository.save(mcCompany);
 
         //设置用户公司映射
@@ -869,6 +880,11 @@ public class UcenterService {
             update.setIntro(mcCompany.getIntro());
         }
         if (StringUtils.isNotBlank(mcCompany.getStatus())) {
+            if (StringUtils.equals(mcCompany.getStatus(), "1")) {
+                McCompanyUser mcCompanyUser = mcCompanyUserRepository.findByUserId(update.getUserId());
+                mcCompanyUser.setStatus("1");
+                mcCompanyUserRepository.save(mcCompanyUser);
+            }
             update.setStatus(mcCompany.getStatus());
         }
         mcCompanyRepository.save(update);
@@ -916,20 +932,13 @@ public class UcenterService {
      */
     public CommonResponseResult findCompanyUserList(int page, int size) {
         Page<Object> startPage = PageHelper.startPage(page, size);
-        HttpServletRequest request = this.getRequest();
-        //调用工具类取出用户信息
-        McOauth2Util mcOauth2Util = new McOauth2Util();
-        McOauth2Util.UserJwt userJwt = mcOauth2Util.getUserJwtFromHeader(request);
-        if (StringUtils.isBlank(userJwt.getCompanyId())) {
-            ExceptionCast.cast(UcenterCode.UCENTER_PARAMS_IS_NULL);
-        }
-        String companyId = userJwt.getCompanyId();
-        McCompany mcCompany = mcCompanyRepository.findByIdAndStatus(companyId, "1");
+        String userId = this.getUserId();
+        McCompany mcCompany = mcCompanyRepository.findByUserIdAndStatus(userId, "1");
         if (mcCompany == null) {
             ExceptionCast.cast(UcenterCode.UCENTER_COMPANY_NOT_EXISTS);
         }
         //获取组织人员列表
-        List<McUser> mcUserList = mcCompanyMapper.selectMcUserByCompanyId(companyId);
+        List<McUser> mcUserList = mcCompanyMapper.selectMcUserByCompanyId(mcCompany.getId());
         JSONObject result = new JSONObject();
         result.put("total", startPage.getTotal());
         result.put("list", mcUserList);
@@ -942,6 +951,7 @@ public class UcenterService {
      * @param name
      * @return
      */
+    @Transactional
     public ResponseResult inviteUser(String username, String name) {
         if (StringUtils.isBlank(username) || StringUtils.isBlank(name)) {
             ExceptionCast.cast(UcenterCode.UCENTER_PARAMS_IS_NULL);
@@ -966,6 +976,16 @@ public class UcenterService {
         mcCompanyUser.setStatus("0");
         mcCompanyUser.setUserId(mcUser.getId());
         mcCompanyUserRepository.save(mcCompanyUser);
+
+        String userId = this.getUserId();
+        McUser inviter = this.getMcUserById(userId);
+
+        McMessage mcMessage = new McMessage();
+        mcMessage.setContent(inviter.getName() + "邀请您加入组织！是否接受？");
+        mcMessage.setReceiver(mcUser.getId());
+        mcMessage.setType("1");
+        messageClient.addMsg(mcMessage);
+
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
@@ -1092,14 +1112,105 @@ public class UcenterService {
             ExceptionCast.cast(UcenterCode.UCENTER_ACCOUNT_NOTEXISTS);
         }
         //校验旧密码
-        String encodeOldPassword = BCryptUtil.encode(oldPassword);
-        boolean isEquals = BCryptUtil.matches(encodeOldPassword, mcUser.getPassword());
+        boolean isEquals = BCryptUtil.matches(oldPassword, mcUser.getPassword());
         if (!isEquals) {
             ExceptionCast.cast(UcenterCode.UCENTER_PASSWORD_ERROR);
         }
         String encodeNewPassword = BCryptUtil.encode(newPassword);
         mcUser.setPassword(encodeNewPassword);
+        mcUser.setSalt(newPassword);
         mcUserRepository.save(mcUser);
         return ResponseResult.SUCCESS();
+    }
+
+    /**
+     * 获取邀请记录
+     * @param userId
+     * @return
+     */
+    public McCompanyUser getCompanyUser(String userId) {
+        if (StringUtils.isBlank(userId)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        McCompanyUser mcCompanyUser = mcCompanyUserRepository.findByUserId(userId);
+        return mcCompanyUser;
+    }
+
+    /**
+     * 根据用户id从组织中移除用户
+     * @param userId
+     * @return
+     */
+    @Transactional
+    public ResponseResult delCompanyUserByUserId(String userId) {
+        mcCompanyUserRepository.deleteByUserId(userId);
+        return ResponseResult.SUCCESS();
+    }
+
+    /**
+     * 接受邀请
+     * @param userId
+     * @return
+     */
+    public ResponseResult accpetInvite(String userId) {
+        if (StringUtils.isBlank(userId)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        McCompanyUser companyUser = this.getCompanyUser(userId);
+        companyUser.setStatus("1");
+        mcCompanyUserRepository.save(companyUser);
+        return ResponseResult.SUCCESS();
+    }
+
+    /**
+     * 获取组织个人信息
+     * @return
+     */
+    public CommonResponseResult findCompanyUser() {
+        HttpServletRequest request = this.getRequest();
+        //调用工具类取出用户信息
+        McOauth2Util mcOauth2Util = new McOauth2Util();
+        McOauth2Util.UserJwt userJwt = mcOauth2Util.getUserJwtFromHeader(request);
+        if (StringUtils.isBlank(userJwt.getCompanyId())) {
+            ExceptionCast.cast(UcenterCode.UCENTER_PARAMS_IS_NULL);
+        }
+        String companyId = userJwt.getCompanyId();
+        McCompany mcCompany = mcCompanyRepository.findByIdAndStatus(companyId, "1");
+        if (mcCompany == null) {
+            ExceptionCast.cast(UcenterCode.UCENTER_COMPANY_NOT_EXISTS);
+        }
+        //获取组织人员列表
+        String userId = this.getUserId();
+        McUser mcUser = this.getMcUserById(userId);
+        List<McUser> mcUserList = new ArrayList<>();
+        mcUserList.add(mcUser);
+        JSONObject result = new JSONObject();
+        result.put("list", mcUserList);
+        return new CommonResponseResult(CommonCode.SUCCESS, result);
+
+    }
+
+    /**
+     * 通过昵称查找用户
+     * @param nickname
+     * @return
+     */
+    public McUser getByName(String nickname) {
+        McUser mcUser = this.mcUserRepository.findByName(nickname);
+        if (mcUser != null) {
+            mcUser.setPassword(null);
+        }
+        return mcUser;
+
+    }
+
+    /**
+     * 更具用
+     * @param userId
+     * @return
+     */
+    public McCompanyResult getCompanyByUser(String userId) {
+        McCompany mcCompany = mcCompanyRepository.findByUserId(userId);
+        return new McCompanyResult(CommonCode.SUCCESS, mcCompany);
     }
 }

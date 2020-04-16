@@ -10,6 +10,7 @@ import com.edu.framework.model.response.QueryResponseResult;
 import com.edu.framework.model.response.ResponseResult;
 import com.edu.manage_cms.service.CmsPageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -24,6 +25,7 @@ public class CmsPageController implements CmsPageControllerApi {
 
     @Override
     @GetMapping("/list/{page}/{size}")
+    @PreAuthorize("hasAnyAuthority('cms_page_list')")
     public QueryResponseResult findList(@PathVariable("page") int page,@PathVariable("size") int size, QueryPageRequest queryPageRequest) {
         return cmsPageService.findList(page, size, queryPageRequest);
     }
@@ -61,6 +63,7 @@ public class CmsPageController implements CmsPageControllerApi {
 
     @Override
     @PostMapping("/postPage/{pageId}")
+    @PreAuthorize("hasAnyAuthority('cms_page_post')")
     public ResponseResult post(@PathVariable("pageId") String pageId) {
         return cmsPageService.postPage(pageId);
     }
@@ -79,12 +82,14 @@ public class CmsPageController implements CmsPageControllerApi {
 
     @Override
     @GetMapping("/findSiteList")
+    @PreAuthorize("hasAnyAuthority('cms_page_sitelist')")
     public CommonResponseResult findSiteList() {
         return cmsPageService.findSiteList();
     }
 
     @Override
     @GetMapping("/findTemplate")
+    @PreAuthorize("hasAnyAuthority('cms_page_templatelist')")
     public CommonResponseResult findTemplate() {
         return cmsPageService.findTemplate();
     }

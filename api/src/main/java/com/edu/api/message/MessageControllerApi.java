@@ -30,11 +30,17 @@ public interface MessageControllerApi {
     ResponseResult synUser(String userId);
 
     @ApiOperation("用户获取公告")
-    CommonResponseResult getUserMsg(String userId);
+    CommonResponseResult getUserMsg(int page, int size, String userId);
+
+    @ApiOperation("用户获取未读公告")
+    CommonResponseResult getUnReadMsg(String userId);
 
     @ApiOperation("用户阅读公告")
-    ResponseResult userReadMsg(String userId, String messageId);
+    ResponseResult userReadMsg(String userId);
 
     @ApiOperation("用户删除自身的公告")
     ResponseResult userDeleteMsg(String userId, String messageId);
+
+    @ApiOperation("处理邀请消息")
+    ResponseResult dealInviteMsg(String messageId, String receiver, String isAccept);
 }

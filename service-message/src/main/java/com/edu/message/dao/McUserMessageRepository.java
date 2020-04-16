@@ -16,5 +16,8 @@ public interface McUserMessageRepository extends JpaRepository<McUserMessage, St
 
     McUserMessage findByUserIdAndMessageId(String userId, String messageId);
 
+    List<McUserMessage> findByUserIdAndReadStatus(String userId, String status);
+
+    void deleteByMessageId(String messageId);
 
 }

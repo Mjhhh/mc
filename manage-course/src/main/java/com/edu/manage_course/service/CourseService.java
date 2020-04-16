@@ -302,6 +302,8 @@ public class CourseService {
         cmsPage.setPageType("1");
         //创建时间
         cmsPage.setPageCreateTime(new Date());
+        //设置状态为审核中
+        cmsPage.setStatus("0");
         return cmsPage;
     }
 

@@ -1,17 +1,27 @@
 package com.edu.message.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.edu.framework.domain.message.McMessage;
 import com.edu.framework.domain.message.McUserMessage;
+import com.edu.framework.domain.ucenter.McCompanyUser;
+import com.edu.framework.domain.ucenter.McUser;
+import com.edu.framework.domain.ucenter.response.UcenterCode;
 import com.edu.framework.exception.ExceptionCast;
 import com.edu.framework.model.response.CommonCode;
 import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.ResponseResult;
+import com.edu.message.client.UserClient;
+import com.edu.message.dao.McMessageMapper;
 import com.edu.message.dao.McMessageRepository;
 import com.edu.message.dao.McUserMessageMapper;
 import com.edu.message.dao.McUserMessageRepository;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.netflix.discovery.converters.Auto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -30,6 +40,10 @@ public class MessageService{
     McUserMessageRepository mcUserMessageRepository;
     @Autowired
     McUserMessageMapper mcUserMessageMapper;
+    @Autowired
+    McMessageMapper mcMessageMapper;
+    @Autowired
+    UserClient userClient;
 
     private McMessage getMessage(String id) {
         if (StringUtils.isBlank(id)) {
@@ -101,6 +115,9 @@ public class MessageService{
 
     @Transactional
     public ResponseResult synUser(String userId) {
+        if (StringUtils.isBlank(userId)) {
+            return null;
+        }
         //获取消息池
         List<McMessage> messageList = mcMessageRepository.findAll();
         //获取当前用户的消息池消息主键
@@ -126,37 +143,53 @@ public class MessageService{
         return ResponseResult.SUCCESS();
     }
 
+
     /**
      * 用户获取公告
+     * @param page
+     * @param size
      * @param userId
      * @return
      */
-    public CommonResponseResult getUserMsg(String userId) {
+    public CommonResponseResult getUserMsg(int page, int size, String userId) {
         if (StringUtils.isBlank(userId)) {
             ExceptionCast.cast(CommonCode.MISS_PARAM);
         }
-        List<McUserMessage> mcUserMessageList = mcUserMessageRepository.findByUserId(userId);
-        return new CommonResponseResult(CommonCode.SUCCESS, mcUserMessageList);
+        if (page < 0) {
+            page = 0;
+        }
+        if (size <= 0) {
+            size = 10;
+        }
+        List<String> messageIds = mcUserMessageMapper.selectMessageIdByUserId(userId);
+        Page<Object> startPage = PageHelper.startPage(page, size);
+        List<McMessage> messageList = mcMessageMapper.selectListByIds(messageIds);
+
+        JSONObject result = new JSONObject();
+        result.put("total", startPage.getTotal());
+        result.put("list", messageList);
+        return new CommonResponseResult(CommonCode.SUCCESS, result);
     }
 
     /**
      * 用户阅读公告
      * @param userId
-     * @param messageId
      * @return
      */
     @Transactional
-    public ResponseResult userReadMsg(String userId, String messageId) {
-        if (StringUtils.isBlank(userId) || StringUtils.isBlank(messageId)) {
+    public ResponseResult userReadMsg(String userId) {
+        if (StringUtils.isBlank(userId)) {
             ExceptionCast.cast(CommonCode.MISS_PARAM);
         }
-        McUserMessage mcUserMessage = mcUserMessageRepository.findByUserIdAndMessageId(userId, messageId);
-        if (mcUserMessage == null) {
-            ExceptionCast.cast(CommonCode.OBJECT_IS_NOT_EXISTS);
+        List<McUserMessage> mcUserMessageList = mcUserMessageRepository.findByUserIdAndReadStatus(userId, "0");
+        if (CollectionUtils.isEmpty(mcUserMessageList)) {
+            return ResponseResult.SUCCESS();
         }
-        //更新为已读
-        mcUserMessage.setReadStatus("1");
-        mcUserMessageRepository.save(mcUserMessage);
+        for (McUserMessage mcUserMessage : mcUserMessageList) {
+            //更新为已读
+            mcUserMessage.setReadStatus("1");
+        }
+        mcUserMessageRepository.saveAll(mcUserMessageList);
         return ResponseResult.SUCCESS();
     }
 
@@ -202,6 +235,54 @@ public class MessageService{
         List<McUserMessage> mcUserMessageList = mcUserMessageMapper.selectListByMessageIds(ids);
         if (!CollectionUtils.isEmpty(mcUserMessageList)) {
             mcUserMessageRepository.deleteAll(mcUserMessageList);
+        }
+        return ResponseResult.SUCCESS();
+    }
+
+    /**
+     * 用户获取未读消息
+     * @param userId
+     * @return
+     */
+    public CommonResponseResult getUnReadMsg(String userId) {
+        List<McUserMessage> mcUserMessageList = mcUserMessageRepository.findByUserIdAndReadStatus(userId, "0");
+        if (CollectionUtils.isEmpty(mcUserMessageList)) {
+            return new CommonResponseResult(CommonCode.SUCCESS, false);
+        }
+        return new CommonResponseResult(CommonCode.SUCCESS, true);
+    }
+
+    /**
+     * 处理邀请消息
+     * @param messageId
+     * @param receiver
+     * @param isAccept
+     * @return
+     */
+    @Transactional
+    public ResponseResult dealInviteMsg(String messageId, String receiver, String isAccept) {
+        if (StringUtils.isBlank(messageId) || StringUtils.isBlank(receiver) || StringUtils.isBlank(isAccept)) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        McMessage message = this.getMessage(messageId);
+        if (message == null || StringUtils.equals(message.getType(), "0")) {
+            ExceptionCast.cast(CommonCode.MISS_PARAM);
+        }
+        McCompanyUser companyUser = userClient.getCompanyUser(receiver);
+        if (companyUser == null) {
+            ExceptionCast.cast(CommonCode.OBJECT_IS_NOT_EXISTS);
+        }
+        //拒绝
+        if (StringUtils.equals(isAccept, "0")) {
+            mcUserMessageRepository.deleteByMessageId(messageId);
+            mcMessageRepository.deleteById(messageId);
+            userClient.delCompanyUserByUserId(receiver);
+        }
+        //接受
+        else {
+            mcUserMessageRepository.deleteByMessageId(messageId);
+            mcMessageRepository.deleteById(messageId);
+            userClient.accpetInvite(receiver);
         }
         return ResponseResult.SUCCESS();
     }

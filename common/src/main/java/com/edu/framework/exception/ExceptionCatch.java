@@ -6,9 +6,12 @@ import com.edu.framework.model.response.ResultCode;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.nio.file.AccessDeniedException;
 
 
 //控制器增强
@@ -65,4 +68,8 @@ public class ExceptionCatch {
         return responseResult;
     }
 
+    static {
+        //除了CustomException以外的异常类型及对应的错误代码在这里定义,，如果不定义则统一返回固定的错误信息
+        builder.put(AccessDeniedException.class, CommonCode.UNAUTHORISE);
+    }
 }

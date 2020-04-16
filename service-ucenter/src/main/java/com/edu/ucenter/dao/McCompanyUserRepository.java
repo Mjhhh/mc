@@ -26,4 +26,6 @@ public interface McCompanyUserRepository extends JpaRepository<McCompanyUser, St
      * @return
      */
     McCompanyUser findByUserIdAndCompanyId(String userId, String companyId);
+
+    void deleteByUserId(String userId);
 }
