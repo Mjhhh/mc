@@ -59,7 +59,7 @@
         <httpclient.version>4.5.7</httpclient.version>
         <kaptcha.version>2.3.2</kaptcha.version>
         <aliyun.version>4.0.3</aliyun.version>
-        <netty.version>4.1.25.Final</netty.version>
+        <netty.version>4.1.42.Final</netty.version>
     </properties>
     <!--test-->
     <dependencyManagement>
