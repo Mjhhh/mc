@@ -109,7 +109,7 @@ public interface UcenterControllerApi {
     @ApiOperation("查找组织信息")
     McCompanyResult getCompanyByUser(String userId);
 
-    @ApiOperation("获取组织人员")
+    @ApiOperation("获取组织人员列表")
     CommonResponseResult findCompanyUserList(int page, int size);
 
     @ApiOperation("获取组织人员")

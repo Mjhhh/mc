@@ -37,6 +37,7 @@ public class CourseController implements CourseControllerApi {
 
     @Override
     @GetMapping("/coursebase/list/{page}/{size}")
+    @PreAuthorize("hasAnyAuthority('course_coursebase_list')")
     public QueryResponseResult findCourseList(@PathVariable(required = false) int page,
                                               @PathVariable(required = false) int size,
                                               CourseListRequest courseListRequest) {
@@ -190,7 +191,7 @@ public class CourseController implements CourseControllerApi {
     }
 
     @Override
-    @DeleteMapping("/courseevaluate/list/{id}")
+    @DeleteMapping("/courseevaluate/delete/{id}")
     public ResponseResult delCourseEvaluate(@PathVariable String id) {
         return courseService.delCourseEvaluate(id);
     }

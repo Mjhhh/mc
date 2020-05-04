@@ -12,4 +12,6 @@ public interface CourseEvaluateRepository extends JpaRepository<CourseEvaluate,S
 
     @Query("select e from CourseEvaluate e where e.courseId = :courseId order by e.createTime desc")
     List<CourseEvaluate> selectByCourseId(@Param("courseId") String courseId);
+
+    CourseEvaluate findByUserIdAndCourseId(String userid, String courseId);
 }

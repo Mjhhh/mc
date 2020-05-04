@@ -36,5 +36,7 @@
             AND orders.course_name LIKE '%${courseName}%'
         </if>
         AND orders.status in ('401002','401004')
+        ORDER BY
+            start_time DESC
     </select>
 </mapper>

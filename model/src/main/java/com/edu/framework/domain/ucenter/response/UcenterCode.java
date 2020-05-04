@@ -22,6 +22,7 @@ public enum UcenterCode implements ResultCode {
     UCENTER_ACCOUNT_ALREADY_EXISTS(false,23008,"账号已经存在！"),
     UCENTER_USERNAME_IS_NULL(false,23009,"用户名不能为空！"),
     UCENTER_PARAMS_IS_NULL(false,23010,"重要参数不能为空！"),
+    UCENTER_COMPANY_ALREADY_EXISTS(false,23010,"请先退出组织！"),
     UCENTER_ROLE_ALREADY_EXISTS(false,230011,"角色已经存在！"),
     UCENTER_ROLE_NOT_EXISTS(false,230012,"角色不存在！"),
     UCENTER_PERMISSION_NOT_EXISTS(false,230013,"权限不存在！"),

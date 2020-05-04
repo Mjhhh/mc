@@ -2,14 +2,12 @@ package com.edu.learning.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.edu.framework.domain.course.CourseBase;
 import com.edu.framework.domain.course.CourseMarket;
 import com.edu.framework.domain.course.response.TeachplanMediaPub;
 import com.edu.framework.domain.learning.GetMediaResult;
 import com.edu.framework.domain.learning.McLearningCourse;
 import com.edu.framework.domain.learning.response.LearningCode;
 import com.edu.framework.domain.order.McOrders;
-import com.edu.framework.domain.order.McOrdersPay;
 import com.edu.framework.domain.task.McTask;
 import com.edu.framework.domain.task.McTaskHis;
 import com.edu.framework.exception.ExceptionCast;
@@ -92,6 +90,22 @@ public class LearningService {
      */
     public GetMediaResult getMedia(String courseId, String teachplanId) {
         //校验学生的学习权限,是否资费等
+        //判断课程是否收费
+        //获取课程营销信息
+        CommonResponseResult marketResut = courseClient.getCourseMarketById(courseId);
+        CourseMarket courseMarket = JSON.parseObject(JSONObject.toJSONString(marketResut.getData()), CourseMarket.class);
+        if (courseMarket != null) {
+            //课程收费
+            if (StringUtils.equals(courseMarket.getCharge(), "203002")) {
+                String userId = this.getUserId();
+                McOrders mcOrders = orderClient.findOrdersByUserAndCourse(userId, courseId);
+                if (mcOrders == null || !StringUtils.equals(mcOrders.getStatus(), "401002")) {
+                    ExceptionCast.cast(LearningCode.COURSE_NOT_PURCHASED);
+                }
+            }
+        } else {
+            ExceptionCast.cast(LearningCode.COURSE_IS_NOT_EXISTS);
+        }
         //调用搜索服务查询
         TeachplanMediaPub teachplanMediaPub = courseSearchClient.getmedia(teachplanId);
         if (teachplanMediaPub == null || StringUtils.isEmpty(teachplanMediaPub.getMediaUrl())) {

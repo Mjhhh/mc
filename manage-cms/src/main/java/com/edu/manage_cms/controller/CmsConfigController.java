@@ -31,6 +31,7 @@ public class CmsConfigController implements CmsConfigControllerApi {
 
     @Override
     @GetMapping("/getCarousel")
+    @PreAuthorize("hasAnyAuthority('cms_config_carousel')")
     public CommonResponseResult getCarousel() {
         return cmsConfigService.getCarousel();
     }
@@ -43,12 +44,14 @@ public class CmsConfigController implements CmsConfigControllerApi {
 
     @Override
     @PostMapping("/carousel/add")
+    @PreAuthorize("hasAnyAuthority('cms_config_add_carousel')")
     public ResponseResult addCarousel(@RequestParam String url) {
         return cmsConfigService.addCarousel(url);
     }
 
     @Override
     @DeleteMapping("/carousel/del")
+    @PreAuthorize("hasAnyAuthority('cms_config_del_carousel')")
     public ResponseResult deleteCarousel(@RequestParam String url) {
         return cmsConfigService.deleteCarousel(url);
     }
@@ -61,6 +64,7 @@ public class CmsConfigController implements CmsConfigControllerApi {
 
     @Override
     @PostMapping("/category/addCategoryCmsConfig")
+    @PreAuthorize("hasAnyAuthority('cms_config_add_category')")
     public ResponseResult addCmsConfigByCategory(@RequestBody List<String> ids) {
         return cmsConfigService.addCmsConfigByCategory(ids);
     }
@@ -73,24 +77,28 @@ public class CmsConfigController implements CmsConfigControllerApi {
 
     @Override
     @PostMapping("/recomment/add")
+    @PreAuthorize("hasAnyAuthority('cms_config_add_recomment')")
     public ResponseResult addCmsCourseRecomment(@RequestBody List<String> ids) {
         return cmsConfigService.addCmsCourseRecomment(ids);
     }
 
     @Override
     @PostMapping("/newcourse/add")
+    @PreAuthorize("hasAnyAuthority('cms_config_add_newcourse')")
     public ResponseResult addCmsNewCourse(@RequestBody List<String> ids) {
         return cmsConfigService.addCmsNewCourse(ids);
     }
 
     @Override
     @PostMapping("/category/addCourseCategory")
+    @PreAuthorize("hasAnyAuthority('cms_config_add_course_category')")
     public ResponseResult addCourseCategory(@RequestBody Category category) {
         return cmsConfigService.addCourseCategory(category);
     }
 
     @Override
     @DeleteMapping("/category/delCourseCategory/{id}")
+    @PreAuthorize("hasAnyAuthority('cms_config_del_course_category')")
     public ResponseResult delCourseCategory(@PathVariable String id) {
         return cmsConfigService.delCourseCategory(id);
     }

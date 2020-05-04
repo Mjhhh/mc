@@ -17,7 +17,8 @@ public enum LearningCode implements ResultCode {
     CHOOSECOURSE_TASKISNULL(false, 23004, "任务记录为空"),
     COURSE_IS_NOT_EXISTS(false, 23005, "课程不存在"),
     ORDER_IS_NOT_EXISTS(false, 23006, "订单不存在"),
-    ORDER_IS_NOT_PAY(false, 23007, "订单未支付");
+    ORDER_IS_NOT_PAY(false, 23007, "订单未支付"),
+    COURSE_NOT_PURCHASED(false, 23008, "未购买课程");
 
     /**
      * 操作是否成功

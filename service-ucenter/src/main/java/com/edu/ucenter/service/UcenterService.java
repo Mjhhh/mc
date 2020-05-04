@@ -813,6 +813,7 @@ public class UcenterService {
         if (mcCompany == null) {
             ExceptionCast.cast(UcenterCode.UCENTER_COMPANY_NOT_EXISTS);
         }
+
         HttpServletRequest request = this.getRequest();
         //调用工具类取出用户信息
         McOauth2Util mcOauth2Util = new McOauth2Util();
@@ -820,17 +821,18 @@ public class UcenterService {
         if (StringUtils.isBlank(userJwt.getId())) {
             ExceptionCast.cast(UcenterCode.UCENTER_PARAMS_IS_NULL);
         }
-        if (StringUtils.isBlank(userJwt.getCompanyId())) {
-            mcCompany.setId(null);
-        } else {
-            mcCompany.setId(userJwt.getCompanyId());
-        }
+
         //禁用状态
         mcCompany.setStatus("0");
-        String userId = this.getUserId();
+        String userId = userJwt.getId();
         McCompany isExists = mcCompanyRepository.findByUserId(userId);
         if (isExists != null) {
             mcCompany.setId(isExists.getId());
+        } else {
+            McCompanyUser mcCompanyUser = mcCompanyUserRepository.findByUserId(userId);
+            if (mcCompanyUser != null) {
+                ExceptionCast.cast(UcenterCode.UCENTER_COMPANY_ALREADY_EXISTS);
+            }
         }
         mcCompany.setUserId(userId);
         McCompany saveMcCompany = mcCompanyRepository.save(mcCompany);
@@ -1181,9 +1183,12 @@ public class UcenterService {
         }
         //获取组织人员列表
         String userId = this.getUserId();
-        McUser mcUser = this.getMcUserById(userId);
+        McCompanyUser mcCompanyUser = mcCompanyUserRepository.findByUserIdAndStatus(userId,"1");
         List<McUser> mcUserList = new ArrayList<>();
-        mcUserList.add(mcUser);
+        if (mcCompanyUser != null) {
+            McUser mcUser = this.getMcUserById(userId);
+            mcUserList.add(mcUser);
+        }
         JSONObject result = new JSONObject();
         result.put("list", mcUserList);
         return new CommonResponseResult(CommonCode.SUCCESS, result);
@@ -1205,7 +1210,7 @@ public class UcenterService {
     }
 
     /**
-     * 更具用
+     * 根据用户id查询组织信息
      * @param userId
      * @return
      */

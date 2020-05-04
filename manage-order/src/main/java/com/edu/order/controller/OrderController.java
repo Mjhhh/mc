@@ -8,6 +8,7 @@ import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.ResponseResult;
 import com.edu.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class OrderController implements OrderControllerApi {
     @Override
     @ResponseBody
     @GetMapping("/list/{page}/{size}")
+    @PreAuthorize("hasAnyAuthority('course_order_list')")
     public CommonResponseResult findList(@PathVariable int page, @PathVariable int size, QueryMcOrderRequest queryMcOrderRequest) {
         return orderService.findList(page,size, queryMcOrderRequest);
     }

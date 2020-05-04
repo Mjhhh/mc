@@ -12,6 +12,7 @@ import com.edu.framework.model.response.CommonResponseResult;
 import com.edu.framework.model.response.ResponseResult;
 import com.edu.ucenter.service.UcenterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,12 +56,14 @@ public class UcenterController implements UcenterControllerApi {
 
     @Override
     @DeleteMapping("/user/del/{username}")
+    @PreAuthorize("hasAnyAuthority('ucenter_user_del')")
     public ResponseResult deltUser(@PathVariable String username) {
         return ucenterService.deltUser(username);
     }
 
     @Override
     @GetMapping("/user/list/{page}/{size}")
+    @PreAuthorize("hasAnyAuthority('ucenter_user_list')")
     public CommonResponseResult findUserList(@PathVariable int page, @PathVariable int size, QueryMcUserRequest request) {
         return ucenterService.findList(page, size, request);
     }
@@ -109,18 +112,21 @@ public class UcenterController implements UcenterControllerApi {
 
     @Override
     @PostMapping("/role/add")
+    @PreAuthorize("hasAnyAuthority('ucenter_role_add')")
     public ResponseResult addRole(@RequestBody McRoleExt mcRoleExt) {
         return ucenterService.addRole(mcRoleExt);
     }
 
     @Override
     @PutMapping("/role/edit")
+    @PreAuthorize("hasAnyAuthority('ucenter_role_edit')")
     public ResponseResult editRole(@RequestBody McRoleExt mcRoleExt) {
         return ucenterService.editRole(mcRoleExt);
     }
 
     @Override
     @DeleteMapping("/role/del/{id}")
+    @PreAuthorize("hasAnyAuthority('ucenter_role_del')")
     public ResponseResult delRole(@PathVariable String id) {
         return ucenterService.delRole(id);
     }
@@ -133,6 +139,7 @@ public class UcenterController implements UcenterControllerApi {
 
     @Override
     @GetMapping("/role/list/{page}/{size}")
+    @PreAuthorize("hasAnyAuthority('ucenter_role_list')")
     public CommonResponseResult findRoleList(@PathVariable int page, @PathVariable int size) {
         return ucenterService.findRoleList(page, size);
     }
@@ -151,30 +158,35 @@ public class UcenterController implements UcenterControllerApi {
 
     @Override
     @GetMapping("/permission/findPermission")
+    @PreAuthorize("hasAnyAuthority('ucenter_permission_list')")
     public CommonResponseResult findPermission() {
         return ucenterService.findPermission();
     }
 
     @Override
     @PostMapping("/permission/add")
+    @PreAuthorize("hasAnyAuthority('ucenter_permission_add')")
     public ResponseResult addPerimission(@RequestBody McMenu mcMenu) {
         return ucenterService.addPerimission(mcMenu);
     }
 
     @Override
     @PutMapping("/permission/edit")
+    @PreAuthorize("hasAnyAuthority('ucenter_permission_edit')")
     public ResponseResult editPermission(@RequestBody McMenu mcMenu) {
         return ucenterService.editPermission(mcMenu);
     }
 
     @Override
     @DeleteMapping("/permission/del/{id}")
+    @PreAuthorize("hasAnyAuthority('ucenter_permission_del')")
     public ResponseResult delPermission(@PathVariable String id) {
         return ucenterService.delPermission(id);
     }
 
     @Override
     @GetMapping("/company/list/{page}/{size}")
+    @PreAuthorize("hasAnyAuthority('ucenter_company_list')")
     public CommonResponseResult findCompanyList(@PathVariable int page, @PathVariable int size) {
         return ucenterService.findCompanyList(page, size);
     }
@@ -205,6 +217,7 @@ public class UcenterController implements UcenterControllerApi {
 
     @Override
     @GetMapping("/company/user/list/{page}/{size}")
+    @PreAuthorize("hasAnyAuthority('ucenter_company_user_list')")
     public CommonResponseResult findCompanyUserList(@PathVariable int page, @PathVariable int size) {
         return ucenterService.findCompanyUserList(page, size);
     }

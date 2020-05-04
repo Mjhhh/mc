@@ -942,6 +942,10 @@ public class CourseService {
                 || StringUtils.isBlank(courseEvaluate.getUserId())) {
             ExceptionCast.cast(CourseCode.COURSE_EVALUATE_IS_NULL);
         }
+        CourseEvaluate isExists = courseEvaluateRepository.findByUserIdAndCourseId(courseEvaluate.getUserId(), courseEvaluate.getCourseId());
+        if (isExists != null) {
+            ExceptionCast.cast(CourseCode.COURSE_EVALUATE_ALREADY_EXISTS);
+        }
         courseEvaluate.setCreateTime(new Date());
         courseEvaluateRepository.save(courseEvaluate);
         return ResponseResult.SUCCESS();
