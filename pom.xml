@@ -56,7 +56,7 @@
         <elasticsearch.version>6.2.1</elasticsearch.version>
         <guava.version>24.0-jre</guava.version>
         <google.zxing.version>3.3.3</google.zxing.version>
-        <httpclient.version>4.5.7</httpclient.version>
+        <httpclient.version>4.5.13</httpclient.version>
         <kaptcha.version>2.3.2</kaptcha.version>
         <aliyun.version>4.0.3</aliyun.version>
         <netty.version>4.1.25.Final</netty.version>
